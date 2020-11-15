@@ -13,4 +13,5 @@ Test Pure Robot
 
 Test Python Function
     ${python_result} =     Return Python True
-    Should Be Equal    ${TRUE}    ${python_result}
+    Should Be Equal        ${TRUE}    ${python_result}
+    Sleep                  10s

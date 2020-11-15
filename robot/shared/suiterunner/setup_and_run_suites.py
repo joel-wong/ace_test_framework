@@ -6,14 +6,14 @@ def setup_and_run_suites():
 
     # For now, these comments just outline the different steps that we will use
 
-    # pip install pipenv
+    # pip install pipenv if pipenv is not already installed
 
     # activate pipenv
 
     # pipenv install any required packages listed in the Pipfile
     # should simply be "pipenv install"
 
-    # Check if there is an existing .aceoutputdir file (or maybe an environmental variable)
+    # Check if there is an existing .aceoutputdir file (file name could change) or maybe an environmental variable
     # containing the output directory for the tests
     # We will use this to store the output directory for test results between test runs
 
@@ -26,7 +26,6 @@ def setup_and_run_suites():
 
     # in either case, start asking the user for manual values
     # if there was a past test run, provide those values to the user as optional default values
-
     # the following values need to be received from the user:
     # - Serial number
     # - Part number
@@ -37,8 +36,9 @@ def setup_and_run_suites():
 
     # store the values retrieved from the user in a .config file in the output directory specified by the user
 
-    # run robot ../suites/{suite_name} --output {output directory}
+    # run robot ../suites/{suite_name} --output {output directory} (perhaps with some other options)
 
+    # these print and sleep statements are placeholders for now
     print("Executing setup_and_run_suites() in setup_and_run_suites.py")
     time.sleep(2)
     return 0

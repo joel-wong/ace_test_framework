@@ -1,11 +1,11 @@
 
 def manual_text_input(description):
     """
-    Displays a text box for the user to manually input information into.
+    Shows the input description, then displays an area for the user to manually input text into.
 
     Example:
-        manual_text_input("What is your name")
-        > user enters name
+        manual_text_input("What is your name?")
+        > user enters "Bob"
         returns "Bob"
 
     :param description: str: The text to show to the user
