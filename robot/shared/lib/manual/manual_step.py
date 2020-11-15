@@ -11,8 +11,10 @@ def manual_text_input(description):
     :param description: str: The text to show to the user
     :return: str: The user input
     """
-    # placeholder return values for now
-    return "Bob"
+    # to be implemented
+
+    # placeholder returns sample values for now
+    return "Sample Text"
 
 
 def manual_instruction(description):
@@ -24,4 +26,7 @@ def manual_instruction(description):
     :param description: str: The instruction to display to the user
     :return: bool: Whether the user confirmed the action was completed
     """
+    # to be implemented
+
+    # place holder returns True for now
     return True

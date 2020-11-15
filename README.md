@@ -37,23 +37,18 @@ Right click on `report.html`, then click "Open in Browser", select your browser 
 and voila! You have run a test suite and robot has automatically generated a test report for you!
 You can click around in this report, see the different steps that were run, etc.
 
-You should also be able to simply click on `run_tests.bat` within the `robot/suites/bnc_card` folder.
-This will automatically run `robot test_bnc_card.robot` in cmd.
-We might want to use the window that is opened by default for entering in relevant data (serial number, part name)
-or simply outputting instructing for the techs about how to use/setup the system/hardware devices
-
-
 **Some useful info for development**
 - Robot Framework (and its .robot files) are space sensitive. You need at least two spaces between keywords in order for them to work properly. Our convetion will be to use four spaces.
 
 
 **Joel's placeholder for notes/to be implemented functionality**
 
-7, Now, verify that you are able to run suites through Python:
-
-`$ cd /path/to/ace-test-framework/robot/shared/suiterunner`
-
-`$ python suiteRunner.py --suite bnc_card`
+You should be able to simply click on `run_tests.bat` within the root directory folder.
+This will automatically run `python robot\shared\suiterunner\setup_and_run_suites.py` in cmd.
+For now, this simply prints a message, waits two seconds, then exits, but I've left comments in setup_and_run_suites.py
+that describe what we want to do within that function
+We might want to use the window that is opened by default for entering in relevant data (serial number, part name)
+or simply outputting instructing for the techs about how to use/setup the system/hardware devices
 
 
 Might be useful later (holding off for now):

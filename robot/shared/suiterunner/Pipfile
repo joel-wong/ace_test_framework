@@ -1,0 +1,7 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+robotframework >= "3.3.2"
