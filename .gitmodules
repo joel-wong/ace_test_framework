@@ -1,0 +1,3 @@
+[submodule "Submodules/ace-bbsm"]
+	path = Submodules/ace-bbsm
+	url = https://bitbucket.org/Benjamin_Forseth/ace-bbsm.git
