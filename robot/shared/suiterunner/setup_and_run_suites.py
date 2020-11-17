@@ -5,6 +5,9 @@ def setup_and_run_suites():
     """Entry point to the ace-test-framework"""
 
     # For now, these comments just outline the different steps that we will use
+    # TODO: Implement and test the commented steps
+
+    # check python version and verify we are using Python 3
 
     # pip install pipenv if pipenv is not already installed
 

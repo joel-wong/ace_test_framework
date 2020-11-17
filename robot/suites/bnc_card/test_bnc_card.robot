@@ -1,12 +1,11 @@
 *** Settings ***
-Documentation    A suite of tests for the SKF G5 BNC Card
-
+Documentation    Test Suite for the SKF G5 BNC Card
 
 Library    bnc_card_test_utils.py
 
 
 *** Test Cases ***
-# Placeholder test cases, will add actual test cases later
+# Placeholder test cases. TODO: add actual test cases later
 Test Pure Robot
     Should Be Equal    ${TRUE}    ${TRUE}
 
