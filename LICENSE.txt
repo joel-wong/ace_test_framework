@@ -1,0 +1,3 @@
+Available under an MIT License.
+
+Originally created by Joel Wong, Wendy Yang, Ben Forseth, Taylor Wong, Chiquang Trac.

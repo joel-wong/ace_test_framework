@@ -48,3 +48,7 @@ Thumbs.db
 *.mov
 *.wmv
 
+log.html
+output.xml
+report.html
+

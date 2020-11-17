@@ -1,45 +1,58 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+**ACE Testing Framework**
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+**Steps for general use:**
 
----
+WIP - only development functionality works, it is not ready for general use
+1. Simply click on run_tests.bat and follow the instructions in the prompt that opens 
 
-## Edit a file
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+**Steps for getting everything set up for development:**
+1. If you don't already have python installed, do that first. The latest version of python 3 from https://www.python.org is fine. Install it in the default location
+2. Download PyCharm Community edition.
+3. Open the ace-test-framework folder in PyCharm
+4. Install the IntelliBot plugin (Settings > Plugins > Intellibot)
+5. Install the following packages using pip (Go to Settings > Project: ace-test-framework > Project Interpreter > "+") (
+Note: do **not** install in the user's site package directory):
+- robotframework
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: 
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+6. Open cmd (the Command Prompt) and verify that you can run python and robot on the command line by typing
 
----
+`$ python --version`
 
-## Create a file
+The version should be >= 3.0
 
-Next, you’ll add a new file to this repository.
+`$ robot --version`
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
+The version should be >= 3.0
 
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+If this works, you should also be able to go to
+`$ cd path/to/ace-test/framework/robot/suites/bnc_card`
+and execute `$ robot test_bnc_card.robot`
 
----
+A window should open and then close after 10s (showing the format of the window that displays when running tests), and you should see new files under `robot/suites/bnc_card`
+- `log.html`
+- `output.html`
+- `report.html`
 
-## Clone a repository
+Right click on `report.html`, then click "Open in Browser", select your browser of choice,
+and voila! You have run a test suite and Robot Framework has automatically generated a test report for you!
+You can click around in this report, see the different steps that were run, etc.
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+**Some useful info for development**
+- Robot Framework (and its .robot files) are space sensitive. You need at least two spaces between keywords in order for them to work properly (any more than 2 spaces acts the same as 2 spaces). I (Joel) think we should have a convention of four or more spaces would be good to make it easy to see the different keywords
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+**Joel's placeholder for notes/to be implemented functionality**
+
+You should be able to simply click on `run_tests.bat` within the root directory folder.
+This will automatically run `python robot\shared\suiterunner\setup_and_run_suites.py` in cmd.
+For now, this simply prints a message, waits two seconds, then exits, but I've left comments in setup_and_run_suites.py
+that describe what we want to do within that function.
+We might want to use the command window that is opened by default during the batch script to entering in relevant data (serial number, part name, etc.)
+or simply outputting instructing for the techs about how to use/setup the system/hardware devices
+
+
+Might be useful later (holding off for now):
+- robotframework-debuglibrary
+
