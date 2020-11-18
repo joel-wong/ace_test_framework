@@ -37,5 +37,5 @@ Setup BBB For BNC Card Tests
     # TODO: Add detailed manual instructions for setting up tests
     Manual Instruction    add setup instructions here
 
-    # automatically setup a socket connection to BBB
+    # set up a socket connection to BBB
     Connect To BBB
