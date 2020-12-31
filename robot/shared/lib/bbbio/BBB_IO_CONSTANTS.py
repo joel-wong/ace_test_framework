@@ -9,6 +9,7 @@ I2C_DATA = "data"
 INPUT_MODE = "input_mode"
 DRIVEN_MODE = "input_mode"
 OUTPUT_MODE = "output_mode"
+OPEN_DRAIN_MODE = "open_drain_mode"
 
 INPUTS = "inputs"
 OUTPUTS = "outputs"
