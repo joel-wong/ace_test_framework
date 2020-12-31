@@ -137,4 +137,13 @@ def send_io_specifications_to_bbb():
 
 
 def get_bbb_input_value(bbb_return_data, pin_name):
+    """
+    Retrieves the value on the input 'pin_name' within the given
+    'bbb_return_data'
+
+    :param bbb_return_data: The data returned from
+    'send_io_specifications_to_bbb()'
+    :param pin_name: The pin name on which the BBB has received input
+    :return: The value of the specified input to the BBB
+    """
     return bbb_return_data[BBB_IO_CONSTANTS.INPUTS][pin_name]
