@@ -3,7 +3,9 @@ A series of functions that manages communication between the Beagle Bone Black (
 allows the users to control inputs and outputs on the BBB
 """
 
+import BBB_IO_CONSTANTS
 import json
+
 
 # Sample JSON that will be sent to the BBB when send_io_specifications_to_bbb()
 # is called:
@@ -12,17 +14,22 @@ import json
     "outputs":{
     "P8-30": {
         "type": "digital",
-        "value": "1"
+        BBB_IO_CONSTANTS.VALUE: "1"
     },
     "P8-40": {
         "type": "analog",
-        "value": "1.8"
+        BBB_IO_CONSTANTS.VALUE: "1.8"
     },
     "P8-50": {
         "type": "pwm",
-        "value": "60"
+        BBB_IO_CONSTANTS.VALUE: "60"
     }
   },
+  "i2c": {
+    1: {
+      "data": "i2c_data_here"
+    }
+  }
   "inputs": {
     "P8-20": {
        "type": "digital",
@@ -54,8 +61,9 @@ def disconnect_from_bbb():
 
 
 def reset_bbb_io_specifications():
-    io_to_send["inputs"] = {}
-    io_to_send["outputs"] = {}
+    io_to_send[BBB_IO_CONSTANTS.INPUTS] = {}
+    io_to_send[BBB_IO_CONSTANTS.OUTPUTS] = {}
+    io_to_send[BBB_IO_CONSTANTS.I2C] = {}
 
 
 def specify_bbb_output(pin_name, output_type, value):
@@ -70,9 +78,25 @@ def specify_bbb_output(pin_name, output_type, value):
     """
     # TODO: validate that the input type is valid
     # TODO: validate that the input value is valid for the input type
-    io_to_send["outputs"][pin_name] = {
-        "type": output_type,
-        "value": value
+    io_to_send[BBB_IO_CONSTANTS.OUTPUTS][pin_name] = {
+        BBB_IO_CONSTANTS.TYPE: output_type,
+        BBB_IO_CONSTANTS.VALUE: value
+    }
+
+
+def specify_bbb_i2c_output(i2c_spec_number, data):
+    """
+        Updates the 'io_to_send' so that when
+        'send_io_specifications_to_BBB' is called, the given
+        'i2c_specification_number' and 'data' is output
+
+        :param i2c_spec_number: the order in which I2C signals should be sent
+            to the circuit under test, with the lowest i2c_spec_number first
+            (each i2c_spec_number must be unique for a given test)
+        :param data: The data to be sent via I2C
+    """
+    io_to_send[BBB_IO_CONSTANTS.I2C][int(i2c_spec_number)] = {
+        BBB_IO_CONSTANTS.I2C_DATA: data
     }
 
 
@@ -85,8 +109,8 @@ def specify_bbb_input(pin_name, input_type):
     :param pin_name: The pin name on which the BBB will have an input
     :param input_type: the type of signal that should be input on the BBB
     """
-    io_to_send["inputs"][pin_name] = {
-        "type": input_type
+    io_to_send[BBB_IO_CONSTANTS.INPUTS][pin_name] = {
+        BBB_IO_CONSTANTS.TYPE: input_type
     }
 
 
@@ -105,7 +129,12 @@ def send_io_specifications_to_bbb():
 
     # return sample data for now
     return {
-      "inputs": {
-        "P8-20": io_to_send["outputs"]["P8-44"]["value"]
+      BBB_IO_CONSTANTS.INPUTS: {
+        list(io_to_send[BBB_IO_CONSTANTS.INPUTS].keys())[0]: list(io_to_send[
+            BBB_IO_CONSTANTS.OUTPUTS].values())[0][BBB_IO_CONSTANTS.VALUE]
       }
     }
+
+
+def get_bbb_input_value(bbb_return_data, pin_name):
+    return bbb_return_data[BBB_IO_CONSTANTS.INPUTS][pin_name]

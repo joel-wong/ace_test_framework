@@ -1,4 +1,6 @@
+import json
 
-def return_python_true():
-    # just a placeholder, TODO: add more useful functions to this file later
-    return True
+def get_i2c_for_io_mode(pin_number, io_mode):
+    # TODO: Add I2C code here
+    return "Placeholder"
+
