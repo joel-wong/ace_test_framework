@@ -231,7 +231,7 @@ class TestManager:
                                             current_time)
             subprocess.run(["python", "-m", "robot", "--outputdir",
                             output_directory, suite_directory],
-                           shell=True, check=True)
+                           shell=True, check=False)
             config_file_output_name = os.path.join(output_directory,
                                                    CONFIG_FILE_NAME)
             config_file = open(config_file_output_name, 'w')
