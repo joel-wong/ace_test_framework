@@ -220,7 +220,7 @@ Check Digital Low Passed Through
 
 Check Termination Resistor Can Be Enabled
     [Arguments]    ${PIN_I2C_NAME}    ${BNC_PIN_NUMBER}    ${BNC_ANALOG_PIN_NUMBER}
-    ${i2c_data} =    Get I2C For Termination Resistor     ${PIN_I2C_NAME}    ${TRUE}
+    ${i2c_data} =    Get I2C To Enable Termination Resistor    ${PIN_I2C_NAME}
     Specify BBB I2C Output    2    ${i2c_data}
     Specify BBB Output    ${BNC_PIN_NUMBER}    ${DIGITAL}    ${DIGITAL_HIGH}
     Specify BBB Input     ${BNC_ANALOG_PIN_NUMBER}    ${ANALOG}
@@ -230,7 +230,7 @@ Check Termination Resistor Can Be Enabled
 
 Check Termination Resistor Can Be Disabled
     [Arguments]    ${PIN_I2C_NAME}    ${BNC_PIN_NUMBER}    ${BNC_ANALOG_PIN_NUMBER}
-    ${i2c_data} =    Get I2C For Termination Resistor     ${PIN_I2C_NAME}    ${FALSE}
+    ${i2c_data} =    Get I2C To Disable Termination Resistor    ${PIN_I2C_NAME}
     Specify BBB I2C Output    2    ${i2c_data}
     Specify BBB Output    ${BNC_PIN_NUMBER}    ${DIGITAL}    ${DIGITAL_HIGH}
     Specify BBB Input     ${BNC_ANALOG_PIN_NUMBER}    ${ANALOG}
