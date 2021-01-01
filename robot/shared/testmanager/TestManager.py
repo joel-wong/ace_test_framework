@@ -59,14 +59,15 @@ class TestManager:
         # upgrade pip
         print("Upgrading/installing any required dependencies...")
         subprocess.run(["python", "-m", "pip", "install", "-q",
-                        "--upgrade", "pip"],
+                        "--upgrade", "pip", "--no-warn-script-location"],
                        shell=True, check=True)
         print("Python 3 is installed and up to date")
 
         # upgrade/install dependencies such as robot framework
         subprocess.run(["python", "-m", "pip", "install", "-q", "--user",
                         "--upgrade", "-r",
-                        os.path.join(os.path.curdir, "requirements.txt")],
+                        os.path.join(os.path.curdir, "requirements.txt"),
+                        "--no-warn-script-location"],
                        shell=True, check=True)
         print("Robot framework is installed and up to date")
 
@@ -224,9 +225,8 @@ class TestManager:
             self.base_directory, "out", self.config[CONFIG_SUITE_NAME])
         print("Starting tests now")
         for _ in range(self.config[CONFIG_REPEAT_TESTS]):
-            current_time = datetime.datetime.utcnow().isoformat("T",
-                                                                "milliseconds")
-            current_time = current_time.replace(":", "-")
+            current_time = datetime.datetime.utcnow().isoformat("T")
+            current_time = current_time.replace(":", "-").replace(".", "-")
             output_directory = os.path.join(main_test_output_directory,
                                             current_time)
             subprocess.run(["python", "-m", "robot", "--outputdir",
