@@ -199,7 +199,7 @@ Setup BBB For BNC Card Tests
 
 Set Pin Mode Via I2C
     [Arguments]    ${i2c_pin_name}    ${pin_mode}
-    ${i2c_data} =    Get I2C For IO Mode     ${USER1_IO_I2C_NAME}    ${INPUT_MODE}
+    ${i2c_data} =    Get I2C For IO Mode     ${i2c_pin_name}    ${INPUT_MODE}
     Specify BBB I2C Output    1    ${i2c_data}
 
 Check Digital High Passed Through
@@ -219,31 +219,31 @@ Check Digital Low Passed Through
     Should Be Equal       ${pin_output}    ${DIGITAL_LOW}
 
 Check Termination Resistor Can Be Enabled
-    [Arguments]    ${PIN_I2C_NAME}    ${BNC_PIN_NUMBER}    ${BNC_ANALOG_PIN_NUMBER}
-    Enable Termination Resistor    ${PIN_I2C_NAME}
-    Specify BBB Output    ${BNC_PIN_NUMBER}    ${DIGITAL}    ${DIGITAL_HIGH}
-    Specify BBB Input     ${BNC_ANALOG_PIN_NUMBER}    ${ANALOG}
+    [Arguments]    ${pin_i2c_name}    ${bnc_pin_number}    ${bnc_analog_pin_number}
+    Enable Termination Resistor    ${pin_i2c_name}
+    Specify BBB Output    ${bnc_pin_number}    ${DIGITAL}    ${DIGITAL_HIGH}
+    Specify BBB Input     ${bnc_analog_pin_number}    ${ANALOG}
     ${result} =           Send IO Specifications To BBB
-    ${analog_output} =    Get BBB Input Value    ${result}    ${BNC_ANALOG_PIN_NUMBER}
+    ${analog_output} =    Get BBB Input Value    ${result}    ${bnc_analog_pin_number}
     Should Have Termination Resistance Enabled    ${analog_output}
 
 Enable Termination Resistor
-    [Arguments]    ${PIN_I2C_NAME}
-    ${i2c_data} =    Get I2C To Enable Termination Resistor    ${PIN_I2C_NAME}
+    [Arguments]    ${pin_i2c_name}
+    ${i2c_data} =    Get I2C To Enable Termination Resistor    ${pin_i2c_name}
     Specify BBB I2C Output    2    ${i2c_data}
 
 Check Termination Resistor Can Be Disabled
-    [Arguments]    ${PIN_I2C_NAME}    ${BNC_PIN_NUMBER}    ${BNC_ANALOG_PIN_NUMBER}
-    Disable Termination Resistor    ${PIN_I2C_NAME}
-    Specify BBB Output    ${BNC_PIN_NUMBER}    ${DIGITAL}    ${DIGITAL_HIGH}
-    Specify BBB Input     ${BNC_ANALOG_PIN_NUMBER}    ${ANALOG}
+    [Arguments]    ${pin_i2c_name}    ${bnc_pin_number}    ${bnc_analog_pin_number}
+    Disable Termination Resistor    ${pin_i2c_name}
+    Specify BBB Output    ${bnc_pin_number}    ${DIGITAL}    ${DIGITAL_HIGH}
+    Specify BBB Input     ${bnc_analog_pin_number}    ${ANALOG}
     ${result} =           Send IO Specifications To BBB
-    ${analog_output} =    Get BBB Input Value    ${result}    ${BNC_ANALOG_PIN_NUMBER}
+    ${analog_output} =    Get BBB Input Value    ${result}    ${bnc_analog_pin_number}
     Should Have Termination Resistance Disabled    ${analog_output}
 
 Disable Termination Resistor
-    [Arguments]    ${PIN_I2C_NAME}
-    ${i2c_data} =    Get I2C To Disable Termination Resistor    ${PIN_I2C_NAME}
+    [Arguments]    ${pin_i2c_name}
+    ${i2c_data} =    Get I2C To Disable Termination Resistor    ${pin_i2c_name}
     Specify BBB I2C Output    2    ${i2c_data}
 
 Should Have Termination Resistance Enabled
