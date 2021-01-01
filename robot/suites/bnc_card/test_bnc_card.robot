@@ -119,12 +119,12 @@ Check Pin Header USER1_IO Input = BNC7 USER1_IO Output For Digital Low With I2C 
     Set Pin Mode Via I2C    ${USER1_IO_I2C_NAME}    ${OUTPUT_MODE}
     Check Digital Low Passed Through    ${USER1_IO_PIN_HEADER}    ${BNC7_USER1_IO_BNC}
 
-Check Pin Header SYNC_OUT Input = BNC5 SYNC_OUT Output For Digital High With I2C Output Mode
+Check Pin Header USER2_IO Input = BNC8 USER2_IO Output For Digital High With I2C Output Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
     Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${OUTPUT_MODE}
     Check Digital High Passed Through    ${USER2_IO_PIN_HEADER}    ${BNC8_USER2_IO_BNC}
 
-Check Pin Header SYNC_OUT Input = BNC5 SYNC_OUT Output For Digital Low With I2C Output Mode
+Check Pin Header USER2_IO Input = BNC8 USER2_IO Output For Digital Low With I2C Output Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
     Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${OUTPUT_MODE}
     Check Digital Low Passed Through    ${USER2_IO_PIN_HEADER}    ${BNC8_USER2_IO_BNC}
