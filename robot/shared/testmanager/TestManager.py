@@ -23,7 +23,11 @@ class TestManager:
     def __init__(self):
         self.robot_directory = os.path.dirname(
             os.path.dirname(os.path.abspath(os.path.curdir)))
+        self.robot_lb_path = os.path.join(self.robot_directory,
+                                          "shared", "lib")
         self.base_directory = os.path.dirname(self.robot_directory)
+        self.submodule_path = os.path.join(self.base_directory,
+                                           "Submodules")
         self.config_file_name = os.path.join(self.base_directory,
                                              CONFIG_FILE_NAME)
 
@@ -31,6 +35,7 @@ class TestManager:
         """Entry point to the ace-test-framework"""
 
         TestManager.install_dependencies()
+        self.setup_pythonpath()
         self.get_configuration()
         self.run_suites()
         return 0
@@ -70,6 +75,11 @@ class TestManager:
                         "--no-warn-script-location"],
                        shell=True, check=True)
         print("Robot framework is installed and up to date")
+
+    def setup_pythonpath(self):
+        os.environ["PYTHONPATH"] = ";".join(
+            [self.robot_lb_path, self.submodule_path,
+             os.getenv("PYTHONPATH", default="")])
 
     def get_configuration(self):
         """Retrieves configuration values from previous run if there are any
