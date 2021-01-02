@@ -27,7 +27,10 @@ import json
   },
   "i2c": {
     1: {
-      "data": "i2c_data_here"
+      "data": "base64 encoding of first data"
+    },
+    2: {
+      "data": "base 64 encoding of second data"
     }
   }
   "inputs": {
@@ -90,10 +93,27 @@ def specify_bbb_i2c_output(i2c_spec_number, data):
         'send_io_specifications_to_BBB' is called, the given
         'i2c_specification_number' and 'data' is output
 
-        :param i2c_spec_number: the order in which I2C signals should be sent
+        There can be zero or more pieces of I2C data provided in each test.
+        Most tests will not require any I2C data to be sent to the device under
+        test. If I2C data is provided to the circuit under test, it must have a
+        i2c_spec_number. This specifies the order in which the I2C data is sent
+        to the circuit under test. For example, if there are two pieces of I2C
+        data to be sent to the BBB, then there should be two calls to this
+        function:
+        specify_bbb_i2c_output(1, first_data)
+        specify_bbb_i2c_output(2, second_data)
+
+        If there is only one piece of I2C data is required, then only one call
+        to this function is required:
+        specify_bbb_i2c_output(1, first_data)
+
+        Note that the only the order of the i2c_spec_numbers is important (when
+        there are multiple sets of I2C data), not the actual numbers
+
+        :param i2c_spec_number: int: the order in which I2C signals should be sent
             to the circuit under test, with the lowest i2c_spec_number first
             (each i2c_spec_number must be unique for a given test)
-        :param data: The data to be sent via I2C
+        :param data: byte[]: The data to be sent via I2C
     """
     io_to_send[BBB_IO_CONSTANTS.I2C][int(i2c_spec_number)] = {
         BBB_IO_CONSTANTS.I2C_DATA: data
