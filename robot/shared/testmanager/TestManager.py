@@ -23,8 +23,8 @@ class TestManager:
     def __init__(self):
         self.robot_directory = os.path.dirname(
             os.path.dirname(os.path.abspath(os.path.curdir)))
-        self.robot_lb_path = os.path.join(self.robot_directory,
-                                          "shared", "lib")
+        self.robot_lib_path = os.path.join(self.robot_directory,
+                                           "shared", "lib")
         self.base_directory = os.path.dirname(self.robot_directory)
         self.submodule_path = os.path.join(self.base_directory,
                                            "Submodules")
@@ -78,7 +78,7 @@ class TestManager:
 
     def setup_pythonpath(self):
         os.environ["PYTHONPATH"] = ";".join(
-            [self.robot_lb_path, self.submodule_path,
+            [self.robot_lib_path, self.submodule_path,
              os.getenv("PYTHONPATH", default="")])
 
     def get_configuration(self):
