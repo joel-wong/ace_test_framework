@@ -2,7 +2,8 @@ import datetime
 import json
 import os
 import subprocess
-import sys
+
+from DependencyManager import DependencyManager
 
 CONFIG_FILE_NAME = "config.json"
 CONFIG_SUITE_NAME = "suite_name"
@@ -30,46 +31,10 @@ class TestManager:
     def setup_and_run_tests(self):
         """Entry point to the ace-test-framework"""
 
-        TestManager.install_dependencies()
+        DependencyManager.install_dependencies()
         self.get_configuration()
         self.run_suites()
         return 0
-
-    @staticmethod
-    def install_dependencies():
-        """Installs and upgrades dependencies needed for robot framework"""
-
-        # check python version and verify we are using Python 3
-        if sys.version[0] < '3':
-            print("ERROR: python version 3 required. You are using version "
-                  "{}".format(sys.version))
-            print("You must install python 3 from https://www.python.org")
-            print("Make sure to check the 'pip' package manager option when")
-            print("installing python")
-            return
-        try:
-            import pip
-        except ModuleNotFoundError:
-            print("The python 'pip' package manager is required.")
-            print("Go to https://www.python.org and download Python 3")
-            print("When re-installing, select 'modify' and make sure")
-            print("to check the 'pip' option")
-            return
-
-        # upgrade pip
-        print("Upgrading/installing any required dependencies...")
-        subprocess.run(["python", "-m", "pip", "install", "-q",
-                        "--upgrade", "pip", "--no-warn-script-location"],
-                       shell=True, check=True)
-        print("Python 3 is installed and up to date")
-
-        # upgrade/install dependencies such as robot framework
-        subprocess.run(["python", "-m", "pip", "install", "-q", "--user",
-                        "--upgrade", "-r",
-                        os.path.join(os.path.curdir, "requirements.txt"),
-                        "--no-warn-script-location"],
-                       shell=True, check=True)
-        print("Robot framework is installed and up to date")
 
     def get_configuration(self):
         """Retrieves configuration values from previous run if there are any
