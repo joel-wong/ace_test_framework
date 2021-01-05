@@ -54,5 +54,5 @@ class DependencyManager:
 
 
 if __name__ == "__main__":
-    test_manager = DependencyManager()
-    test_manager.upgrade_dependencies()
+    dependency_manager = DependencyManager()
+    dependency_manager.upgrade_dependencies()
