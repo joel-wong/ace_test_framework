@@ -22,8 +22,13 @@ The installer will automatically detect if you have Python 3 already installed.
 If you do *not* have Python 3 installed, then click "install" and ensure that the "pip" option is selected.
 If you *do* have python already installed then click "modify" and install "pip" if you do not have it already.
 
-After Python and pip are installed, you simply need to click on run_tests.bat
-and follow the instructions in the prompt that opens to run the tests!
+After Python and pip are installed, you simply need to double-click on
+`RunTests.bat` and follow the instructions in the prompt that opens to run
+the tests!
+
+### Troubleshooting: ###
+If the program is not working, try running `UpgradeDependencies.bat` by
+simply double-clicking on it
 
 
 ## Development Usage: ##
@@ -38,8 +43,8 @@ Install it in the default location
    "Mark Directory As" > "Sources Root":
    - `robot/shared/lib`
    - `Submodules`
-6. Run `git submodule init` and then `git submodule update` in the
-   `ace-test-framework` folder
+6. Run `git submodule update --init --recursive` in the `ace-test-framework`
+   folder
 7. To run the tests with debug functionality in PyCharm, go to
 `robot/shared/testmanager/TestManager.py` and then right click on the arrow to
 the left of `if __name__ == "__main__":` at the very bottom of the file and
@@ -57,7 +62,7 @@ There is currently one submodule (ace-bbsm) in this project, and it is located
 in the Submodules folder.
 
 - Upon initially cloning the `ace-test-framework` repository, you must run
-`git submodule update`
+`git submodule update --init --recursive`
 - To update your submodules, run `git submodule update`
 
 ### Modifying submodules: ###
