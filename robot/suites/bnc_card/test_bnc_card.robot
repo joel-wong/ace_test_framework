@@ -53,22 +53,22 @@ Check BNC6 SYNC_IN Input = Pin Header SYNC_IN For Digital Low
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
     Check Digital Low Passed Through    ${B_SYNC_IN_L3V3}    ${P_SYNC_IN_L3V3}
 
-Check BNC7 USER1 IO Input = Pin Header USER1 IO For Digital High With I2C Input Mode
+Check BNC8 USER1 IO Input = Pin Header USER1 IO For Digital High With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
     Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${INPUT_MODE}
     Check Digital High Passed Through    ${B_USER1_L3V3}    ${P_USER1_IN_L3V3}
 
-Check BNC7 USER1 IO Input = Pin Header USER1 IO For Digital Low With I2C Input Mode
+Check BNC8 USER1 IO Input = Pin Header USER1 IO For Digital Low With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
     Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${INPUT_MODE}
     Check Digital Low Passed Through    ${B_USER1_L3V3}    ${P_USER1_IN_L3V3}
 
-Check BNC8 USER2 IO Input = Pin Header USER2 IO For Digital High With I2C Input Mode
+Check BNC7 USER2 IO Input = Pin Header USER2 IO For Digital High With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
     Set Pin Mode Via I2C    ${I2C_BNC7_USER2_NIN_OUT}    ${INPUT_MODE}
     Check Digital High Passed Through    ${B_USER2_L3V3}    ${P_USER2_IN_L3V3}
 
-Check BNC8 USER2 IO Input = Pin Header USER2 IO For Digital Low With I2C Input Mode
+Check BNC7 USER2 IO Input = Pin Header USER2 IO For Digital Low With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
     Set Pin Mode Via I2C    ${I2C_BNC7_USER2_NIN_OUT}    ${INPUT_MODE}
     Check Digital Low Passed Through    ${B_USER2_L3V3}    ${P_USER2_IN_L3V3}
