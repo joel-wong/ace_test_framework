@@ -89,7 +89,7 @@ I2C_BNC8_USER1_NIN_OUT = "0x20"
 I2C_BNC8_500_HM_EN = "0x04"
 
 # USER2_IO
-# BNC Connector: BNC8
+# BNC Connector: BNC7
 # Pin Header Numbers:
 # - Output: 10
 # - Input: 6
