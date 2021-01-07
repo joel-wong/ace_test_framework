@@ -12,6 +12,16 @@
 # 3.3V side of 3.3V to 5V level shifter with the 5V side of the level shifter
 # connected to the PINNAME pin header
 #
+# SW_PINNAME_L3V3 e.g. SW_REF_IN_L3V3:
+# A digital I/O pin on the BBB with a maximum of 3.3V
+# With the BNC card signal conditioning board, this pin is connected to a relay
+# that controls whether a resistor is in series with the output of a BNC
+# connector
+# A digital high value indicates that a 300 ohm resistor is in series with the
+# BNC connector
+# A digital low or high impedance value indicates that there is no resistor
+# in series with the BNC connector
+#
 # TR_PINNAME_L1V8 e.g. TR_REF_IN_L1V8:
 # An analog input pin (maximum 1.8V) on the BBB
 # With the BNC card signal conditioning board, this is connected to a voltage
@@ -27,6 +37,7 @@
 # Pin Header Number: 3
 B_REF_IN_L3V3 = "Placeholder"
 P_REF_IN_L3V3 = "Placeholder"
+SW_REF_IN_L3V3 = "Placeholder"
 TR_REF_IN_1V8 = "Placeholder"
 I2C_BNC1_500HM_EN = "0x01"
 
@@ -60,6 +71,7 @@ P_SYNC_OUT_L3V3 = "Placeholder"
 # Pin Header Number: 13
 B_SYNC_IN_L3V3 = "Placeholder"
 P_SYNC_IN_L3V3 = "Placeholder"
+SW_SYNC_IN_L3V3 = "Placeholder"
 TR_SYNC_IN_L1V8 = "Placeholder"
 I2C_BNC6_500HM_EN = "0x02"
 
@@ -71,6 +83,7 @@ I2C_BNC6_500HM_EN = "0x02"
 B_USER1_L3V3 = "Placeholder"
 P_USER1_OUT_L3V3 = "Placeholder"
 P_USER1_IN_L3V3 = "Placeholder"
+SW_USER1_IN_L3V3 = "Placeholder"
 TR_USER1_L1V8 = "Placeholder"
 I2C_BNC8_USER1_NIN_OUT = "0x20"
 I2C_BNC8_500_HM_EN = "0x04"
@@ -83,9 +96,23 @@ I2C_BNC8_500_HM_EN = "0x04"
 B_USER2_L3V3 = "Placeholder"
 P_USER2_OUT_L3V3 = "Placeholder"
 P_USER2_IN_L3V3 = "Placeholder"
+SW_USER2_IN_L3V3 = "Placeholder"
 TR_USER2_L1V8 = "Placeholder"
 I2C_BNC7_USER2_NIN_OUT = "0x40"
 I2C_BNC7_500_HM_EN = "0x10"
+
+# TDC_LED
+# Pin header: 16
+# Drive low to turn on the TDC (green) LED
+# drive high to turn off the TDC (green) LED
+P_TDC_LED_L3V3 = "Placeholder"
+# P_TDC_LED_L3V3 must be low in order to turn on the red LED.
+# Turning on the red LED also requires two additional commands:
+# 1) i2cset 2 0x27 0x03 0xf7
+# 2) i2cset 2 0x27 0x01 0x00
+#
+# And then to turn off:
+# i2cset 2 0x27 0x03 0xff
 
 # Enable for level shifters 1 and 2 - output low to turn on
 OE_EN1_L1L2 = "Placeholder"
