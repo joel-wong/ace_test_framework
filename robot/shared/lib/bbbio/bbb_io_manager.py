@@ -88,37 +88,93 @@ def specify_bbb_output(pin_name, output_type, value):
     }
 
 
-def specify_bbb_i2c_output(i2c_spec_number, data):
+i2c_keys = {BBB_IO_CONSTANTS.I2CBUS, BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS,
+            BBB_IO_CONSTANTS.I2C_DATA_ADDRESS, BBB_IO_CONSTANTS.I2C_DATA}
+
+
+def specify_bbb_i2c_output(i2c_spec_number, i2cbus, chip_address, data_address,
+                           data):
     """
-        Updates the 'io_to_send' so that when
-        'send_io_specifications_to_BBB' is called, the given
-        'i2c_specification_number' and 'data' is output
+    Updates the 'io_to_send' so that when
+    'send_io_specifications_to_BBB' is called, the given
+    'i2c_specification_number' and 'data' is output
 
-        There can be zero or more pieces of I2C data provided in each test.
-        Most tests will not require any I2C data to be sent to the device under
-        test. If I2C data is provided to the circuit under test, it must have a
-        i2c_spec_number. This specifies the order in which the I2C data is sent
-        to the circuit under test. For example, if there are two pieces of I2C
-        data to be sent to the BBB, then there should be two calls to this
-        function:
-        specify_bbb_i2c_output(1, first_data)
-        specify_bbb_i2c_output(2, second_data)
+    There can be zero or more pieces of I2C data provided in each test.
+    Most tests will not require any I2C data to be sent to the device under
+    test. If I2C data is provided to the circuit under test, it must have a
+    i2c_spec_number. This specifies the order in which the I2C data is sent
+    to the circuit under test. For example, if there are two pieces of I2C
+    data to be sent to the BBB, then there should be two calls to this
+    function:
+    specify_bbb_i2c_output(1, i2cbus, chip_address, data_address, data)
+    specify_bbb_i2c_output(2, i2cbus, chip_address, data_address, data)
 
-        If there is only one piece of I2C data is required, then only one call
-        to this function is required:
-        specify_bbb_i2c_output(1, first_data)
+    If there is only one piece of I2C data is required, then only one call
+    to this function is required:
+    specify_bbb_i2c_output(1, i2cbus, chip_address, data_address, data)
 
-        Note that the only the order of the i2c_spec_numbers is important (when
-        there are multiple sets of I2C data), not the actual numbers
+    Note that only the order of the i2c_spec_numbers is important (when
+    there are multiple sets of I2C data), not the actual numbers
 
-        :param i2c_spec_number: int: the order in which I2C signals should be sent
-            to the circuit under test, with the lowest i2c_spec_number first
-            (each i2c_spec_number must be unique for a given test)
-        :param data: byte[]: The data to be sent via I2C
+    On the Beaglebone, the following command will occur once
+    send_io_specifications_to_bbb() is called:
+        i2cset -y -r i2cbus chip_address data_address data
+
+    :param i2c_spec_number: int: the order in which I2C signals should be sent
+        to the circuit under test, with the lowest i2c_spec_number first
+        (each i2c_spec_number must be unique for a given test)
+    :param i2cbus: str: the identifier for the i2cbus on the BeagleBone that
+        will output the data
+    :param chip_address: str: A str representing a hex value between 0x03 and
+        0x77 for the corresponding chip address
+    :param data_address: str: A str representing a hex value between 0x00 and
+        0xFF for the corresponding data address
+    :param data: str: The data to be sent via I2C, representing a hex value.
+        Can also be an empty str
     """
+    chip_address_int = int(chip_address, 16)
+    if not (3 <= chip_address_int <= 119):
+        raise ValueError("I2C chip_address must be between 0x03 and 0x77 "
+                         "(inclusive)")
+    data_address_int = int(data_address, 16)
+    if not (0 <= data_address_int <= 255):
+        raise ValueError("I2C data_address must be between 0x00 and 0xFF "
+                         "(inclusive)")
+    if data != "":
+        # data can be empty in i2cset, if not validate that it is a
+        # non-negative hex value
+        data_int = int(data, 16)
+        if not (0 <= data_int):
+            raise ValueError("I2C data must be non-negative")
     io_to_send[BBB_IO_CONSTANTS.I2C][int(i2c_spec_number)] = {
+        BBB_IO_CONSTANTS.I2CBUS: i2cbus,
+        BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS: chip_address,
+        BBB_IO_CONSTANTS.I2C_DATA_ADDRESS: data_address,
         BBB_IO_CONSTANTS.I2C_DATA: data
     }
+
+
+def specify_bbb_i2c_output_dict(i2c_spec_number, i2cset_parameters):
+    """
+    Convenience method that allows a dictionary to be specified when adding I2C
+    specifications
+    :param i2c_spec_number: int: The I2C specification number. See
+        specify_bbb_i2c_output for more info.
+    :param i2cset_parameters: The i2c parameters, as a dictionary. Must contain
+        all of the following keys and no additional keys:
+        - `BBB_IO_CONSTANTS.I2CBUS`
+        - `BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS`
+        - `BBB_IO_CONSTANTS.I2C_DATA_ADDRESS`
+        - `BBB_IO_CONSTANTS.I2C_DATA`
+    :return:
+    """
+    if i2c_keys != set(i2cset_parameters.keys()):
+        raise ValueError("I2C data is missing or has extra keys")
+    specify_bbb_i2c_output(i2c_spec_number,
+                           i2cset_parameters[BBB_IO_CONSTANTS.I2CBUS],
+                           i2cset_parameters[BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS],
+                           i2cset_parameters[BBB_IO_CONSTANTS.I2C_DATA_ADDRESS],
+                           i2cset_parameters[BBB_IO_CONSTANTS.I2C_DATA])
 
 
 def specify_bbb_input(pin_name, input_type):
