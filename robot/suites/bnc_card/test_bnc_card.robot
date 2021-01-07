@@ -133,11 +133,11 @@ Check Pin Header USER2_IO Input = BNC7 USER2_IO Output For Digital Low With I2C 
 
 Check BNC1 REF_IN Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Check Termination Resistor Can Be Enabled    ${I2C_BNC1_500HM_EN}    ${B_REF_IN_L3V3}    ${TR_REF_IN_1V8}
+    Check Termination Resistor Can Be Enabled    ${I2C_BNC1_500HM_EN}    ${B_REF_IN_L3V3}    ${TR_REF_IN_L1V8}
 
 Check BNC1 REF_IN Termination Resistor Can Be Disabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Check Termination Resistor Can Be Disabled    ${I2C_BNC1_500HM_EN}    ${B_REF_IN_L3V3}    ${TR_REF_IN_1V8}
+    Check Termination Resistor Can Be Disabled    ${I2C_BNC1_500HM_EN}    ${B_REF_IN_L3V3}    ${TR_REF_IN_L1V8}
 
 Check BNC6 SYNC_IN Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
