@@ -2,10 +2,10 @@
 Documentation    Test Suite for the SKF G5 BNC Card
 
 Library      Collections
+Library      Dialogs
 
-Library      ../../shared/lib/bbbio/bbb_io_manager.py
-Library      ../../shared/lib/manual/manual_step.py
-Variables    ../../shared/lib/bbbio/BBB_IO_CONSTANTS.py
+Variables    bbbio/BBB_IO_CONSTANTS.py
+Library      bbbio/bbb_io_manager.py
 
 Library      bnc_card_test_utils.py
 Variables    BNC_CONFIG.py
@@ -192,7 +192,7 @@ Check BNC4 VETO_OUT High Impedance Input Has Digital High Output
 *** Keywords ***
 Setup BBB For BNC Card Tests
     # TODO: Add detailed manual instructions for setting up tests
-    Manual Instruction    add setup instructions here
+    Pause Execution    add setup instructions here
 
     # set up a socket connection to BBB
     Connect To BBB

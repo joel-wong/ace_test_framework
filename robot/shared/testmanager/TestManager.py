@@ -12,7 +12,11 @@ class TestManager:
     def __init__(self):
         self.robot_directory = os.path.dirname(
             os.path.dirname(os.path.abspath(os.path.curdir)))
+        self.robot_lib_path = os.path.join(self.robot_directory,
+                                           "shared", "lib")
         self.base_directory = os.path.dirname(self.robot_directory)
+        self.submodule_path = os.path.join(self.base_directory,
+                                           "Submodules")
         self.config_file_abspath = os.path.join(
             self.base_directory, ConfigManager.CONFIG_FILE_NAME)
         self.config_manager = ConfigManager.ConfigManager(
@@ -21,10 +25,16 @@ class TestManager:
     def setup_and_run_tests(self):
         """Entry point to the ace-test-framework"""
 
+        self.setup_pythonpath()
         DependencyManager.install_dependencies()
         self.config_manager.input_configuration()
         self.run_suites()
         return 0
+
+    def setup_pythonpath(self):
+        os.environ["PYTHONPATH"] = ";".join(
+            [self.robot_lib_path, self.submodule_path,
+             os.getenv("PYTHONPATH", default="")])
 
     def run_suites(self):
         suite_name = self.config_manager.get(

@@ -6,6 +6,7 @@ allows the users to control inputs and outputs on the BBB
 import BBB_IO_CONSTANTS
 import json
 
+import ace_bbsm
 
 # Sample JSON that will be sent to the BBB when send_io_specifications_to_bbb()
 # is called:
@@ -50,17 +51,17 @@ import json
 }
 """
 
+
 io_to_send = {}
+client = ace_bbsm.Client()
 
 
 def connect_to_bbb():
-    # TODO: Implement this function
-    pass
+    client.connect_to_bbb()
 
 
 def disconnect_from_bbb():
-    # TODO: Implement this function
-    pass
+    client.disconnect_from_bbb()
 
 
 def reset_bbb_io_specifications():
@@ -143,17 +144,8 @@ def send_io_specifications_to_bbb():
     :return: The outputs on the BBB requested in the specify_bbb_input calls
     """
     json_to_send = json.dumps(io_to_send)
-    # TODO: send json_to_send to BBSM
-    # TODO: received returned JSON from BBSM
-    # TODO: parse json into a dictionary
-
-    # return sample data for now
-    return {
-      BBB_IO_CONSTANTS.INPUTS: {
-        list(io_to_send[BBB_IO_CONSTANTS.INPUTS].keys())[0]: list(io_to_send[
-            BBB_IO_CONSTANTS.OUTPUTS].values())[0][BBB_IO_CONSTANTS.VALUE]
-      }
-    }
+    response = client.json_request_response_bbb(json_to_send)
+    return json.loads(response)
 
 
 def get_bbb_input_value(bbb_return_data, pin_name):
