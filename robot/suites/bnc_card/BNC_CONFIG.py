@@ -87,5 +87,14 @@ TR_USER2_L1V8 = "Placeholder"
 I2C_BNC7_USER2_NIN_OUT = "0x40"
 I2C_BNC7_500_HM_EN = "0x10"
 
+# Enable for level shifters 1 and 2 - output low to turn on
+OE_EN1_L1L2 = "Placeholder"
+# Enable for level shifter 3 - output low to turn on
+OE_EN2_L3 = "Placeholder"
+# Direction of level shifting for level shifter 3
+# output high to shift from 3.3V to 5V
+# output low to shift from 5V to 3.3V
+DIR_L3 = "Placeholder"
+
 ANALOG_LOW_MAXIMUM = 0.01
 ANALOG_HIGH_MINIMUM = 0.99
