@@ -39,152 +39,152 @@ ${OPEN_DRAIN_FUNCTIONALITY_CHECK}    OPEN_DRAIN_FUNCTIONALITY_CHECK
 
 Check BNC1 REF_IN Input = Pin Header REF_IN For Digital High
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Check Digital High Passed Through    ${BNC1_REF_IN_BNC}    ${REF_IN_PIN_HEADER}
+    Check Digital High Passed Through    ${B_REF_IN_L3V3}    ${P_REF_IN_L3V3}
 
 Check BNC1 REF_IN Input = Pin Header REF_IN For Digital Low
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Check Digital Low Passed Through    ${BNC1_REF_IN_BNC}    ${REF_IN_PIN_HEADER}
+    Check Digital Low Passed Through    ${B_REF_IN_L3V3}    ${P_REF_IN_L3V3}
 
 Check BNC6 SYNC_IN Input = Pin Header SYNC_IN For Digital High
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Check Digital High Passed Through    ${BNC6_SYNC_IN_BNC}    ${SYNC_IN_PIN_HEADER}
+    Check Digital High Passed Through    ${B_SYNC_IN_L3V3}    ${P_SYNC_IN_L3V3}
 
 Check BNC6 SYNC_IN Input = Pin Header SYNC_IN For Digital Low
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Check Digital Low Passed Through    ${BNC6_SYNC_IN_BNC}    ${SYNC_IN_PIN_HEADER}
+    Check Digital Low Passed Through    ${B_SYNC_IN_L3V3}    ${P_SYNC_IN_L3V3}
 
 Check BNC7 USER1 IO Input = Pin Header USER1 IO For Digital High With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Set Pin Mode Via I2C    ${USER1_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Digital High Passed Through    ${BNC7_USER1_IO_BNC}    ${USER1_IO_PIN_HEADER}
+    Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${INPUT_MODE}
+    Check Digital High Passed Through    ${B_USER1_L3V3}    ${USER1_IO_PIN_HEADER}
 
 Check BNC7 USER1 IO Input = Pin Header USER1 IO For Digital Low With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Set Pin Mode Via I2C    ${USER1_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Digital Low Passed Through    ${BNC7_USER1_IO_BNC}    ${USER1_IO_PIN_HEADER}
+    Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${INPUT_MODE}
+    Check Digital Low Passed Through    ${B_USER1_L3V3}    ${USER1_IO_PIN_HEADER}
 
 Check BNC8 USER2 IO Input = Pin Header USER2 IO For Digital High With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Digital High Passed Through    ${BNC8_USER2_IO_BNC}    ${USER2_IO_PIN_HEADER}
+    Set Pin Mode Via I2C    ${BNC7_USER2_NIN_OUT}    ${INPUT_MODE}
+    Check Digital High Passed Through    ${B_USER2_L3V3}    ${USER2_IO_PIN_HEADER}
 
 Check BNC8 USER2 IO Input = Pin Header USER2 IO For Digital Low With I2C Input Mode
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
-    Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Digital Low Passed Through    ${BNC8_USER2_IO_BNC}    ${USER2_IO_PIN_HEADER}
+    Set Pin Mode Via I2C    ${BNC7_USER2_NIN_OUT}    ${INPUT_MODE}
+    Check Digital Low Passed Through    ${B_USER2_L3V3}    ${USER2_IO_PIN_HEADER}
 
 
 
 Check Pin Header REF_OUT Input = BNC2 REF_OUT Output For Digital High
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Check Digital High Passed Through    ${REF_OUT_PIN_HEADER}    ${BNC2_REF_OUT_BNC}
+    Check Digital High Passed Through    ${P_REF_OUT_L3V3}    ${B_REF_OUT_L3V3}
 
 Check Pin Header REF_OUT Input = BNC2 REF_OUT Output For Digital Low
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Check Digital Low Passed Through    ${REF_OUT_PIN_HEADER}    ${BNC2_REF_OUT_BNC}
+    Check Digital Low Passed Through    ${P_REF_OUT_L3V3}    ${B_REF_OUT_L3V3}
 
 Check Pin Header TDC_OUT Input = BNC3 TDC_OUT Output For Digital High
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Check Digital High Passed Through    ${TDC_OUT_PIN_HEADER}    ${BNC3_TDC_OUT_BNC}
+    Check Digital High Passed Through    ${P_TDC_OUT_L3V3}    ${B_TDC_OUT_L3V3}
 
 Check Pin Header TDC_OUT Input = BNC3 TDC_OUT Output For Digital Low
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Check Digital Low Passed Through    ${TDC_OUT_PIN_HEADER}    ${BNC3_TDC_OUT_BNC}
+    Check Digital Low Passed Through    ${P_TDC_OUT_L3V3}    ${B_TDC_OUT_L3V3}
 
 Check Pin Header VETO_OUT Input = BNC4 VETO_OUT Output For Digital High With I2C Driven Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Set Pin Mode Via I2C    ${VETO_OUT_I2C_NAME}    ${DRIVEN_MODE}
-    Check Digital High Passed Through    ${VETO_OUT_PIN_HEADER}    ${BNC4_VETO_OUT_BNC}
+    Set Pin Mode Via I2C    ${I2C_BNC4_VETO_OUT_OC}    ${DRIVEN_MODE}
+    Check Digital High Passed Through    ${P_VETO_OUT_L3V3}    ${B_VETO_OUT_L3V3}
 
 Check Pin Header VETO_OUT Input = BNC4 VETO_OUT Output For Digital Low With I2C Driven Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Set Pin Mode Via I2C    ${VETO_OUT_I2C_NAME}    ${DRIVEN_MODE}
-    Check Digital Low Passed Through    ${VETO_OUT_PIN_HEADER}    ${BNC4_VETO_OUT_BNC}
+    Set Pin Mode Via I2C    ${I2C_BNC4_VETO_OUT_OC}    ${DRIVEN_MODE}
+    Check Digital Low Passed Through    ${P_VETO_OUT_L3V3}    ${B_VETO_OUT_L3V3}
 
 Check Pin Header SYNC_OUT Input = BNC5 SYNC_OUT Output For Digital High
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Check Digital High Passed Through    ${SYNC_OUT_PIN_HEADER}    ${BNC5_SYNC_OUT_BNC}
+    Check Digital High Passed Through    ${P_SYNC_OUT_L3V3}    ${B_SYNC_OUT_L3V3}
 
 Check Pin Header SYNC_OUT Input = BNC5 SYNC_OUT Output For Digital Low
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Check Digital Low Passed Through    ${SYNC_OUT_PIN_HEADER}    ${BNC5_SYNC_OUT_BNC}
+    Check Digital Low Passed Through    ${P_SYNC_OUT_L3V3}    ${B_SYNC_OUT_L3V3}
 
 Check Pin Header USER1_IO Input = BNC7 USER1_IO Output For Digital High With I2C Output Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Set Pin Mode Via I2C    ${USER1_IO_I2C_NAME}    ${OUTPUT_MODE}
-    Check Digital High Passed Through    ${USER1_IO_PIN_HEADER}    ${BNC7_USER1_IO_BNC}
+    Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${OUTPUT_MODE}
+    Check Digital High Passed Through    ${USER1_IO_PIN_HEADER}    ${B_USER1_L3V3}
 
 Check Pin Header USER1_IO Input = BNC7 USER1_IO Output For Digital Low With I2C Output Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Set Pin Mode Via I2C    ${USER1_IO_I2C_NAME}    ${OUTPUT_MODE}
-    Check Digital Low Passed Through    ${USER1_IO_PIN_HEADER}    ${BNC7_USER1_IO_BNC}
+    Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${OUTPUT_MODE}
+    Check Digital Low Passed Through    ${USER1_IO_PIN_HEADER}    ${B_USER1_L3V3}
 
 Check Pin Header USER2_IO Input = BNC8 USER2_IO Output For Digital High With I2C Output Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${OUTPUT_MODE}
-    Check Digital High Passed Through    ${USER2_IO_PIN_HEADER}    ${BNC8_USER2_IO_BNC}
+    Set Pin Mode Via I2C    ${BNC7_USER2_NIN_OUT}    ${OUTPUT_MODE}
+    Check Digital High Passed Through    ${USER2_IO_PIN_HEADER}    ${B_USER2_L3V3}
 
 Check Pin Header USER2_IO Input = BNC8 USER2_IO Output For Digital Low With I2C Output Mode
     [Tags]     ${BNC_OUT_EQUALS_PIN_HEADER_IN}
-    Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${OUTPUT_MODE}
-    Check Digital Low Passed Through    ${USER2_IO_PIN_HEADER}    ${BNC8_USER2_IO_BNC}
+    Set Pin Mode Via I2C    ${BNC7_USER2_NIN_OUT}    ${OUTPUT_MODE}
+    Check Digital Low Passed Through    ${USER2_IO_PIN_HEADER}    ${B_USER2_L3V3}
 
 
 
 Check BNC1 REF_IN Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Check Termination Resistor Can Be Enabled    ${REF_IN_I2C_NAME}    ${BNC1_REF_IN_BNC}    ${BNC1_REF_IN_ANALOG_PIN}
+    Check Termination Resistor Can Be Enabled    ${I2C_BNC1_500HM_EN}    ${B_REF_IN_L3V3}    ${TR_REF_IN_1V8}
 
 Check BNC1 REF_IN Termination Resistor Can Be Disabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Check Termination Resistor Can Be Disabled    ${REF_IN_I2C_NAME}    ${BNC1_REF_IN_BNC}    ${BNC1_REF_IN_ANALOG_PIN}
+    Check Termination Resistor Can Be Disabled    ${I2C_BNC1_500HM_EN}    ${B_REF_IN_L3V3}    ${TR_REF_IN_1V8}
 
 Check BNC6 SYNC_IN Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Check Termination Resistor Can Be Enabled    ${SYNC_IN_I2C_NAME}    ${BNC6_SYNC_IN_BNC}    ${BNC6_SYNC_IN_ANALOG_PIN}
+    Check Termination Resistor Can Be Enabled    ${I2C_BNC6_500HM_EN}    ${B_SYNC_IN_L3V3}    ${TR_SYNC_IN_L1V8}
 
 Check BNC6 SYNC_IN Termination Resistor Can Be Disabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Check Termination Resistor Can Be Disabled    ${SYNC_IN_I2C_NAME}    ${BNC6_SYNC_IN_BNC}    ${BNC6_SYNC_IN_ANALOG_PIN}
+    Check Termination Resistor Can Be Disabled    ${I2C_BNC6_500HM_EN}    ${B_SYNC_IN_L3V3}    ${TR_SYNC_IN_L1V8}
 
 Check BNC7 USER1_IO Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Set Pin Mode Via I2C    ${USER1_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Termination Resistor Can Be Enabled    ${USER1_IO_I2C_NAME}    ${BNC7_USER1_IO_BNC}    ${BNC7_USER1_IO_ANALOG_PIN}
+    Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${INPUT_MODE}
+    Check Termination Resistor Can Be Enabled    ${I2C_BNC8_USER1_NIN_OUT}    ${B_USER1_L3V3}    ${TR_USER1_L1V8}
 
 Check BNC7 USER1_IO Termination Resistor Can Be Disabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Set Pin Mode Via I2C    ${USER1_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Termination Resistor Can Be Disabled    ${USER1_IO_I2C_NAME}    ${BNC7_USER1_IO_BNC}    ${BNC7_USER1_IO_ANALOG_PIN}
+    Set Pin Mode Via I2C    ${I2C_BNC8_USER1_NIN_OUT}    ${INPUT_MODE}
+    Check Termination Resistor Can Be Disabled    ${I2C_BNC8_USER1_NIN_OUT}    ${B_USER1_L3V3}    ${TR_USER1_L1V8}
 
 Check BNC8 USER2_IO Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Termination Resistor Can Be Enabled    ${USER2_IO_I2C_NAME}    ${BNC8_USER2_IO_BNC}    ${BNC8_USER2_IO_ANALOG_PIN}
+    Set Pin Mode Via I2C    ${BNC7_USER2_NIN_OUT}    ${INPUT_MODE}
+    Check Termination Resistor Can Be Enabled    ${BNC7_USER2_NIN_OUT}    ${B_USER2_L3V3}    ${TR_USER2_L1V8}
 
 Check BNC8 USER2_IO Termination Resistor Can Be Disabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Set Pin Mode Via I2C    ${USER2_IO_I2C_NAME}    ${INPUT_MODE}
-    Check Termination Resistor Can Be Disabled    ${USER2_IO_I2C_NAME}    ${BNC8_USER2_IO_BNC}    ${BNC8_USER2_IO_ANALOG_PIN}
+    Set Pin Mode Via I2C    ${BNC7_USER2_NIN_OUT}    ${INPUT_MODE}
+    Check Termination Resistor Can Be Disabled    ${BNC7_USER2_NIN_OUT}    ${B_USER2_L3V3}    ${TR_USER2_L1V8}
 
 
 Check BNC4 VETO_OUT Digital High Passed Through
     [Tags]    ${OPEN_DRAIN_FUNCTIONALITY_CHECK}
-    Set Pin Mode Via I2C    ${VETO_OUT_I2C_NAME}    ${OPEN_DRAIN_MODE}
-    Check Digital High Passed Through    ${VETO_OUT_PIN_HEADER}    ${BNC4_VETO_OUT_BNC}
+    Set Pin Mode Via I2C    ${I2C_BNC4_VETO_OUT_OC}    ${OPEN_DRAIN_MODE}
+    Check Digital High Passed Through    ${P_VETO_OUT_L3V3}    ${B_VETO_OUT_L3V3}
 
 Check BNC4 VETO_OUT Digital Low Passed Through
     [Tags]    ${OPEN_DRAIN_FUNCTIONALITY_CHECK}
-    Set Pin Mode Via I2C    ${VETO_OUT_I2C_NAME}    ${OPEN_DRAIN_MODE}
-    Check Digital Low Passed Through    ${VETO_OUT_PIN_HEADER}    ${BNC4_VETO_OUT_BNC}
+    Set Pin Mode Via I2C    ${I2C_BNC4_VETO_OUT_OC}    ${OPEN_DRAIN_MODE}
+    Check Digital Low Passed Through    ${P_VETO_OUT_L3V3}    ${B_VETO_OUT_L3V3}
 
 Check BNC4 VETO_OUT High Impedance Input Has Digital High Output
     [Tags]    ${OPEN_DRAIN_FUNCTIONALITY_CHECK}
-    Set Pin Mode Via I2C    ${VETO_OUT_I2C_NAME}    ${OPEN_DRAIN_MODE}
-    Specify BBB Input     ${VETO_OUT_PIN_HEADER}    ${DIGITAL}
-    Specify BBB Input     ${BNC4_VETO_OUT_BNC}    ${DIGITAL}
+    Set Pin Mode Via I2C    ${I2C_BNC4_VETO_OUT_OC}    ${OPEN_DRAIN_MODE}
+    Specify BBB Input     ${P_VETO_OUT_L3V3}    ${DIGITAL}
+    Specify BBB Input     ${B_VETO_OUT_L3V3}    ${DIGITAL}
     ${result} =           Send IO Specifications To BBB
-    ${pin_output} =       Get BBB Input Value    ${result}    ${BNC4_VETO_OUT_BNC}
+    ${pin_output} =       Get BBB Input Value    ${result}    ${B_VETO_OUT_L3V3}
     Should Be Equal       ${pin_output}    ${DIGITAL_HIGH}
 
 
