@@ -105,14 +105,14 @@ def specify_bbb_i2c_output(i2c_spec_number, i2cbus, chip_address, data_address,
     to the circuit under test. For example, if there are two pieces of I2C
     data to be sent to the BBB, then there should be two calls to this
     function:
-    specify_bbb_i2c_output(1, first_data)
-    specify_bbb_i2c_output(2, second_data)
+    specify_bbb_i2c_output(1, i2cbus, chip_address, data_address, data)
+    specify_bbb_i2c_output(2, i2cbus, chip_address, data_address, data)
 
     If there is only one piece of I2C data is required, then only one call
     to this function is required:
-    specify_bbb_i2c_output(1, first_data)
+    specify_bbb_i2c_output(1, i2cbus, chip_address, data_address, data)
 
-    Note that the only the order of the i2c_spec_numbers is important (when
+    Note that only the order of the i2c_spec_numbers is important (when
     there are multiple sets of I2C data), not the actual numbers
 
     On the Beaglebone, the following command will occur once
