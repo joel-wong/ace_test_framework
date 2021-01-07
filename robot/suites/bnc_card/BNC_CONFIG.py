@@ -27,7 +27,7 @@
 # With the BNC card signal conditioning board, this is connected to a voltage
 # divider used for a termination resistance sensing circuit
 #
-# I2C_LINENAME e.g. BNC1_500HM_EN
+# I2C_LINENAME e.g. I2C_BNC1_500HM_EN
 # The hex value of the I2C register in the IO Expander corresponding to the
 # given line name in the BNC schematic. Must be one byte in length.
 # The hex value will always be a power of two, e.g. 0x10
@@ -38,7 +38,7 @@
 B_REF_IN_L3V3 = "Placeholder"
 P_REF_IN_L3V3 = "Placeholder"
 SW_REF_IN_L3V3 = "Placeholder"
-TR_REF_IN_1V8 = "Placeholder"
+TR_REF_IN_L1V8 = "Placeholder"
 I2C_BNC1_500HM_EN = "0x01"
 
 # REF_OUT:
