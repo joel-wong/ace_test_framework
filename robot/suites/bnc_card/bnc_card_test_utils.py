@@ -157,8 +157,8 @@ def assert_pin_controls_termination_resistance(pin_number):
 
 def get_i2c_to_enable_termination_resistor(pin_number):
     """
-    :param pin_number: str: An IO expander pin number that controls termination
-        resistance for a BNC connector
+    :param pin_number: str: An IO expander pin number that controls the
+        termination resistance for a BNC connector
     :return: A dictionary containing the information required to enable the
         termination resistor on a BNC card via i2cset
     """
@@ -170,12 +170,38 @@ def get_i2c_to_enable_termination_resistor(pin_number):
 
 def get_i2c_to_disable_termination_resistor(pin_number):
     """
-    :param pin_number: str: An IO expander pin number that controls termination
-        resistance for a BNC connector
+    :param pin_number: str: An IO expander pin number that controls the
+        termination resistance for a BNC connector
     :return: A dictionary containing the information required to disable the
         termination resistor on a BNC card via i2cset
     """
     assert_pin_controls_termination_resistance(pin_number)
+    i2c_dict = get_base_io_expander_i2c_to_set_value()
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = bitwise_not_8bit_hex(pin_number)
+    return i2c_dict
+
+
+def assert_pin_controls_led(pin_number):
+    """
+    :param pin_number: str: An 8 bit hex number
+    :return: bool: True if the 'pin_number' controls an LED. Otherwise throws
+        an AssertionError
+    """
+    if pin_number != BNC_CONFIG.I2C_RLED:
+        raise AssertionError(
+            "{} does not control an LED".format(pin_number))
+    return True
+
+
+def get_i2c_to_turn_on_led(pin_number):
+    """
+    :param pin_number: str: The IO expander pin number that controls the orange
+        LED. Note that to turn on the orange LED, the green LED must already be
+        on (which occurs if TDC_LED is set to low)
+    :return: A dictionary containing the information required to disable the
+        termination resistor on a BNC card via i2cset
+    """
+    assert_pin_controls_led(pin_number)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
     i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = bitwise_not_8bit_hex(pin_number)
     return i2c_dict
