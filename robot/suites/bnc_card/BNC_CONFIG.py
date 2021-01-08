@@ -106,6 +106,7 @@ I2C_BNC7_500_HM_EN = "0x10"
 # Drive low to turn on the TDC (green) LED
 # drive high to turn off the TDC (green) LED
 P_TDC_LED_L3V3 = "Placeholder"
+I2C_RLED = "0x08"
 # P_TDC_LED_L3V3 must be low in order to turn on the red LED.
 # Turning on the red LED also requires two additional commands:
 # 1) i2cset 2 0x27 0x03 0xf7

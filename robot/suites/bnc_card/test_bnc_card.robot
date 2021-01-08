@@ -35,6 +35,10 @@ ${OPEN_DRAIN_FUNCTIONALITY_CHECK}    OPEN_DRAIN_FUNCTIONALITY_CHECK
 # Tag: OPEN_DRAIN_FUNCTIONALITY_CHECK
 # Tests that the open drain mode is enabled when set via I2C input
 
+${LED_CHECK}    LED_CHECK
+# Tag: OPEN_DRAIN_FUNCTIONALITY_CHECK
+# Tests that the open drain mode is enabled when set via I2C input
+
 *** Test Cases ***
 
 Check BNC1 REF_IN Input = Pin Header REF_IN For Digital High
@@ -189,6 +193,23 @@ Check Pin Header VETO_OUT Low Input has High Impedence Output on BNC4 VETO_OUT W
     Log                   A digital low input with open drain mode should have a high impedence output
     Log                   Due to a pull up resistor, this should result in a digital high output
     Should Be Equal       ${pin_output}    ${DIGITAL_HIGH}
+
+
+
+Check Green LED
+    [Tags]    ${LED_CHECK}
+    Specify BBB Output    ${P_TDC_LED_L3V3}    ${DIGITAL}    ${DIGITAL_LOW}
+    Send IO Specifications to BBB
+    Execute Manual Step    Press PASS if the LED on the BNC card is green, otherwise press FAIL
+
+Check Orange LED
+    [Tags]    ${LED_CHECK}
+    ${set_red_led_out_i2c} =    Get I2C to Configure IO Expander Pins    ${I2C_RED_LED}
+    Specify BBB I2C Output    1    ${set_red_led_out_i2c}
+    ${turn_red_led_on_i2c} =    Get I2C to Turn on LED    ${I2C_RED_LED}
+    Specify BBB I2C Output    2    ${turn_red_led_on_i2c}
+    Send IO Specifications to BBB
+    Execute Manual Step    Press PASS if the LED on the BNC card is orange, otherwise press FAIL
 
 
 
