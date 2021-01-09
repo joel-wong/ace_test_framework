@@ -29,10 +29,10 @@ def get_base_io_expander_i2c():
         on the BNC card
     """
     return {
-        # i2c bus 2 on BBB is connected to IO expander
-        BBB_IO_CONSTANTS.I2CBUS: "2",
-        # i2c chip address = 0x27 for BNC card IO expander
-        BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS: "0x27"
+        BBB_IO_CONSTANTS.I2CBUS:
+            BNC_CONFIG.IO_EXPANDER_I2CBUS,
+        BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS:
+            BNC_CONFIG.I2C_IO_EXPANDER_CHIP_ADDRESS
     }
 
 
@@ -63,7 +63,9 @@ def get_base_io_expander_i2c_to_set_value():
         outputs on the IO expander
     """
     i2c_dict = get_base_io_expander_i2c()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA_ADDRESS] = "0x01"
+    i2c_dict[
+        BBB_IO_CONSTANTS.I2C_DATA_ADDRESS
+    ] = BNC_CONFIG.I2C_IO_EXPANDER_OUTPUT_REGISTER
     return i2c_dict
 
 
@@ -228,7 +230,9 @@ def get_i2c_to_configure_io_expander_ios(pin_numbers):
     """
     i2c_dict = get_base_io_expander_i2c()
     # changes configuration register
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA_ADDRESS] = "0x03"
+    i2c_dict[
+        BBB_IO_CONSTANTS.I2C_DATA_ADDRESS
+    ] = BNC_CONFIG.I2C_IO_EXPANDER_CONFIG_REGISTER
     inverted_pin_numbers = bitwise_not_8bit_hex(pin_numbers)
     i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = inverted_pin_numbers
     return i2c_dict

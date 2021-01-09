@@ -126,3 +126,18 @@ DIR_L3 = "Placeholder"
 
 ANALOG_LOW_MAXIMUM = 0.01
 ANALOG_HIGH_MINIMUM = 0.99
+
+# The I2C bus to which the IO Expander is connected
+I2C_IO_EXPANDER_I2CBUS = "2"
+
+# The chip address f the IO Expander
+I2C_IO_EXPANDER_CHIP_ADDRESS = "0x27"
+
+# The data address of an 8 bit register that configures the output value for
+# output pins on the IO Expander. The pins must be configured to outputs before
+# being given a value
+I2C_IO_EXPANDER_OUTPUT_REGISTER = "0x01"
+
+# The data address of an 8 bit register that configures whether each IO on the
+# IO Expander is an input or an output
+I2C_IO_EXPANDER_CONFIG_REGISTER = "0x03"
