@@ -11,6 +11,8 @@ CONFIG_PART_NUMBER = "part_number"
 PART_NUMBER_TEXT = "Please enter the part number:"
 CONFIG_STAFF_NAME = "staff_name"
 STAFF_NAME_TEXT = "Please enter the staff member name:"
+CONFIG_INCLUDE_MANUAL_TESTS = "include_manual_tests"
+INCLUDE_MANUAL_TESTS_TEXT = "Would you like to include manual tests? [Y/N]"
 CONFIG_REPEAT_TESTS = "repeat_tests"
 REPEAT_TESTS_TEXT = "How many times would you like the tests to be repeated?"
 
@@ -39,6 +41,8 @@ class ConfigManager:
         self.input_config_value_str(CONFIG_SERIAL_NUMBER, SERIAL_NUMBER_TEXT)
         self.input_config_value_str(CONFIG_PART_NUMBER, PART_NUMBER_TEXT)
         self.input_config_value_str(CONFIG_STAFF_NAME, STAFF_NAME_TEXT)
+        self.input_config_value_bool(CONFIG_INCLUDE_MANUAL_TESTS,
+                                     INCLUDE_MANUAL_TESTS_TEXT)
         self.input_config_value_positive_int(CONFIG_REPEAT_TESTS,
                                              REPEAT_TESTS_TEXT)
 
@@ -143,7 +147,21 @@ class ConfigManager:
         return input_str
 
     def input_config_value_str(self, config_key, display_text):
-        self.input_config_value(config_key, display_text, self.validate_str)
+        self.input_config_value(config_key, display_text,
+                                ConfigManager.validate_str)
+
+    @staticmethod
+    def validate_bool(input_str):
+        input_str_lower = input_str.lower()
+        if input_str_lower in ["y", "yes", "t", "true"]:
+            return "Y"
+        elif input_str_lower in ["n", "no", "f", "false"]:
+            return "N"
+        raise AssertionError("input value must be Y (Yes) or N (No)")
+
+    def input_config_value_bool(self, config_key, display_text):
+        self.input_config_value(config_key, display_text,
+                                ConfigManager.validate_bool)
 
     @staticmethod
     def validate_positive_int(input_str):

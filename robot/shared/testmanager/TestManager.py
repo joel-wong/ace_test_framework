@@ -3,6 +3,8 @@ import json
 import os
 import subprocess
 
+from manual import MANUAL_TEST_CONSTANTS
+
 import ConfigManager
 from DependencyManager import DependencyManager
 
@@ -12,11 +14,7 @@ class TestManager:
     def __init__(self):
         self.robot_directory = os.path.dirname(
             os.path.dirname(os.path.abspath(os.path.curdir)))
-        self.robot_lib_path = os.path.join(self.robot_directory,
-                                           "shared", "lib")
         self.base_directory = os.path.dirname(self.robot_directory)
-        self.submodule_path = os.path.join(self.base_directory,
-                                           "Submodules")
         self.config_file_abspath = os.path.join(
             self.base_directory, ConfigManager.CONFIG_FILE_NAME)
         self.config_manager = ConfigManager.ConfigManager(
@@ -25,16 +23,10 @@ class TestManager:
     def setup_and_run_tests(self):
         """Entry point to the ace-test-framework"""
 
-        self.setup_pythonpath()
         DependencyManager.install_dependencies()
         self.config_manager.input_configuration()
         self.run_suites()
         return 0
-
-    def setup_pythonpath(self):
-        os.environ["PYTHONPATH"] = ";".join(
-            [self.robot_lib_path, self.submodule_path,
-             os.getenv("PYTHONPATH", default="")])
 
     def run_suites(self):
         suite_name = self.config_manager.get(
@@ -51,9 +43,15 @@ class TestManager:
             current_time = current_time.replace(":", "-").replace(".", "-")
             output_directory = os.path.join(main_test_output_directory,
                                             current_time)
-            subprocess.run(["python", "-m", "robot", "--outputdir",
-                            output_directory, suite_directory],
-                           shell=True, check=False)
+            subprocess_args = ["python", "-m", "robot", "--outputdir",
+                               output_directory]
+            include_manual_tests = self.config_manager.get(
+                ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS) == "Y"
+            if not include_manual_tests:
+                subprocess_args.extend(["--exclude",
+                                        MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG])
+            subprocess_args.append(suite_directory)
+            subprocess.run(subprocess_args, shell=True, check=False)
             config_file_output_name = os.path.join(
                 output_directory, ConfigManager.CONFIG_FILE_NAME)
             self.config_manager.save_config(config_file_output_name)

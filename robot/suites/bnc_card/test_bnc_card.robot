@@ -6,6 +6,7 @@ Library      Dialogs
 
 Variables    bbbio/BBB_IO_CONSTANTS.py
 Library      bbbio/bbb_io_manager.py
+Variables    manual/MANUAL_TEST_CONSTANTS.py
 
 Library      bnc_card_test_utils.py
 Variables    BNC_CONFIG.py
@@ -197,13 +198,13 @@ Check Pin Header VETO_OUT Low Input has High Impedence Output on BNC4 VETO_OUT W
 
 
 Check Green LED
-    [Tags]    ${LED_CHECK}
+    [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
     Specify BBB Output    ${P_TDC_LED_L3V3}    ${DIGITAL}    ${DIGITAL_LOW}
     Send IO Specifications to BBB
     Execute Manual Step    Press PASS if the LED on the BNC card is green, otherwise press FAIL
 
 Check Orange LED
-    [Tags]    ${LED_CHECK}
+    [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
     ${set_red_led_out_i2c} =    Get I2C to Configure IO Expander Pins    ${I2C_RED_LED}
     Specify BBB I2C Output    1    ${set_red_led_out_i2c}
     ${turn_red_led_on_i2c} =    Get I2C to Turn on LED    ${I2C_RED_LED}
