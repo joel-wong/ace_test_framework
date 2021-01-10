@@ -71,6 +71,15 @@ class TestManager:
         :return: The additional arguments to be passed to 'python -m robot' upon
             startup to exclude the 'tags_to_exclude'
         """
+        # A current issue in robot framework is that tags are incorrectly parsed
+        # when they are variables.
+        # This is one of several issues documented in
+        # https://github.com/robotframework/robotframework/issues/3238
+        #
+        # In order to handle the issue, we exclude both the literal str
+        # ${TAG_NAME} as well as the TAG_NAME itself.
+        # Currently, ${TAG_NAME} is the resolved tag name, but if the above
+        # issue is fixed, TAG_NAME will be the resolved tag name
         formatted_tags = list(
             map(lambda tag: "OR".join(["${{{}}}".format(tag), tag]),
                 tags_to_exclude))
