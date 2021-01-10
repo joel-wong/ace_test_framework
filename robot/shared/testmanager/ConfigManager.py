@@ -190,6 +190,12 @@ class ConfigManager:
         else:
             return default
 
+    def get_bool(self, config_key, default=None):
+        if config_key in self.__config:
+            return self.__config[config_key] == "Y"
+        else:
+            return default
+
     def save_config(self, config_file_output_path):
         config_file = open(config_file_output_path, 'w')
         config_file.write(json.dumps(self.__config))
