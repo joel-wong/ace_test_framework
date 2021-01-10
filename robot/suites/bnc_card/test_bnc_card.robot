@@ -13,7 +13,7 @@ Variables    BNC_CONFIG.py
 Suite Setup    Setup BBB For BNC Card Tests
 Test Setup     Reset BBB IO Specifications
 
-Test Teardown     Set BNC Card and BeagleBone IOs Back to Safe Modes
+Test Teardown     Set BNC Card and BeagleBone IOs Back to Inputs
 Suite Teardown    Disconnect From BBB
 
 *** Variables ***
@@ -226,7 +226,7 @@ Check Orange LED
     [Tags]    ${LED_CHECK}
     Set IO Expander Pin to Output    ${I2C_RLED}
     ${turn_red_led_on_i2c} =    Get I2C to Turn on LED    ${I2C_RLED}
-    Specify BBB I2C Output    2    ${turn_red_led_on_i2c}
+    Specify BBB I2C Output Dict    2    ${turn_red_led_on_i2c}
     Send IO Specifications to BBB
     Execute Manual Step    Press PASS if the LED on the BNC card is orange, otherwise press FAIL
 
@@ -303,18 +303,18 @@ Check Digital Low Negated
 Set IO Expander Pin to Output
     [Arguments]    ${i2c_pin_name}
     ${configure_io_expander_output_i2c} =   Get I2C To Configure IO Expander IOs    ${i2c_pin_name}
-    Specify BBB I2C Output    1    ${configure_io_expander_output_i2c}
+    Specify BBB I2C Output Dict    1    ${configure_io_expander_output_i2c}
 
 Set Veto Out To Open Drain Mode
     Set IO Expander Pin to Output    ${I2C_BNC4_VETO_OUT_OC}
     ${veto_out_driven_mode_i2c_data} =    Get I2C for Open Drain Mode    ${I2C_BNC4_VETO_OUT_OC}
-    Specify BBB I2C Output    1    ${veto_out_driven_mode_i2c_data}
+    Specify BBB I2C Output Dict    1    ${veto_out_driven_mode_i2c_data}
 
 Specify User IO Output Mode
     [Arguments]    ${i2c_user_io_nin_out}
     Set IO Expander Pin to Output    ${i2c_user_io_nin_out}
     ${configure_user_io_output} =    Get I2C for User IO Output Mode    ${i2c_user_io_nin_out}
-    Specify BBB I2C Output    2    ${configure_user_io_output}
+    Specify BBB I2C Output Dict    2    ${configure_user_io_output}
 
 Check Pin Header User IO Digital High Negated
     [Arguments]   ${i2c_user_io_nin_out}    ${bbb_output}    ${bbb_input}
@@ -341,9 +341,9 @@ Check Termination Resistor Can Be Enabled
 Enable Termination Resistor
     [Arguments]    ${pin_i2c_name}
     ${configure_io_expander_output_i2c} =   Get I2C To Configure IO Expander IOs    ${pin_i2c_name}
-    Specify BBB I2C Output    1    ${configure_io_expander_output_i2c}
+    Specify BBB I2C Output Dict    1    ${configure_io_expander_output_i2c}
     ${i2c_data} =    Get I2C To Enable Termination Resistor    ${pin_i2c_name}
-    Specify BBB I2C Output    2    ${i2c_data}
+    Specify BBB I2C Output Dict    2    ${i2c_data}
 
 Check Termination Resistor Can Be Disabled
     [Arguments]    ${pin_i2c_name}    ${bnc_pin_number}    ${bnc_analog_pin_number}    ${term_resistor_circuit_switch}

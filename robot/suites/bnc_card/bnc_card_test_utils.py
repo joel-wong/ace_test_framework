@@ -30,7 +30,7 @@ def get_base_io_expander_i2c():
     """
     return {
         BBB_IO_CONSTANTS.I2CBUS:
-            BNC_CONFIG.IO_EXPANDER_I2CBUS,
+            BNC_CONFIG.I2C_IO_EXPANDER_I2CBUS,
         BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS:
             BNC_CONFIG.I2C_IO_EXPANDER_CHIP_ADDRESS
     }
@@ -49,7 +49,7 @@ def bitwise_not_8bit_hex(pin_number):
     :return: str: An 8 bit hex number representing the bitwise not of the input
     """
     pin_number_int = int(pin_number, 16)
-    if 0 <= pin_number_int <= 255:
+    if not (0 <= pin_number_int <= 255):
         raise ValueError(
             "pin_number {} is not between 0x00 and 0xff".format(pin_number))
     inverted_pin_number = 255 - pin_number_int
