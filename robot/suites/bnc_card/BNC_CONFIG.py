@@ -116,9 +116,9 @@ I2C_RLED = "0x08"
 # i2cset 2 0x27 0x03 0xff
 
 # Enable for level shifters 1 and 2 - output low to turn on
-OE_EN1_L1L2 = "P8_26"
+OE_EN_L1L2 = "P8_26"
 # Enable for level shifter 3 - output low to turn on
-OE_EN2_L3 = "P9_16"
+OE_EN_L3 = "P9_16"
 # Direction of level shifting for level shifter 3
 # output high to shift from 3.3V to 5V
 # output low to shift from 5V to 3.3V
