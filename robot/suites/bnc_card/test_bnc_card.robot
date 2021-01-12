@@ -174,22 +174,22 @@ Check BNC6 SYNC_IN Termination Resistor Can Be Disabled
 Check BNC8 USER1_IO Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
     Check Termination Resistor Can Be Enabled
-    ...    ${I2C_BNC8_500_HM_EN}    ${B_USER1_L3V3}    ${TR_USER1_L1V8}    ${SW_USER1_IN_L3V3}
+    ...    ${I2C_BNC8_500_HM_EN}    ${B_USER1_L3V3}    ${TR_USER1_L1V8}    ${SW_USER1_L3V3}
 
 Check BNC8 USER1_IO Termination Resistor Can Be Disabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
     Check Termination Resistor Can Be Disabled
-    ...    ${I2C_BNC8_500_HM_EN}    ${B_USER1_L3V3}    ${TR_USER1_L1V8}    ${SW_USER1_IN_L3V3}
+    ...    ${I2C_BNC8_500_HM_EN}    ${B_USER1_L3V3}    ${TR_USER1_L1V8}    ${SW_USER1_L3V3}
 
 Check BNC7 USER2_IO Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
     Check Termination Resistor Can Be Enabled
-    ...    ${I2C_BNC7_500_HM_EN}    ${B_USER2_L3V3}    ${TR_USER2_L1V8}    ${SW_USER2_IN_L3V3}
+    ...    ${I2C_BNC7_500_HM_EN}    ${B_USER2_L3V3}    ${TR_USER2_L1V8}    ${SW_USER2_L3V3}
 
 Check BNC7 USER2_IO Termination Resistor Can Be Disabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
     Check Termination Resistor Can Be Disabled
-    ...    ${I2C_BNC7_500_HM_EN}    ${B_USER2_L3V3}    ${TR_USER2_L1V8}    ${SW_USER2_IN_L3V3}
+    ...    ${I2C_BNC7_500_HM_EN}    ${B_USER2_L3V3}    ${TR_USER2_L1V8}    ${SW_USER2_L3V3}
 
 
 
