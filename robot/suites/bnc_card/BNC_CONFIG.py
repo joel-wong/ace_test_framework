@@ -35,44 +35,44 @@
 # REF_IN:
 # BNC Connector: BNC1
 # Pin Header Number: 3
-B_REF_IN_L3V3 = "Placeholder"
-P_REF_IN_L3V3 = "Placeholder"
-SW_REF_IN_L3V3 = "Placeholder"
-TR_REF_IN_L1V8 = "Placeholder"
+B_REF_IN_L3V3 = "P9_12"
+P_REF_IN_L3V3 = "P9_24"
+SW_REF_IN_L3V3 = "P8_8"
+TR_REF_IN_L1V8 = "P9_40"
 I2C_BNC1_500HM_EN = "0x01"
 
 # REF_OUT:
 # BNC Connector: BNC2
 # Pin Header Number: 5
-B_REF_OUT_L3V3 = "Placeholder"
-P_REF_OUT_L3V3 = "Placeholder"
+B_REF_OUT_L3V3 = "P9_13"
+P_REF_OUT_L3V3 = "P9_28"
 
 # TDC_OUT:
 # BNC Connector: BNC3
 # Pin Header Number: 7
-B_TDC_OUT_L3V3 = "Placeholder"
-P_TDC_OUT_L3V3 = "Placeholder"
+B_TDC_OUT_L3V3 = "P9_14"
+P_TDC_OUT_L3V3 = "P8_13"
 
 # VETO_OUT:
 # BNC Connector: BNC4
 # Pin Header Number: 9
-B_VETO_OUT_L3V3 = "Placeholder"
-P_VETO_OUT_L3V3 = "Placeholder"
+B_VETO_OUT_L3V3 = "P9_26"
+P_VETO_OUT_L3V3 = "P8_14"
 I2C_BNC4_VETO_OUT_OC = "0x80"
 
 # SYNC_OUT:
 # BNC Connector: BNC5
 # Pin Header Number: 11
-B_SYNC_OUT_L3V3 = "Placeholder"
-P_SYNC_OUT_L3V3 = "Placeholder"
+B_SYNC_OUT_L3V3 = "P9_27"
+P_SYNC_OUT_L3V3 = "P8_17"
 
 # SYNC_IN:
 # BNC Connector: BNC6
 # Pin Header Number: 13
-B_SYNC_IN_L3V3 = "Placeholder"
-P_SYNC_IN_L3V3 = "Placeholder"
-SW_SYNC_IN_L3V3 = "Placeholder"
-TR_SYNC_IN_L1V8 = "Placeholder"
+B_SYNC_IN_L3V3 = "P9_29"
+P_SYNC_IN_L3V3 = "P8_15"
+SW_SYNC_IN_L3V3 = "P8_9"
+TR_SYNC_IN_L1V8 = "P9_37"
 I2C_BNC6_500HM_EN = "0x02"
 
 # USER1_IO
@@ -80,11 +80,11 @@ I2C_BNC6_500HM_EN = "0x02"
 # Pin Header Numbers:
 # - Output: 12
 # - Input: 8
-B_USER1_L3V3 = "Placeholder"
-P_USER1_OUT_L3V3 = "Placeholder"
-P_USER1_IN_L3V3 = "Placeholder"
-SW_USER1_IN_L3V3 = "Placeholder"
-TR_USER1_L1V8 = "Placeholder"
+B_USER1_L3V3 = "P9_31"
+P_USER1_OUT_L3V3 = "P9_11"
+P_USER1_IN_L3V3 = "P8_19"
+SW_USER1_L3V3 = "P8_10"
+TR_USER1_L1V8 = "P9_38"
 I2C_BNC8_USER1_NIN_OUT = "0x20"
 I2C_BNC8_500_HM_EN = "0x04"
 
@@ -93,11 +93,11 @@ I2C_BNC8_500_HM_EN = "0x04"
 # Pin Header Numbers:
 # - Output: 10
 # - Input: 6
-B_USER2_L3V3 = "Placeholder"
-P_USER2_OUT_L3V3 = "Placeholder"
-P_USER2_IN_L3V3 = "Placeholder"
-SW_USER2_IN_L3V3 = "Placeholder"
-TR_USER2_L1V8 = "Placeholder"
+B_USER2_L3V3 = "P9_30"
+P_USER2_OUT_L3V3 = "P8_18"
+P_USER2_IN_L3V3 = "P8_16"
+SW_USER2_L3V3 = "P8_12"
+TR_USER2_L1V8 = "P9_35"
 I2C_BNC7_USER2_NIN_OUT = "0x40"
 I2C_BNC7_500_HM_EN = "0x10"
 
@@ -105,7 +105,7 @@ I2C_BNC7_500_HM_EN = "0x10"
 # Pin header: 16
 # Drive low to turn on the TDC (green) LED
 # drive high to turn off the TDC (green) LED
-P_TDC_LED_L3V3 = "Placeholder"
+P_TDC_LED_L3V3 = "P8_11"
 I2C_RLED = "0x08"
 # P_TDC_LED_L3V3 must be low in order to turn on the red LED.
 # Turning on the red LED also requires two additional commands:
@@ -116,13 +116,13 @@ I2C_RLED = "0x08"
 # i2cset 2 0x27 0x03 0xff
 
 # Enable for level shifters 1 and 2 - output low to turn on
-OE_EN1_L1L2 = "Placeholder"
+OE_EN_L1L2 = "P8_26"
 # Enable for level shifter 3 - output low to turn on
-OE_EN2_L3 = "Placeholder"
+OE_EN_L3 = "P9_16"
 # Direction of level shifting for level shifter 3
 # output high to shift from 3.3V to 5V
 # output low to shift from 5V to 3.3V
-DIR_L3 = "Placeholder"
+DIR_L3 = "P8_7"
 
 TERMINATION_RESISTOR_ENABLED_ANALOG_MINIMUM = 0.05
 TERMINATION_RESISTOR_ENABLED_ANALOG_MAXIMUM = 0.15
