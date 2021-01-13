@@ -153,7 +153,7 @@ Check Pin Header USER2_IO Input is Negated on BNC7 USER2_IO Output For Digital L
 
 Check BNC1 REF_IN Termination Resistor Can Be Enabled
     [Tags]    ${TERMINATION_RESISTOR_CHECK}
-    Check Termination Resistor Can Be Enabled Non-User IO
+    Check Termination Resistor Can Be Enabled on Non-User IO
     ...    ${I2C_BNC1_500HM_EN}    ${B_REF_IN_L3V3}    ${TR_REF_IN_L1V8}    ${SW_REF_IN_L3V3}
 
 Check BNC1 REF_IN Termination Resistor Can Be Disabled
