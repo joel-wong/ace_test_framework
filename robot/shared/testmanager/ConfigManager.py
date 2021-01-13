@@ -9,8 +9,9 @@ CONFIG_SERIAL_NUMBER = "serial_number"
 SERIAL_NUMBER_TEXT = "Please enter the serial number:"
 CONFIG_PART_NUMBER = "part_number"
 PART_NUMBER_TEXT = "Please enter the part number:"
-CONFIG_WORK_ORDER_OR_JOB_NUMBER = "work_order_or_job_number"
-WORK_ORDER_JOB_NUMBER_TEXT = "Please enter the work order number or job number:"
+CONFIG_WORK_ORDER_JOB_NUMBER = "work_order_job_number"
+# note that work order number is synonymous with job number
+WORK_ORDER_JOB_NUMBER_TEXT = "Please enter the work order number / job number:"
 CONFIG_STAFF_NAME = "staff_name"
 STAFF_NAME_TEXT = "Please enter the staff member name:"
 CONFIG_REPEAT_TESTS = "repeat_tests"
@@ -40,7 +41,7 @@ class ConfigManager:
         self.input_suite_name()
         self.input_config_value_str(CONFIG_SERIAL_NUMBER, SERIAL_NUMBER_TEXT)
         self.input_config_value_str(CONFIG_PART_NUMBER, PART_NUMBER_TEXT)
-        self.input_config_value_str(CONFIG_WORK_ORDER_OR_JOB_NUMBER,
+        self.input_config_value_str(CONFIG_WORK_ORDER_JOB_NUMBER,
                                     WORK_ORDER_JOB_NUMBER_TEXT)
         self.input_config_value_str(CONFIG_STAFF_NAME, STAFF_NAME_TEXT)
         self.input_config_value_positive_int(CONFIG_REPEAT_TESTS,
