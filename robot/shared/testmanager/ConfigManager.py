@@ -14,6 +14,8 @@ CONFIG_WORK_ORDER_JOB_NUMBER = "work_order_job_number"
 WORK_ORDER_JOB_NUMBER_TEXT = "Please enter the work order number / job number:"
 CONFIG_STAFF_NAME = "staff_name"
 STAFF_NAME_TEXT = "Please enter the staff member name:"
+CONFIG_INCLUDE_MANUAL_TESTS = "include_manual_tests"
+INCLUDE_MANUAL_TESTS_TEXT = "Would you like to include manual tests? [Y/N]"
 CONFIG_REPEAT_TESTS = "repeat_tests"
 REPEAT_TESTS_TEXT = "How many times would you like the tests to be repeated?"
 
@@ -44,6 +46,8 @@ class ConfigManager:
         self.input_config_value_str(CONFIG_WORK_ORDER_JOB_NUMBER,
                                     WORK_ORDER_JOB_NUMBER_TEXT)
         self.input_config_value_str(CONFIG_STAFF_NAME, STAFF_NAME_TEXT)
+        self.input_config_value_bool(CONFIG_INCLUDE_MANUAL_TESTS,
+                                     INCLUDE_MANUAL_TESTS_TEXT)
         self.input_config_value_positive_int(CONFIG_REPEAT_TESTS,
                                              REPEAT_TESTS_TEXT)
 
@@ -148,7 +152,21 @@ class ConfigManager:
         return input_str
 
     def input_config_value_str(self, config_key, display_text):
-        self.input_config_value(config_key, display_text, self.validate_str)
+        self.input_config_value(config_key, display_text,
+                                ConfigManager.validate_str)
+
+    @staticmethod
+    def validate_bool(input_str):
+        input_str_lower = input_str.lower()
+        if input_str_lower in ["y", "yes", "t", "true"]:
+            return "Y"
+        elif input_str_lower in ["n", "no", "f", "false"]:
+            return "N"
+        raise AssertionError("input value must be Y (Yes) or N (No)")
+
+    def input_config_value_bool(self, config_key, display_text):
+        self.input_config_value(config_key, display_text,
+                                ConfigManager.validate_bool)
 
     @staticmethod
     def validate_positive_int(input_str):
@@ -174,6 +192,12 @@ class ConfigManager:
     def get(self, config_key, default=None):
         if config_key in self.__config:
             return self.__config[config_key]
+        else:
+            return default
+
+    def get_bool(self, config_key, default=None):
+        if config_key in self.__config:
+            return self.__config[config_key] == "Y"
         else:
             return default
 
