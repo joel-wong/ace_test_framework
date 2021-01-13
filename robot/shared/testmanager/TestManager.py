@@ -49,7 +49,7 @@ class TestManager:
                 ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS)
             if not include_manual_tests:
                 subprocess_args.extend(
-                    TestManager.generate_exclude_tags_args(
+                    TestManager.generate_exclude_tags_subprocess_args(
                         [MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG]))
             subprocess_args.append(suite_directory)
             subprocess.run(subprocess_args, shell=True, check=False)
@@ -61,7 +61,7 @@ class TestManager:
         input("Press enter to close.")
 
     @staticmethod
-    def generate_exclude_tags_args(tags_to_exclude):
+    def generate_exclude_tags_subprocess_args(tags_to_exclude):
         """
         Generates the arguments to be added to the subprocess args in order to
         exclude the specified 'tags_to_exclude' from running
