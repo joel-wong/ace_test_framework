@@ -36,29 +36,49 @@ class TestManager:
         main_test_output_directory = os.path.join(self.base_directory, "out",
                                                   suite_name)
         print("Starting tests now")
-        num_suite_runs = self.config_manager.get(
+        run_continuously = self.config_manager.get_bool(
             ConfigManager.CONFIG_REPEAT_TESTS)
-        for _ in range(num_suite_runs):
-            current_time = datetime.datetime.utcnow().isoformat("T")
-            current_time = current_time.replace(":", "-").replace(".", "-")
-            output_directory = os.path.join(main_test_output_directory,
-                                            current_time)
+
+        summary_output_directory = os.path.join(main_test_output_directory,
+                                                TestManager.generate_datetime() + " SUMMARY")
+        output_directory = os.path.join(main_test_output_directory,
+                                        TestManager.generate_datetime() + " INDIVIDUAL")
+        while True:
             subprocess_args = ["python", "-m", "robot", "--outputdir",
-                               output_directory]
+                               output_directory, "--timestampoutputs"]
+
             include_manual_tests = self.config_manager.get_bool(
                 ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS)
             if not include_manual_tests:
                 subprocess_args.extend(
                     TestManager.generate_exclude_tags_subprocess_args(
                         [MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG]))
-            subprocess_args.append(suite_directory)
+
+            subprocess_args.append("{}/*.robot".format(suite_directory))
             subprocess.run(subprocess_args, shell=True, check=False)
-            config_file_output_name = os.path.join(
-                output_directory, ConfigManager.CONFIG_FILE_NAME)
-            self.config_manager.save_config(config_file_output_name)
+
             print("\n\nTests complete! The results are stored in {}\n".format(
                     output_directory))
+
+            if not run_continuously:
+                break
+
+        merge_reports_subprocess_args = ["python", "-m", "robot.rebot",
+                                         "--outputdir", summary_output_directory, "--name", "bnc_card",
+                                         "{}/*.xml".format(output_directory)]
+                                         
+        subprocess.run(merge_reports_subprocess_args, shell=True, check=False)
+
+        config_file_output_name = os.path.join(summary_output_directory, ConfigManager.CONFIG_FILE_NAME)
+        self.config_manager.save_config(config_file_output_name)
+
         input("Press enter to close.")
+
+    @staticmethod
+    def generate_datetime():
+        current_time = datetime.datetime.utcnow().isoformat("T")
+        current_time = current_time.replace(":", "-").replace(".", "-")
+        return current_time
 
     @staticmethod
     def generate_exclude_tags_subprocess_args(tags_to_exclude):
