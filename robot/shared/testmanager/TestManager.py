@@ -66,7 +66,6 @@ class TestManager:
         merge_reports_subprocess_args = ["python", "-m", "robot.rebot",
                                          "--outputdir", summary_output_directory, "--name", "bnc_card",
                                          "{}/*.xml".format(output_directory)]
-                                         
         subprocess.run(merge_reports_subprocess_args, shell=True, check=False)
 
         config_file_output_name = os.path.join(summary_output_directory, ConfigManager.CONFIG_FILE_NAME)
