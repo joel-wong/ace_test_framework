@@ -17,7 +17,7 @@ STAFF_NAME_TEXT = "Please enter the staff member name:"
 CONFIG_INCLUDE_MANUAL_TESTS = "include_manual_tests"
 INCLUDE_MANUAL_TESTS_TEXT = "Would you like to include manual tests? [Y/N]"
 CONFIG_REPEAT_TESTS = "repeat_tests"
-REPEAT_TESTS_TEXT = "Would you like to run tests continuously until stopped? [Y/N]"
+REPEAT_TESTS_TEXT = "Would you like to run tests continuously until stopped via Ctrl + C? [Y/N]"
 
 NO_DEFAULT_TEXT = "There is no default"
 

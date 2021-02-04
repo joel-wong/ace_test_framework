@@ -43,35 +43,41 @@ class TestManager:
                                                 TestManager.generate_datetime() + " SUMMARY")
         output_directory = os.path.join(main_test_output_directory,
                                         TestManager.generate_datetime() + " INDIVIDUAL")
-        while True:
-            subprocess_args = ["python", "-m", "robot", "--outputdir",
-                               output_directory, "--timestampoutputs"]
+        try:
+            while True:
+                subprocess_args = ["python", "-m", "robot", "--outputdir",
+                                   output_directory, "--timestampoutputs"]
 
-            include_manual_tests = self.config_manager.get_bool(
-                ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS)
-            if not include_manual_tests:
-                subprocess_args.extend(
-                    TestManager.generate_exclude_tags_subprocess_args(
-                        [MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG]))
+                include_manual_tests = self.config_manager.get_bool(
+                    ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS)
+                if not include_manual_tests:
+                    subprocess_args.extend(
+                        TestManager.generate_exclude_tags_subprocess_args(
+                            [MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG]))
 
-            subprocess_args.append("{}/*.robot".format(suite_directory))
-            subprocess.run(subprocess_args, shell=True, check=False)
+                subprocess_args.append("{}/*.robot".format(suite_directory))
+                subprocess.run(subprocess_args, shell=True, check=False)
 
-            print("\n\nTests complete! The results are stored in {}\n".format(
-                    output_directory))
+                if not run_continuously:
+                    config_file_output_name = os.path.join(output_directory, ConfigManager.CONFIG_FILE_NAME)
+                    self.config_manager.save_config(config_file_output_name)
+                    print("\n\nTests complete! \n")
+                    print("The individual results are stored in {}\n".format(output_directory))
+                    input("Press enter to close.")
+                    break
+        except KeyboardInterrupt:
+            merge_reports_subprocess_args = ["python", "-m", "robot.rebot",
+                                             "--outputdir", summary_output_directory, "--name", "bnc_card",
+                                             "{}/*.xml".format(output_directory)]
+            subprocess.run(merge_reports_subprocess_args, shell=True, check=False)
 
-            if not run_continuously:
-                break
+            config_file_output_name = os.path.join(summary_output_directory, ConfigManager.CONFIG_FILE_NAME)
+            self.config_manager.save_config(config_file_output_name)
 
-        merge_reports_subprocess_args = ["python", "-m", "robot.rebot",
-                                         "--outputdir", summary_output_directory, "--name", "bnc_card",
-                                         "{}/*.xml".format(output_directory)]
-        subprocess.run(merge_reports_subprocess_args, shell=True, check=False)
-
-        config_file_output_name = os.path.join(summary_output_directory, ConfigManager.CONFIG_FILE_NAME)
-        self.config_manager.save_config(config_file_output_name)
-
-        input("Press enter to close.")
+            print("\n\nTests complete! \n")
+            print("The individual results are stored in {}\n".format(output_directory))
+            print("The summary results are stored in {}\n".format(summary_output_directory))
+            input("Press enter to close.")
 
     @staticmethod
     def generate_datetime():
