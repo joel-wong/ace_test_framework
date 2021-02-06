@@ -229,7 +229,7 @@ Check Orange LED
 *** Keywords ***
 Setup BBB For BNC Card Tests
     # TODO: Add detailed manual instructions for setting up tests
-    # Execute Manual Step    During development, remove all external circuitry from the BeagleBone. Press PASS when complete.
+    Execute Manual Step    During development, remove all external circuitry from the BeagleBone. Press PASS when complete.
 
     # set up a socket connection to BBB
     Connect To BBB

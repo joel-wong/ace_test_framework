@@ -39,7 +39,14 @@ class TestManager:
         run_continuously = self.config_manager.get_bool(ConfigManager.CONFIG_REPEAT_TESTS)
 
         output_directory = os.path.join(main_test_output_directory, TestManager.generate_datetime_directory_str())
+        try:
+            os.mkdir(output_directory)
+        except FileExistsError:
+            print("Error: Output directory name already exists. Exiting...")
+            exit()
         individual_output_directory = os.path.join(output_directory, "INDIVIDUAL TESTS")
+        config_file_output_name = os.path.join(output_directory, ConfigManager.CONFIG_FILE_NAME)
+        self.config_manager.save_config(config_file_output_name)
 
         include_manual_tests = self.config_manager.get_bool(ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS)
 
@@ -47,30 +54,30 @@ class TestManager:
             test_output_directory = individual_output_directory
         else:
             test_output_directory = output_directory
+
+        subprocess_args = ["python", "-m", "robot", "--outputdir",
+                           test_output_directory, "--timestampoutputs"]
+
+        if not include_manual_tests:
+            subprocess_args.extend(
+                TestManager.generate_exclude_tags_subprocess_args(
+                    [MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG]))
+
+        subprocess_args.append("{}/*.robot".format(suite_directory))
         try:
             while True:
-                subprocess_args = ["python", "-m", "robot", "--outputdir",
-                                   test_output_directory, "--timestampoutputs"]
-
-                if not include_manual_tests:
-                    subprocess_args.extend(
-                        TestManager.generate_exclude_tags_subprocess_args(
-                            [MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG]))
-
-                subprocess_args.append("{}/*.robot".format(suite_directory))
                 subprocess.run(subprocess_args, shell=True, check=False)
 
                 if not run_continuously:
                     TestManager.print_tests_complete_message(output_directory)
-                    TestManager.save_config_file(output_directory, self.config_manager)
-                    break
+                    return
         except KeyboardInterrupt:
+            print("Consolidating all test reports...")
             merge_reports_subprocess_args = ["python", "-m", "robot.rebot",
                                              "--outputdir", output_directory, "--name", "bnc_card",
                                              "{}/*.xml".format(individual_output_directory)]
             subprocess.run(merge_reports_subprocess_args, shell=True, check=False)
             TestManager.print_tests_complete_message(output_directory)
-            TestManager.save_config_file(output_directory, self.config_manager)
 
     @staticmethod
     def generate_datetime_directory_str():
@@ -83,11 +90,6 @@ class TestManager:
         print("\n\nTests complete! \n")
         print("The results are stored in {}\n".format(output_directory))
         input("Press enter to close.")
-
-    @staticmethod
-    def save_config_file(output_directory, config_manager):
-        config_file_output_name = os.path.join(output_directory, ConfigManager.CONFIG_FILE_NAME)
-        config_manager.save_config(config_file_output_name)
 
     @staticmethod
     def generate_exclude_tags_subprocess_args(tags_to_exclude):
