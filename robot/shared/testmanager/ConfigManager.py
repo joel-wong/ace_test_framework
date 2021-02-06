@@ -85,7 +85,7 @@ class ConfigManager:
             try:
                 self.__config[config_key] = validator(self.__config[config_key])
                 default_valid = True
-            except (AssertionError, AttributeError):
+            except (AssertionError):
                 ConfigManager.print_default_invalid_message(config_key)
         while True:
             print(display_text)
@@ -156,12 +156,14 @@ class ConfigManager:
 
     @staticmethod
     def validate_bool(input_str):
-        input_str_lower = input_str.lower()
-        if input_str_lower in ["y", "yes", "t", "true"]:
-            return "Y"
-        elif input_str_lower in ["n", "no", "f", "false"]:
-            return "N"
-        raise AssertionError("input value must be Y (Yes) or N (No)")
+        try:
+            input_str_lower = input_str.lower()
+            if input_str_lower in ["y", "yes", "t", "true"]:
+                return "Y"
+            elif input_str_lower in ["n", "no", "f", "false"]:
+                return "N"
+        except AttributeError:
+            raise AssertionError("input value must be Y (Yes) or N (No)")
 
     def input_config_value_bool(self, config_key, display_text):
         self.input_config_value(config_key, display_text,
