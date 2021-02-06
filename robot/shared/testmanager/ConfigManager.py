@@ -184,10 +184,6 @@ class ConfigManager:
             pass
         raise AssertionError("That is not a positive number")
 
-    def input_config_value_positive_int(self, config_key, display_text):
-        self.input_config_value(config_key, display_text,
-                                ConfigManager.validate_positive_int)
-
     def get(self, config_key, default=None):
         if config_key in self.__config:
             return self.__config[config_key]
