@@ -85,7 +85,7 @@ class ConfigManager:
             try:
                 self.__config[config_key] = validator(self.__config[config_key])
                 default_valid = True
-            except (AssertionError):
+            except AssertionError:
                 ConfigManager.print_default_invalid_message(config_key)
         while True:
             print(display_text)
