@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 import subprocess
+import sys
 
 from manual import MANUAL_TEST_CONSTANTS
 
@@ -29,12 +30,9 @@ class TestManager:
         return 0
 
     def run_suites(self):
-        suite_name = self.config_manager.get(
-            ConfigManager.CONFIG_SUITE_NAME)
-        suite_directory = os.path.join(self.robot_directory, "suites",
-                                       suite_name)
-        main_test_output_directory = os.path.join(self.base_directory, "out",
-                                                  suite_name)
+        suite_name = self.config_manager.get(ConfigManager.CONFIG_SUITE_NAME)
+        suite_directory = os.path.join(self.robot_directory, "suites", suite_name)
+        main_test_output_directory = os.path.join(self.base_directory, "out", suite_name)
         print("Starting tests now")
         run_continuously = self.config_manager.get_bool(ConfigManager.CONFIG_REPEAT_TESTS)
 
@@ -43,12 +41,11 @@ class TestManager:
             os.mkdir(output_directory)
         except FileExistsError:
             print("Error: Output directory name already exists. Exiting...")
-            exit()
+            sys.exit(1)
         individual_output_directory = os.path.join(output_directory, "INDIVIDUAL TESTS")
+
         config_file_output_name = os.path.join(output_directory, ConfigManager.CONFIG_FILE_NAME)
         self.config_manager.save_config(config_file_output_name)
-
-        include_manual_tests = self.config_manager.get_bool(ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS)
 
         if run_continuously:
             test_output_directory = individual_output_directory
@@ -58,19 +55,22 @@ class TestManager:
         subprocess_args = ["python", "-m", "robot", "--outputdir",
                            test_output_directory, "--timestampoutputs"]
 
+        include_manual_tests = self.config_manager.get_bool(ConfigManager.CONFIG_INCLUDE_MANUAL_TESTS)
         if not include_manual_tests:
             subprocess_args.extend(
                 TestManager.generate_exclude_tags_subprocess_args(
                     [MANUAL_TEST_CONSTANTS.MANUAL_TEST_TAG]))
 
         subprocess_args.append("{}/*.robot".format(suite_directory))
+
+        if not run_continuously:
+            subprocess.run(subprocess_args, shell=True, check=False)
+            TestManager.print_tests_complete_message(output_directory)
+            return
+
         try:
             while True:
                 subprocess.run(subprocess_args, shell=True, check=False)
-
-                if not run_continuously:
-                    TestManager.print_tests_complete_message(output_directory)
-                    return
         except KeyboardInterrupt:
             print("Consolidating all test reports...")
             merge_reports_subprocess_args = ["python", "-m", "robot.rebot",

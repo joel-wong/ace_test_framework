@@ -158,11 +158,13 @@ class ConfigManager:
     def validate_bool(input_str):
         try:
             input_str_lower = input_str.lower()
-            if input_str_lower in ["y", "yes", "t", "true"]:
-                return "Y"
-            elif input_str_lower in ["n", "no", "f", "false"]:
-                return "N"
         except AttributeError:
+            raise AssertionError("input value must be Y (Yes) or N (No)")
+        if input_str_lower in ["y", "yes", "t", "true"]:
+            return "Y"
+        elif input_str_lower in ["n", "no", "f", "false"]:
+            return "N"
+        else:
             raise AssertionError("input value must be Y (Yes) or N (No)")
 
     def input_config_value_bool(self, config_key, display_text):
