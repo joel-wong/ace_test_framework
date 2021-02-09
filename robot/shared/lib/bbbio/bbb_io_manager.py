@@ -3,10 +3,12 @@ A series of functions that manages communication between the Beagle Bone Black (
 allows the users to control inputs and outputs on the BBB
 """
 
-import BBB_IO_CONSTANTS
 import json
 
 import ace_bbsm
+
+import BBB_IO_CONSTANTS
+import bbb_io_validation
 
 # Sample JSON that will be sent to the BBB when send_io_specifications_to_bbb()
 # is called:
@@ -80,15 +82,14 @@ def specify_bbb_output(pin_name, output_type, value):
     :param output_type: the type of signal that should be output on the BBB
     :param value: The value for the signal that should be output on the BBB
     """
-    # TODO: validate that the input type is valid
-    # TODO: validate that the input value is valid for the input type
+    bbb_io_validation.validate_bbb_output(io_to_send, pin_name, output_type, value)
     io_to_send[BBB_IO_CONSTANTS.OUTPUTS][pin_name] = {
         BBB_IO_CONSTANTS.TYPE: output_type,
         BBB_IO_CONSTANTS.VALUE: value
     }
 
 
-i2c_keys = {BBB_IO_CONSTANTS.I2CBUS, BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS,
+I2C_KEYS = {BBB_IO_CONSTANTS.I2CBUS, BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS,
             BBB_IO_CONSTANTS.I2C_DATA_ADDRESS, BBB_IO_CONSTANTS.I2C_DATA}
 
 
@@ -132,21 +133,10 @@ def specify_bbb_i2c_output(i2c_spec_number, i2cbus, chip_address, data_address,
     :param data: str: The data to be sent via I2C, representing a hex value.
         Can also be an empty str
     """
-    chip_address_int = int(chip_address, 16)
-    if not (3 <= chip_address_int <= 119):
-        raise ValueError("I2C chip_address must be between 0x03 and 0x77 "
-                         "(inclusive)")
-    data_address_int = int(data_address, 16)
-    if not (0 <= data_address_int <= 255):
-        raise ValueError("I2C data_address must be between 0x00 and 0xFF "
-                         "(inclusive)")
-    if data != "":
-        # data can be empty in i2cset, if not validate that it is a
-        # non-negative hex value
-        data_int = int(data, 16)
-        if not (0 <= data_int):
-            raise ValueError("I2C data must be non-negative")
-    io_to_send[BBB_IO_CONSTANTS.I2C][int(i2c_spec_number)] = {
+    int_i2c_spec_number = int(i2c_spec_number)
+    bbb_io_validation.validate_i2c(io_to_send, int_i2c_spec_number, i2cbus,
+                                   chip_address, data_address, data)
+    io_to_send[BBB_IO_CONSTANTS.I2C][int_i2c_spec_number] = {
         BBB_IO_CONSTANTS.I2CBUS: i2cbus,
         BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS: chip_address,
         BBB_IO_CONSTANTS.I2C_DATA_ADDRESS: data_address,
@@ -168,7 +158,7 @@ def specify_bbb_i2c_output_dict(i2c_spec_number, i2cset_parameters):
         - `BBB_IO_CONSTANTS.I2C_DATA`
     :return:
     """
-    if i2c_keys != set(i2cset_parameters.keys()):
+    if I2C_KEYS != set(i2cset_parameters.keys()):
         raise ValueError("I2C data is missing or has extra keys")
     specify_bbb_i2c_output(i2c_spec_number,
                            i2cset_parameters[BBB_IO_CONSTANTS.I2CBUS],
@@ -186,19 +176,25 @@ def specify_bbb_input(pin_name, input_type):
     :param pin_name: The pin name on which the BBB will have an input
     :param input_type: the type of signal that should be input on the BBB
     """
+    bbb_io_validation.validate_bbb_input(io_to_send, pin_name, input_type)
     io_to_send[BBB_IO_CONSTANTS.INPUTS][pin_name] = {
         BBB_IO_CONSTANTS.TYPE: input_type
     }
 
 
-def send_io_specifications_to_bbb():
+def send_io_specifications_to_bbb(suite_validator):
     """
     Sends the current IO specifications amalgamated from all calls to
     `specify_bbb_output()` and `specify_bbb_input()` since the last call to
     `reset_bbb_io_specifications()` to the BBB
 
+    :param suite_validator: A function that takes the IO specification as an
+        input and verifies that the entire specification is valid for the given
+        suite. For example, it may validate that there are no pins that will
+        be in contention for the given IO specification
     :return: The outputs on the BBB requested in the specify_bbb_input calls
     """
+    suite_validator(io_to_send)
     json_to_send = json.dumps(io_to_send)
     response = client.json_request_response_bbb(json_to_send)
     return json.loads(response)
