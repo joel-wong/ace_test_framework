@@ -17,7 +17,8 @@ STAFF_NAME_TEXT = "Please enter the staff member name:"
 CONFIG_INCLUDE_MANUAL_TESTS = "include_manual_tests"
 INCLUDE_MANUAL_TESTS_TEXT = "Would you like to include manual tests? [Y/N]"
 CONFIG_REPEAT_TESTS = "repeat_tests"
-REPEAT_TESTS_TEXT = "How many times would you like the tests to be repeated?"
+REPEAT_TESTS_TEXT = "Would you like to run tests continuously until stopped " \
+                    "via Ctrl + C? [Y/N]"
 
 NO_DEFAULT_TEXT = "There is no default"
 
@@ -48,8 +49,7 @@ class ConfigManager:
         self.input_config_value_str(CONFIG_STAFF_NAME, STAFF_NAME_TEXT)
         self.input_config_value_bool(CONFIG_INCLUDE_MANUAL_TESTS,
                                      INCLUDE_MANUAL_TESTS_TEXT)
-        self.input_config_value_positive_int(CONFIG_REPEAT_TESTS,
-                                             REPEAT_TESTS_TEXT)
+        self.input_config_value_bool(CONFIG_REPEAT_TESTS, REPEAT_TESTS_TEXT)
 
         config_file = open(self.__config_file_abspath, 'w')
         config_file.write(json.dumps(self.__config))
@@ -157,12 +157,16 @@ class ConfigManager:
 
     @staticmethod
     def validate_bool(input_str):
-        input_str_lower = input_str.lower()
+        try:
+            input_str_lower = input_str.lower()
+        except AttributeError:
+            raise AssertionError("input value must be Y (Yes) or N (No)")
         if input_str_lower in ["y", "yes", "t", "true"]:
             return "Y"
         elif input_str_lower in ["n", "no", "f", "false"]:
             return "N"
-        raise AssertionError("input value must be Y (Yes) or N (No)")
+        else:
+            raise AssertionError("input value must be Y (Yes) or N (No)")
 
     def input_config_value_bool(self, config_key, display_text):
         self.input_config_value(config_key, display_text,
@@ -184,10 +188,6 @@ class ConfigManager:
             # user did not enter an integer
             pass
         raise AssertionError("That is not a positive number")
-
-    def input_config_value_positive_int(self, config_key, display_text):
-        self.input_config_value(config_key, display_text,
-                                ConfigManager.validate_positive_int)
 
     def get(self, config_key, default=None):
         if config_key in self.__config:
