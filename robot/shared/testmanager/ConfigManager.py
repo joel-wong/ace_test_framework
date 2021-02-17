@@ -7,6 +7,8 @@ CONFIG_FILE_NAME = "config.json"
 CONFIG_SUITE_NAME = "suite_name"
 CONFIG_SERIAL_NUMBER = "serial_number"
 SERIAL_NUMBER_TEXT = "Please enter the serial number:"
+CONFIG_BATCH_NUMBER = "batch_number"
+BATCH_NUMBER_TEXT = "Please enter the batch number:"
 CONFIG_PART_NUMBER = "part_number"
 PART_NUMBER_TEXT = "Please enter the part number:"
 CONFIG_WORK_ORDER_JOB_NUMBER = "work_order_job_number"
@@ -43,6 +45,7 @@ class ConfigManager:
 
         self.input_suite_name()
         self.input_config_value_str(CONFIG_SERIAL_NUMBER, SERIAL_NUMBER_TEXT)
+        self.input_config_value_str(CONFIG_BATCH_NUMBER, BATCH_NUMBER_TEXT)
         self.input_config_value_str(CONFIG_PART_NUMBER, PART_NUMBER_TEXT)
         self.input_config_value_str(CONFIG_WORK_ORDER_JOB_NUMBER,
                                     WORK_ORDER_JOB_NUMBER_TEXT)
