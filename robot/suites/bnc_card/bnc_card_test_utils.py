@@ -12,14 +12,14 @@ import BNC_CONFIG
 #
 # During test:
 # ${i2c_output_1} =    Get I2C to Configure IO Expander IOs    ${I2C_PINNAME}
-# Specify BBB I2C Output Dict    1    ${i2c_output_1}
+# Specify BBB I2C Output Dict    ${i2c_output_1}
 # ${i2c_output_2} =    Get I2C for User IO Output Mode         ${I2C_PINNAME}
-# Specify BBB I2C Output Dict    2    ${i2c_output_2}
+# Specify BBB I2C Output Dict    ${i2c_output_2}
 #
-# Test teardown:
+# Test setup/teardown:
 # Reset BBB IO specifications
 # ${i2c_output} =    Get I2C to Set All IO Expander IOs as Inputs
-# Specify BBB I2C Output Dict    1    ${i2c_output}
+# Specify BBB I2C Output Dict    ${i2c_output}
 # Send IO Specifications to BBB
 
 

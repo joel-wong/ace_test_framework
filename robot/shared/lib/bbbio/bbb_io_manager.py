@@ -13,88 +13,106 @@ import bbb_io_validation
 # Sample JSON that will be sent to the BBB when send_io_specifications_to_bbb()
 # is called:
 """
-{
-    "outputs":{
-    "P8-30": {
-        "type": "digital",
-        BBB_IO_CONSTANTS.VALUE: "1"
-    },
-    "P8-40": {
-        "type": "analog",
-        BBB_IO_CONSTANTS.VALUE: "1.8"
-    },
-    "P8-50": {
-        "type": "pwm",
-        BBB_IO_CONSTANTS.VALUE: "60"
-    }
+[
+  {
+    "spec_type": "output",
+    "output_type": "i2c",
+    "i2cbus": "2",
+    "chip_address": "0x27",
+    "data_address": 0x03,
+    "data": 0xF7
   },
-  "i2c": {
-    1: {
-      "data": "base64 encoding of first data"
-    },
-    2: {
-      "data": "base 64 encoding of second data"
-    }
+  {
+    "spec_type": "output",
+    "output_type": "digital_3v3"
+    "pin_number": "P9_25",
+    "output_value": "1"
+  },
+  {
+    "spec_type": "input"
+    "input_type": "digital_3v3"
+    "pin_number": "P9_25",
   }
-  "inputs": {
-    "P8-20": {
-       "type": "digital",
-    }
-}
+]
 """
 
 # Sample data received from the BBB when send_io_specifications_to_bbb() is
 # called:
 """
-{
-  "inputs": {
-      "P8-20": 0
+[
+  {
+    "input_type": "digital_3v3"
+    "pin_number": "P9_25",
+    "input_value": "1"
   }
-}
+]
 """
 
 
-io_to_send = {}
+io_to_send = []
+bbb_return_data = []
 client = ace_bbsm.Client()
 
 
 def connect_to_bbb():
+    """
+    Connects to the BBB using the IP address and port number defined
+    in the ace_bbsm module.
+
+    The BBB must not already be connected when function is called.
+    """
     client.connect_to_bbb()
+    reset_bbb_io_specifications()
 
 
 def disconnect_from_bbb():
+    """
+    Disconnects from the BBB. The BBB must be connected when this function
+    is called.
+    """
     client.disconnect_from_bbb()
 
 
 def reset_bbb_io_specifications():
-    io_to_send[BBB_IO_CONSTANTS.INPUTS] = {}
-    io_to_send[BBB_IO_CONSTANTS.OUTPUTS] = {}
-    io_to_send[BBB_IO_CONSTANTS.I2C] = {}
+    """
+    Resets the data/steps sent to and/or returned from the BBB
+    """
+    io_to_send.clear()
+    reset_bbb_return_data()
 
 
-def specify_bbb_output(pin_name, output_type, value):
+def reset_bbb_return_data():
+    """
+    Resets the data returned from the BBB
+    """
+    bbb_return_data.clear()
+
+
+def specify_bbb_digital_output(pin_number, value):
     """
     Updates the 'io_to_send' so that when
-    'send_io_specifications_to_BBB' is called, the given 'output_type'
-    and 'value' is output on the given pin_name
+    'send_io_specifications_to_BBB' is called, the given digital 'value'
+    is output on the given pin_number
 
-    :param pin_name: The pin name on which the BBB will have an output
-    :param output_type: the type of signal that should be output on the BBB
+    :param pin_number: The pin number on which the BBB will have a digital
+        output
     :param value: The value for the signal that should be output on the BBB
     """
-    bbb_io_validation.validate_bbb_output(io_to_send, pin_name, output_type, value)
-    io_to_send[BBB_IO_CONSTANTS.OUTPUTS][pin_name] = {
-        BBB_IO_CONSTANTS.TYPE: output_type,
-        BBB_IO_CONSTANTS.VALUE: value
-    }
+    bbb_io_validation.validate_bbb_output(
+        pin_number, BBB_IO_CONSTANTS.DIGITAL_3V3, value)
+    io_to_send.append({
+        BBB_IO_CONSTANTS.SPEC_TYPE: BBB_IO_CONSTANTS.SPEC_TYPE_OUTPUT,
+        BBB_IO_CONSTANTS.OUTPUT_TYPE: BBB_IO_CONSTANTS.DIGITAL_3V3,
+        BBB_IO_CONSTANTS.PIN_NUMBER: pin_number,
+        BBB_IO_CONSTANTS.OUTPUT_VALUE: value
+    })
 
 
 I2C_KEYS = {BBB_IO_CONSTANTS.I2CBUS, BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS,
             BBB_IO_CONSTANTS.I2C_DATA_ADDRESS, BBB_IO_CONSTANTS.I2C_DATA}
 
 
-def specify_bbb_i2c_output(i2c_spec_number, i2cbus, chip_address, data_address,
-                           data):
+def specify_bbb_i2c_output(i2cbus, chip_address, data_address, data):
     """
     Updates the 'io_to_send' so that when
     'send_io_specifications_to_BBB' is called, the given
@@ -121,9 +139,6 @@ def specify_bbb_i2c_output(i2c_spec_number, i2cbus, chip_address, data_address,
     send_io_specifications_to_bbb() is called:
         i2cset -y -r i2cbus chip_address data_address data
 
-    :param i2c_spec_number: int: the order in which I2C signals should be sent
-        to the circuit under test, with the lowest i2c_spec_number first
-        (each i2c_spec_number must be unique for a given test)
     :param i2cbus: str: the identifier for the i2cbus on the BeagleBone that
         will output the data
     :param chip_address: str: A str representing a hex value between 0x03 and
@@ -133,23 +148,21 @@ def specify_bbb_i2c_output(i2c_spec_number, i2cbus, chip_address, data_address,
     :param data: str: The data to be sent via I2C, representing a hex value.
         Can also be an empty str
     """
-    int_i2c_spec_number = int(i2c_spec_number)
-    bbb_io_validation.validate_i2c(io_to_send, int_i2c_spec_number, i2cbus,
-                                   chip_address, data_address, data)
-    io_to_send[BBB_IO_CONSTANTS.I2C][int_i2c_spec_number] = {
+    bbb_io_validation.validate_i2c(i2cbus, chip_address, data_address, data)
+    io_to_send.append({
+        BBB_IO_CONSTANTS.SPEC_TYPE: BBB_IO_CONSTANTS.SPEC_TYPE_OUTPUT,
+        BBB_IO_CONSTANTS.OUTPUT_TYPE: BBB_IO_CONSTANTS.I2C,
         BBB_IO_CONSTANTS.I2CBUS: i2cbus,
         BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS: chip_address,
         BBB_IO_CONSTANTS.I2C_DATA_ADDRESS: data_address,
         BBB_IO_CONSTANTS.I2C_DATA: data
-    }
+    })
 
 
-def specify_bbb_i2c_output_dict(i2c_spec_number, i2cset_parameters):
+def specify_bbb_i2c_output_dict(i2cset_parameters):
     """
     Convenience method that allows a dictionary to be specified when adding I2C
     specifications
-    :param i2c_spec_number: int: The I2C specification number. See
-        specify_bbb_i2c_output for more info.
     :param i2cset_parameters: The i2c parameters, as a dictionary. Must contain
         all of the following keys and no additional keys:
         - `BBB_IO_CONSTANTS.I2CBUS`
@@ -160,26 +173,44 @@ def specify_bbb_i2c_output_dict(i2c_spec_number, i2cset_parameters):
     """
     if I2C_KEYS != set(i2cset_parameters.keys()):
         raise ValueError("I2C data is missing or has extra keys")
-    specify_bbb_i2c_output(i2c_spec_number,
-                           i2cset_parameters[BBB_IO_CONSTANTS.I2CBUS],
+    specify_bbb_i2c_output(i2cset_parameters[BBB_IO_CONSTANTS.I2CBUS],
                            i2cset_parameters[BBB_IO_CONSTANTS.I2C_CHIP_ADDRESS],
                            i2cset_parameters[BBB_IO_CONSTANTS.I2C_DATA_ADDRESS],
                            i2cset_parameters[BBB_IO_CONSTANTS.I2C_DATA])
 
 
-def specify_bbb_input(pin_name, input_type):
+def specify_bbb_digital_input(pin_number):
     """
     Updates the 'io_to_send' so that when
-    'send_io_specifications_to_BBB' is called, the given 'input_type'
-    is input on the given pin_name and the value is returned.
+    'send_io_specifications_to_BBB' is called, the digital value of the given
+    pin_number is returned.
 
-    :param pin_name: The pin name on which the BBB will have an input
-    :param input_type: the type of signal that should be input on the BBB
+    :param pin_number: The pin number on which the BBB will have a digital input
     """
-    bbb_io_validation.validate_bbb_input(io_to_send, pin_name, input_type)
-    io_to_send[BBB_IO_CONSTANTS.INPUTS][pin_name] = {
-        BBB_IO_CONSTANTS.TYPE: input_type
-    }
+    bbb_io_validation.validate_bbb_input(pin_number,
+                                         BBB_IO_CONSTANTS.DIGITAL_3V3)
+    io_to_send.append({
+        BBB_IO_CONSTANTS.SPEC_TYPE: BBB_IO_CONSTANTS.SPEC_TYPE_INPUT,
+        BBB_IO_CONSTANTS.INPUT_TYPE: BBB_IO_CONSTANTS.DIGITAL_3V3,
+        BBB_IO_CONSTANTS.PIN_NUMBER: pin_number
+    })
+
+
+def specify_bbb_analog_input(pin_number):
+    """
+    Updates the 'io_to_send' so that when
+    'send_io_specifications_to_BBB' is called, the analog value (normalized
+    between 0 and 1) of the given pin_number is returned
+
+    :param pin_number: The pin number on which the BBB will have an analog input
+    """
+    bbb_io_validation.validate_bbb_input(pin_number,
+                                         BBB_IO_CONSTANTS.ANALOG_1V8)
+    io_to_send.append({
+        BBB_IO_CONSTANTS.SPEC_TYPE: BBB_IO_CONSTANTS.SPEC_TYPE_INPUT,
+        BBB_IO_CONSTANTS.INPUT_TYPE: BBB_IO_CONSTANTS.ANALOG_1V8,
+        BBB_IO_CONSTANTS.PIN_NUMBER: pin_number
+    })
 
 
 def send_io_specifications_to_bbb(suite_validator):
@@ -191,23 +222,44 @@ def send_io_specifications_to_bbb(suite_validator):
     :param suite_validator: A function that takes the IO specification as an
         input and verifies that the entire specification is valid for the given
         suite. For example, it may validate that there are no pins that will
-        be in contention for the given IO specification
+        be in contention for the given IO specification. Having a suite level
+        validator is highly recommended, but a None value can be input to skip
+        suite level validation
     :return: The outputs on the BBB requested in the specify_bbb_input calls
     """
-    suite_validator(io_to_send)
+    if bbb_return_data:
+        raise AssertionError("Must call reset_bbb_io_specifications() or "
+                             "reset_bbb_return_data() before sending new IO "
+                             "specification")
+    if suite_validator is not None:
+        suite_validator(io_to_send)
     json_to_send = json.dumps(io_to_send)
     response = client.json_request_response_bbb(json_to_send)
-    return json.loads(response)
+    returned_data = json.loads(response)
+    bbb_return_data.extend(returned_data)
+    return bbb_return_data
 
 
-def get_bbb_input_value(bbb_return_data, pin_name):
+def get_bbb_input_value(pin_number):
     """
-    Retrieves the value on the input 'pin_name' within the given
+    Retrieves the value or values on the input 'pin_number' within the
     'bbb_return_data'
 
-    :param bbb_return_data: The data returned from
-    'send_io_specifications_to_bbb()'
-    :param pin_name: The pin name on which the BBB has received input
-    :return: The value of the specified input to the BBB
+    'send_io_specifications_to_bbb' must be called before calling this function
+    or the return data will be empty as the BBB will not have ever received the
+    IO specifications
+
+    Return the value or values in a list, even if there is only one value
+
+    :param pin_number: The pin name on which the BBB has received input
+    :return: A list of values of the specified input to the BBB
     """
-    return bbb_return_data[BBB_IO_CONSTANTS.INPUTS][pin_name]
+    input_dicts = filter(
+        lambda data: data[BBB_IO_CONSTANTS.PIN_NUMBER] == pin_number,
+        bbb_return_data)
+    input_values = list(map(
+        lambda data: data[BBB_IO_CONSTANTS.INPUT_VALUE],
+        input_dicts))
+    if not input_values:
+        raise AssertionError("No values for the given pin_number")
+    return input_values

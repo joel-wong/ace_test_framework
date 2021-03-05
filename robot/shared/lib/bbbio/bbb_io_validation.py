@@ -2,15 +2,25 @@ import BBB_IO_CONSTANTS
 import BBB_IO_VALIDATION_CONSTANTS
 
 
-def validate_pin_type(pin_name, pin_type, is_output):
-    if pin_type == BBB_IO_CONSTANTS.DIGITAL:
-        if pin_name not in BBB_IO_VALIDATION_CONSTANTS.DIGITAL_PINS:
+def validate_pin_type(pin_number, pin_type, is_output):
+    """
+    Validates that the given 'pin_number' can be configured with the
+    given 'pin_type' on the BBB
+
+    :param pin_number: str: The pin number in the form Px_y
+    :param pin_type: str: The pin type (e.g. digital_3v3)
+    :param is_output: bool: True if the pin is configured as an output
+    :return: None, if the pin type is valid. Otherwise raises an
+        AssertionError
+    """
+    if pin_type == BBB_IO_CONSTANTS.DIGITAL_3V3:
+        if pin_number not in BBB_IO_VALIDATION_CONSTANTS.DIGITAL_PINS:
             raise AssertionError(
-                "Cannot specify pin '{}' as a digital pin".format(pin_name))
-    elif pin_type == BBB_IO_CONSTANTS.ANALOG:
-        if pin_name not in BBB_IO_VALIDATION_CONSTANTS.ANALOG_PINS:
+                "Cannot specify pin '{}' as a digital pin".format(pin_number))
+    elif pin_type == BBB_IO_CONSTANTS.ANALOG_1V8:
+        if pin_number not in BBB_IO_VALIDATION_CONSTANTS.ANALOG_PINS:
             raise AssertionError(
-                "Cannot specify pin '{}' as an analog pin".format(pin_name))
+                "Cannot specify pin '{}' as an analog pin".format(pin_number))
         elif is_output:
             raise AssertionError("Analog pins cannot be outputs")
     else:
@@ -18,18 +28,17 @@ def validate_pin_type(pin_name, pin_type, is_output):
     return True
 
 
-def validate_pin_not_specified(current_io_to_send, pin_name):
-    if pin_name in current_io_to_send[BBB_IO_CONSTANTS.OUTPUTS]:
-        raise AssertionError(
-            "Output specification for pin '{}' already defined".format(pin_name))
-    if pin_name in current_io_to_send[BBB_IO_CONSTANTS.INPUTS]:
-        raise AssertionError(
-            "Input specification for pin '{}' already defined".format(pin_name))
-    return True
-
-
 def validate_bbb_output_value(output_type, value):
-    if output_type == BBB_IO_CONSTANTS.DIGITAL:
+    """
+    Validates that for the given 'output_type', the 'value' is valid on
+    the BBB
+
+    :param output_type: str: The output type (e.g. digital_3v3)
+    :param value: str: The output value (e.g. "1")
+    :return: None, if the value is valid for the output type. Otherwise
+        raises an AssertionError
+    """
+    if output_type == BBB_IO_CONSTANTS.DIGITAL_3V3:
         if value not in [BBB_IO_CONSTANTS.DIGITAL_LOW,
                          BBB_IO_CONSTANTS.DIGITAL_HIGH]:
             raise ValueError("'{}' is not a valid digital output value".format(
@@ -39,18 +48,32 @@ def validate_bbb_output_value(output_type, value):
     return True
 
 
-def validate_bbb_output(current_io_to_send, pin_name, output_type, value):
-    validate_pin_not_specified(current_io_to_send, pin_name)
-    validate_pin_type(pin_name, output_type, is_output=True)
+def validate_bbb_output(pin_number, output_type, value):
+    """
+    Validates that the given 'pin_number' can output 'output_type'
+    with the given 'value' on the BBB
+
+    :param pin_number: str: The pin number (e.g. P9_16)
+    :param output_type: str: The output type (e.g. digital_3v3)
+    :param value: str: The output value (e.g. "1")
+    :return: None, if the value is valid for the output type on the given
+        pin. Otherwise raises an AssertionError
+    """
+    validate_pin_type(pin_number, output_type, is_output=True)
     validate_bbb_output_value(output_type, value)
 
 
-def validate_i2c(current_io_to_send, int_i2c_spec_number, i2cbus, chip_address,
-                 data_address, data):
-    if int_i2c_spec_number in current_io_to_send[BBB_IO_CONSTANTS.I2C]:
-        raise AssertionError("I2C specification '{}' is already defined".format(
-            int_i2c_spec_number
-        ))
+def validate_i2c(i2cbus, chip_address, data_address, data):
+    """
+    Validates that given I2C parameters are valid for the BBB
+
+    :param i2cbus: str: The I2C bus (e.g. "2")
+    :param chip_address: str: the chip address (e.g. 0x27)
+    :param data_address: str: the data address (e.g. 0x01)
+    :param data: str: the data to be sent (e.g. 0x02)
+    :return: None, if the I2C parameters are valid for the BBB. Otherwise
+        raises an AssertionError
+    """
     if i2cbus not in BBB_IO_VALIDATION_CONSTANTS.I2C_BUSES:
         raise ValueError("i2cbus '{}' does not exist".format(
             i2cbus
@@ -71,6 +94,13 @@ def validate_i2c(current_io_to_send, int_i2c_spec_number, i2cbus, chip_address,
             raise ValueError("I2C data must be non-negative")
 
 
-def validate_bbb_input(current_io_to_send, pin_name, input_type):
-    validate_pin_not_specified(current_io_to_send, pin_name)
-    validate_pin_type(pin_name, input_type, is_output=False)
+def validate_bbb_input(pin_number, input_type):
+    """
+    Validates that the given 'pin_number' can input 'input_type' on the BBB
+
+    :param pin_number: str: The pin number (e.g. P9_16)
+    :param input_type: str: The input type (e.g. digital_3v3)
+    :return: None, if the input type is valid for the given
+        pin. Otherwise raises an AssertionError
+    """
+    validate_pin_type(pin_number, input_type, is_output=False)

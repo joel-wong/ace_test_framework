@@ -143,3 +143,8 @@ I2C_IO_EXPANDER_OUTPUT_REGISTER = "0x01"
 # The data address of an 8 bit register that configures whether each IO on the
 # IO Expander is an input or an output
 I2C_IO_EXPANDER_CONFIG_REGISTER = "0x03"
+
+INPUT_MODE = "input_mode"
+DRIVEN_MODE = "driven_mode"
+OUTPUT_MODE = "output_mode"
+OPEN_DRAIN_MODE = "open_drain_mode"

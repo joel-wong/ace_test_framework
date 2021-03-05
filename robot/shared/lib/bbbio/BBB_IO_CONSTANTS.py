@@ -1,21 +1,22 @@
-DIGITAL = "digital"
+DIGITAL_3V3 = "digital_3v3"
 DIGITAL_HIGH = "1"
 DIGITAL_LOW = "0"
 
-ANALOG = "analog"
+ANALOG_1V8 = "analog_1v8"
 
 I2C = "i2c"
 I2CBUS = "i2cbus"
 I2C_CHIP_ADDRESS = "chip_address"
 I2C_DATA_ADDRESS = "data_address"
 I2C_DATA = "data"
-INPUT_MODE = "input_mode"
-DRIVEN_MODE = "input_mode"
-OUTPUT_MODE = "output_mode"
-OPEN_DRAIN_MODE = "open_drain_mode"
 
-INPUTS = "inputs"
-OUTPUTS = "outputs"
+SPEC_TYPE = "spec_type"
+SPEC_TYPE_OUTPUT = "output"
+SPEC_TYPE_INPUT = "input"
 
-TYPE = "type"
-VALUE = "value"
+INPUT_TYPE = "input_type"
+INPUT_VALUE = "input_value"
+OUTPUT_TYPE = "output_type"
+OUTPUT_VALUE = "output_value"
+
+PIN_NUMBER = "pin_number"
