@@ -5,9 +5,8 @@ allows the users to control inputs and outputs on the BBB
 
 import json
 
-import ace_bbsm
+from ace_bbsm import BBB_IO_CONSTANTS, Client
 
-import BBB_IO_CONSTANTS
 import bbb_io_validation
 
 # Sample JSON that will be sent to the BBB when send_io_specifications_to_bbb()
@@ -51,7 +50,7 @@ import bbb_io_validation
 
 io_to_send = []
 bbb_return_data = []
-client = ace_bbsm.Client()
+client = Client()
 
 
 def connect_to_bbb():

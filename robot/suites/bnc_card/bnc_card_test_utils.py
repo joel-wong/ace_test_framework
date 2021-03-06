@@ -1,4 +1,5 @@
-import bbbio.BBB_IO_CONSTANTS as BBB_IO_CONSTANTS
+from ace_bbsm import BBB_IO_CONSTANTS
+
 import BNC_CONFIG
 
 # All of the I2C functions below produce a dictionary of i2cset arguments that

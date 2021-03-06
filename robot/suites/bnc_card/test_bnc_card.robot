@@ -4,7 +4,7 @@ Documentation    Test Suite for the SKF G5 BNC Card
 Library      Collections
 Library      Dialogs
 
-Variables    bbbio/BBB_IO_CONSTANTS.py
+Variables    ace_bbsm/BBB_IO_CONSTANTS.py
 Library      bbbio/bbb_io_manager.py
 Variables    manual/MANUAL_TEST_CONSTANTS.py
 
