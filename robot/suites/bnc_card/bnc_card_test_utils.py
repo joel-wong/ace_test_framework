@@ -20,12 +20,15 @@ import BNC_CONFIG
 # Test setup/teardown:
 # Reset BBB IO specifications
 # ${i2c_output} =    Get I2C to Set All IO Expander IOs as Inputs
-# Specify BBB I2C Output Dict    ${i2c_output}
-# Send IO Specifications to BBB
+# Specify BBB I2C Output Dict     ${i2c_output}
+# Execute BNC Card Test via BBB
 
 
 def get_base_io_expander_i2c():
     """
+    Provides a dictionary containing the I2C information common to all
+    i2cset commands for the BNC Card
+
     :return: dict: A dict containing the IO expander i2cbus and chip address
         on the BNC card
     """
@@ -59,6 +62,11 @@ def bitwise_not_8bit_hex(pin_number):
 
 def get_base_io_expander_i2c_to_set_value():
     """
+    In addition to using this function to set the output value of an IO
+    expander pin, the IO expander must be configured to be an output.
+    This can be done with the 'get_i2c_to_configure_io_expander_ios()'
+    function.
+
     :return: dict: A dict containing the IO expander i2cbus and chip address
         on the BNC card as well as the data address of the register that sets
         outputs on the IO expander
@@ -70,143 +78,193 @@ def get_base_io_expander_i2c_to_set_value():
     return i2c_dict
 
 
-def assert_pin_controls_user_io(pin_number):
+def assert_pin_controls_user_io(i2c_pin):
     """
-    :param pin_number: str: An 8 bit hex number
-    :return: bool: True if the 'pin_number' controls whether a user IO pin is
+    Validates that the input 'i2c_pin' controls whether a User IO
+    is an input or output on the BNC card
+
+    :param i2c_pin: str: An 8 bit hex number
+    :return: bool: True if the 'i2c_pin' controls whether a user IO pin is
         an input or an output. Otherwise throws an AssertionError
     """
-    if pin_number not in [BNC_CONFIG.I2C_BNC8_USER1_NIN_OUT,
-                          BNC_CONFIG.I2C_BNC7_USER2_NIN_OUT]:
+    if i2c_pin not in [BNC_CONFIG.I2C_BNC8_USER1_NIN_OUT,
+                       BNC_CONFIG.I2C_BNC7_USER2_NIN_OUT]:
         raise AssertionError(
-            "{} does not control a user IO pin".format(pin_number))
+            "{} does not control a user IO pin".format(i2c_pin))
     return True
 
 
-def get_i2c_for_user_io_input_mode(pin_number):
+def get_i2c_for_user_io_input_mode(i2c_pin):
     """
-    :param pin_number: str: A user IO pin number
-    :return: A dictionary containing the information required to set a user IO
-        to input mode on a BNC card through i2cset
+    Returns a dictionary containing the information required by an
+    i2cset command to set the user IO controlled by the
+    'i2c_pin' on the BNC card to input mode
+
+    :param i2c_pin: str: A user IO pin number
+        Note that i2c_pin is not necessary to achieve the purpose
+        of this function but we still make it a required argument for
+        consistency and clarity
+    :return: dict: Parameters to i2cset for setting the appropriate
+        User IO to input mode
     """
-    assert_pin_controls_user_io(pin_number)
+    assert_pin_controls_user_io(i2c_pin)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = bitwise_not_8bit_hex(pin_number)
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = "0x00"
     return i2c_dict
 
 
-def get_i2c_for_user_io_output_mode(pin_number):
+def get_i2c_for_user_io_output_mode(i2c_pin):
     """
-    :param pin_number: str: A user IO pin number
-    :return: A dictionary containing the information required to set a user IO
-        to output mode on a BNC card through i2cset
+    Returns a dictionary containing the information required by an
+    i2cset command to set the user IO controlled by the
+    'i2c_pin' on the BNC card to output mode
+
+    :param i2c_pin: str: A user IO pin number
+    :return: dict: Parameters to i2cset for setting the appropriate
+        User IO to output mode
     """
-    assert_pin_controls_user_io(pin_number)
+    assert_pin_controls_user_io(i2c_pin)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = pin_number
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = i2c_pin
     return i2c_dict
 
 
-def assert_pin_controls_open_drain_mode(pin_number):
+def assert_pin_controls_open_drain_mode(i2c_pin):
     """
-    :param pin_number: str: An 8 bit hex number
-    :return: bool: True if the 'pin_number' on the IO expander controls the open
+    Validates that the input 'i2c_pin' controls whether VETO_OUT
+    is in open drain or driven mode
+
+    :param i2c_pin: str: An 8 bit hex number
+    :return: bool: True if the 'i2c_pin' on the IO expander controls the open
         drain/driven mode for VETO_OUT. Otherwise throws an AssertionError
     """
-    if pin_number != BNC_CONFIG.I2C_BNC4_VETO_OUT_OC:
+    if i2c_pin != BNC_CONFIG.I2C_BNC4_VETO_OUT_OC:
         raise AssertionError(
-            "{} does not control a user IO pin".format(pin_number))
+            "{} does not control a user IO pin".format(i2c_pin))
     return True
 
 
-def get_i2c_for_driven_mode(pin_number):
+def get_i2c_for_driven_mode(i2c_pin):
     """
-    :param pin_number: str: The BNC4_VETO_OUT_OC pin number on the IO expander
-    :return: A dictionary containing the information required to set driven mode
-        for VETO_OUT on a BNC card via i2cset
+    Returns a dictionary containing the information required by an
+    i2cset command to set the VETO_OUT on the BNC card
+    (controlled by the 'i2c_pin') to driven mode
+
+    :param i2c_pin: str: The BNC4_VETO_OUT_OC pin number on the IO expander
+    :return: dict: Parameters to i2cset for setting VETO_OUT to driven
+        mode
     """
-    assert_pin_controls_open_drain_mode(pin_number)
+    assert_pin_controls_open_drain_mode(i2c_pin)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = pin_number
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = i2c_pin
     return i2c_dict
 
 
-def get_i2c_for_open_drain_mode(pin_number):
+def get_i2c_for_open_drain_mode(i2c_pin):
     """
-    :param pin_number: str: The BNC4_VETO_OUT_OC pin number on the IO expander
-    :return: A dictionary containing the information required to set open drain
-        mode for VETO_OUT on a BNC card via i2cset
+    Returns a dictionary containing the information required by an
+    i2cset command to set the VETO_OUT on the BNC card
+    (controlled by the 'i2c_pin') to open drain mode
+
+    :param i2c_pin: str: The BNC4_VETO_OUT_OC pin number on the IO expander
+        Note that i2c_pin is not necessary to achieve the purpose
+        of this function but we still make it a required argument for
+        consistency and clarity
+    :return: dict: Parameters to i2cset for setting VETO_OUT to open drain
+        mode
     """
-    assert_pin_controls_open_drain_mode(pin_number)
+    assert_pin_controls_open_drain_mode(i2c_pin)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = bitwise_not_8bit_hex(pin_number)
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = "0x00"
     return i2c_dict
 
 
-def assert_pin_controls_termination_resistance(pin_number):
+def assert_pin_controls_termination_resistance(i2c_pin):
     """
-    :param pin_number: str: An 8 bit hex number
-    :return: bool: True if the 'pin_number' controls the termination resistance
+    Validates that the input 'i2c_pin' controls whether a termination
+    resistor is enabled or disabled
+
+    :param i2c_pin: str: An 8 bit hex number
+    :return: bool: True if the 'i2c_pin' controls the termination resistance
         of a BNC connector. Otherwise throws an AssertionError
     """
-    if pin_number not in [BNC_CONFIG.I2C_BNC1_500HM_EN,
-                          BNC_CONFIG.I2C_BNC6_500HM_EN,
-                          BNC_CONFIG.I2C_BNC8_500_HM_EN,
-                          BNC_CONFIG.I2C_BNC7_500_HM_EN]:
+    if i2c_pin not in [BNC_CONFIG.I2C_BNC1_500HM_EN,
+                       BNC_CONFIG.I2C_BNC6_500HM_EN,
+                       BNC_CONFIG.I2C_BNC8_500_HM_EN,
+                       BNC_CONFIG.I2C_BNC7_500_HM_EN]:
         raise AssertionError(
-            "{} does not control a termination resistor".format(pin_number))
+            "{} does not control a termination resistor".format(i2c_pin))
     return True
 
 
-def get_i2c_to_enable_termination_resistor(pin_number):
+def get_i2c_to_enable_termination_resistor(i2c_pin):
     """
-    :param pin_number: str: An IO expander pin number that controls the
+    Returns a dictionary containing the information required by an
+    i2cset command to set the BNC connector controlled by the
+    given 'i2c_pin' to have a 50 ohm termination resistance
+
+    :param i2c_pin: str: An IO expander pin number that controls the
         termination resistance for a BNC connector
-    :return: A dictionary containing the information required to enable the
-        termination resistor on a BNC card via i2cset
+    :return: dict: Parameters to i2cset that enable a termination
+        resistor on the BNC card
     """
-    assert_pin_controls_termination_resistance(pin_number)
+    assert_pin_controls_termination_resistance(i2c_pin)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = pin_number
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = i2c_pin
     return i2c_dict
 
 
-def get_i2c_to_disable_termination_resistor(pin_number):
+def get_i2c_to_disable_termination_resistor(i2c_pin):
     """
-    :param pin_number: str: An IO expander pin number that controls the
+    Returns a dictionary containing the information required by an
+    i2cset command to set the BNC connector controlled by the
+    given 'i2c_pin' to have a high input impedance
+
+    :param i2c_pin: str: An IO expander pin number that controls the
         termination resistance for a BNC connector
-    :return: A dictionary containing the information required to disable the
-        termination resistor on a BNC card via i2cset
+        Note that i2c_pin is not necessary to achieve the purpose
+        of this function but we still make it a required argument for
+        consistency and clarity
+    :return: dict: Parameters to i2cset that disable a termination
+        resistor on the BNC card
     """
-    assert_pin_controls_termination_resistance(pin_number)
+    assert_pin_controls_termination_resistance(i2c_pin)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = bitwise_not_8bit_hex(pin_number)
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = "0x00"
     return i2c_dict
 
 
-def assert_pin_controls_led(pin_number):
+def assert_pin_controls_led(i2c_pin):
     """
-    :param pin_number: str: An 8 bit hex number
-    :return: bool: True if the 'pin_number' controls an LED. Otherwise throws
+    Validates that the input 'i2c_pin' controls whether an LED on
+    the BNC Card
+
+    :param i2c_pin: str: An 8 bit hex number
+    :return: bool: True if the 'i2c_pin' controls an LED. Otherwise throws
         an AssertionError
     """
-    if pin_number != BNC_CONFIG.I2C_RLED:
+    if i2c_pin != BNC_CONFIG.I2C_RLED:
         raise AssertionError(
-            "{} does not control an LED".format(pin_number))
+            "{} does not control an LED".format(i2c_pin))
     return True
 
 
-def get_i2c_to_turn_on_led(pin_number):
+def get_i2c_to_turn_on_led(i2c_pin):
     """
-    :param pin_number: str: The IO expander pin number that controls the orange
+    Returns a dictionary containing the information required by an
+    i2cset command to turn on an LED using the given 'i2c_pin'
+
+    :param i2c_pin: str: The IO expander pin number that controls the orange
         LED. Note that to turn on the orange LED, the green LED must already be
         on (which occurs if TDC_LED is set to low)
-    :return: A dictionary containing the information required to disable the
-        termination resistor on a BNC card via i2cset
+        Note that i2c_pin is not necessary to achieve the purpose
+        of this function but we still make it a required argument for
+        consistency and clarity
+    :return: dict: Parameters to i2cset that turn on an LED on the BNC card
     """
-    assert_pin_controls_led(pin_number)
+    assert_pin_controls_led(i2c_pin)
     i2c_dict = get_base_io_expander_i2c_to_set_value()
-    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = bitwise_not_8bit_hex(pin_number)
+    i2c_dict[BBB_IO_CONSTANTS.I2C_DATA] = "0x00"
     return i2c_dict
 
 
@@ -240,4 +298,11 @@ def get_i2c_to_configure_io_expander_ios(pin_numbers):
 
 
 def get_i2c_to_set_all_io_expander_ios_as_inputs():
+    """
+    Returns a dictionary containing the information required by an
+    i2cset command to set all pins on the IO Expander to inputs
+
+    :return: dict: A dictionary containing the required 4 arguments to
+        i2cset
+    """
     return get_i2c_to_configure_io_expander_ios("0x00")
