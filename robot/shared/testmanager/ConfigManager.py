@@ -316,3 +316,14 @@ class ConfigManager:
             return self.__config[config_key] is True
         else:
             return default
+
+    def log_test_data(self):
+        if self.__config is {}:
+            self.get_default_config()
+        return json.dumps(self.__config)
+
+    def save_config(self, config_file_output_path):
+        config_file = open(config_file_output_path, 'w')
+        config_file.write(json.dumps(self.__config))
+        config_file.close()
+

@@ -82,7 +82,8 @@ class TestManager:
             test_output_directory = output_directory
 
         subprocess_args = ["python", "-m", "robot", "--outputdir",
-                           test_output_directory]
+                           test_output_directory,
+                           "--doc", self.config_manager.log_test_data()]
 
         if not self.__in_gui_mode:
             include_manual_tests = self.config_manager.get_bool(
