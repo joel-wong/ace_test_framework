@@ -73,8 +73,9 @@ def getText(nodelist):
     return ''.join(rc)
 
 def parse_xml(xml_file_path):
+    #TODO: get all xml files from subdirectories
     suite_info = SuiteRunInfo()
     xml_file = minidom.parse(xml_file_path)
     test_list = get_test_list(xml_file)
     suite_info = get_suite_info(xml_file)
-    return test_list
+    return test_list, suite_info
