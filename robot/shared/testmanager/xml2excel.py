@@ -23,28 +23,48 @@ class SuiteRunInfo:
         tester = None
         date = None
 
-
-
-def parse_xml(xml_file_path):
+def get_test_list(xml_minidom):
     test_list = []
-    xml_file = minidom.parse(xml_file_path)
-    items = xml_file.getElementsByTagName('test')
+    items = xml_minidom.getElementsByTagName('test')
     for item in items:
         test = TestStats()
         test.name = item.attributes['name'].value
 
-        #print(item.attributes['name'].value)
+        # print(item.attributes['name'].value)
         test_status = item.getElementsByTagName('status')
         last_index = len(test_status) - 1
 
         test.status = test_status[last_index].attributes['status'].value
 
         test_list.append(test)
+    return test_list
 
-        #print("Overall Test Status: " + test_status[last_index].attributes['status'].value)
-        #print(last_index)
-        #for status in test_status:
-        #  print(status.attributes['status'].value)
+def get_suite_info(xml_minidom):
+    suites = xml_minidom.getElementsByTagName('suite')
+    text = []
+    for suite in suites:
+        doc = suite.getElementsByTagName('doc')
+        if doc:
+            last_index = len(doc) - 1
+            if doc[last_index].hasChildNodes():
+                children = doc[last_index].childNodes
+                for child in children:
+                    text.append(child.data)
+                    text = ''.join(text)
+    print(text)
+
+def getText(nodelist):
+    rc = []
+    for node in nodelist:
+        if node.nodeType == node.TEXT_NODE:
+            rc.append(node.data)
+    return ''.join(rc)
+
+def parse_xml(xml_file_path):
+    suite_info = SuiteRunInfo()
+    xml_file = minidom.parse(xml_file_path)
+    test_list = get_test_list(xml_file)
+    get_suite_info(xml_file)
     return test_list
 
 def input_suit_info(suite_run_ifno):
