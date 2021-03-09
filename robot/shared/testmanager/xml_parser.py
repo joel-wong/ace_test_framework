@@ -14,35 +14,42 @@ class TestStats:
         tag = None
         log = ""
 
-class SuiteRunInfo:
+class SuiteRunInfo():
     def __init__(self, dict=None):
         if dict is not None:
             self.__dict__ = dict
             # Note: For this to work, it is expected for dict fields
             # to match attribute names in else clause
+            #print(dict)
         else:
-            suite_name = None
-            serial_number = None
-            batch_number = None
-            part_number = None
-            work_order_job_order = None
-            staff_name = None
-            include_manual_tests = None
-            repeat_tests = None
+            self.suite_name = None
+            self.serial_number = None
+            self.batch_number = None
+            self.part_number = None
+            self.work_order_job_number = None
+            self.staff_name = None
+            self.include_manual_tests = None
+            self.repeat_tests = None
             # date = None
+        self.tests = []
 
 def get_test_list(xml_minidom):
     test_list = []
     items = xml_minidom.getElementsByTagName('test')
     for item in items:
         test = TestStats()
+        # Get Test Name
         test.name = item.attributes['name'].value
 
-        # print(item.attributes['name'].value)
+        # Get Test Status (stored in last 'status' DOM)
         test_status = item.getElementsByTagName('status')
         last_index = len(test_status) - 1
-
         test.status = test_status[last_index].attributes['status'].value
+        test.execution_time = test_status[last_index].attributes['endtime'].value
+
+        #time_stamps = item.getElementsByTagName('endtime')
+        #last_index = len(time_stamps) - 1
+        #date_time = time_stamps.value
 
         test_list.append(test)
     return test_list
@@ -74,8 +81,9 @@ def getText(nodelist):
 
 def parse_xml(xml_file_path):
     #TODO: get all xml files from subdirectories
-    suite_info = SuiteRunInfo()
     xml_file = minidom.parse(xml_file_path)
-    test_list = get_test_list(xml_file)
     suite_info = get_suite_info(xml_file)
-    return test_list, suite_info
+    test_list = get_test_list(xml_file)
+    suite_info.tests = test_list
+    suite_info.date_time = suite_info.tests[-1].execution_time
+    return suite_info
