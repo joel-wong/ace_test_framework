@@ -9,7 +9,7 @@ import signal
 from manual import MANUAL_TEST_CONSTANTS
 import Listener
 import SelectTests
-
+from resultmanager.xml2excel import *
 import ConfigManager
 from DependencyManager import DependencyManager
 
@@ -105,7 +105,11 @@ class TestManager:
                 self.run_process(subprocess_args, test_runner_worker)
             except KeyboardInterrupt:
                 self.emergency_stop_flag = True
+            result_excel = os.path.join(test_output_directory, DEFAULT_FILENAME)
+            xml_formatter = Xml2Excel(test_output_directory, result_excel)
+            xml_formatter.run()
             self.print_tests_complete_message(output_directory)
+
             return
 
         try:
@@ -177,6 +181,9 @@ class TestManager:
             "{}/*.xml".format(individual_output_directory)]
         subprocess.run(merge_reports_subprocess_args, shell=True,
                        check=False)
+        result_excel = os.path.join(output_directory, DEFAULT_FILENAME)
+        xml_formatter = Xml2Excel(output_directory, result_excel)
+        xml_formatter.run()
         self.print_tests_complete_message(output_directory)
 
     def print_tests_complete_message(self, output_directory):

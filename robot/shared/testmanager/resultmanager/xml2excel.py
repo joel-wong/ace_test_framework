@@ -1,6 +1,6 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Color
-from xml_parser import *
+from resultmanager.xml_parser import *
 import os
 
 DEFAULT_FILENAME = "test_results.xlsx"
