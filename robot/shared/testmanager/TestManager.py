@@ -167,6 +167,7 @@ class TestManager:
                                        suite_name)
         return SelectTests.get_tests(suite_directory)
 
+
     @staticmethod
     def generate_datetime_str():
         current_time = datetime.datetime.utcnow().isoformat("T")
