@@ -305,9 +305,6 @@ def date_time_formatter(date_time_str):
 
 
 if __name__ == "__main__":
-    file_list = get_xml_files(data_source4)
-    for file in file_list:
-        print(file)
     xml_formatter = Xml2Excel(data_source3)
     xml_formatter.run()
 
