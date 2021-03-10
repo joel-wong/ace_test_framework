@@ -4,6 +4,7 @@ from xml.dom import minidom, Node
 data_source = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-08T20-16-30-048130\output.xml"
 data_source2 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-47-34-182030\INDIVIDUAL TESTS\output-2021-03-09T01-47-34-183027.xml"
 data_source3 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-25-32-637851\output.xml"
+data_source4 = 'H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-47-34-182030'
 UNKNOWN_VALUE_ENTRY = "N/A"
 
 class TestStats:
@@ -33,6 +34,9 @@ class SuiteRunInfo():
             self.repeat_tests = None
             # date = None
         self.tests = []
+
+    def combine_suite_runs(self, suite2):
+        pass
 
 def get_test_list(xml_minidom):
     test_list = []
