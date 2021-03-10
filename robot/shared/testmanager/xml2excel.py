@@ -24,7 +24,9 @@ class Xml2Excel():
 
 
     def run(self):
-        self.suites.append(parse_xml(self.results_path))
+        #self.suites.append(parse_xml(self.results_path))
+        self.parse_results()
+        self.get_test_results_dict()
         # Title, Tester, Date, Approver
         self.insert_sheet_header()
         # Card/Suite Run Information
@@ -54,26 +56,49 @@ class Xml2Excel():
             self.insert_element(suite.serial_number, 'B11')
             #self.insert_element(suite.suite_name, 'E7')
 
+    def parse_results(self):
+        suites = []
+        xml_files = get_xml_files(self.results_path)
+        for file_path in xml_files:
+            suites.append(parse_xml(file_path))
+        self.suites = suites
+
+    def get_test_results_dict(self):
+        test_results = {}
+        suites = self.suites
+        for suite in suites:
+            test_list = suite.tests
+            for test in test_list:
+                if test.name not in test_results:
+                    # insert in dictionary
+                    test_results[test.name] = {"PASS": 0, "FAIL": 0}
+                # increment stats depending on test status
+                if test.status == 'PASS':
+                    test_results[test.name]['PASS'] = test_results[test.name]['PASS'] + 1
+                else:
+                    self.overall_result = False
+                    test_results[test.name]['FAIL'] = test_results[test.name]['FAIL'] + 1
+        # TODO get suite total stats
+        # TODO get suite stats by tag
+        return test_results
+
+
     def insert_overall_test_results(self):
+        test_results = self.get_test_results_dict()
         self.insert_overall_test_result_titles()
         pass_column = 'B'
         fail_column = 'C'
         test_name_column = 'D'
-        test_list = []
         row = TEST_LIST_START_INDEX
-        for test in self.suites[0].tests:
+
+        for test in test_results:
+            pass_cell = pass_column + str(row)
+            fail_cell = fail_column + str(row)
             name_cell = test_name_column + str(row)
-            self.insert_element(test.name, name_cell)
-            #self.insert_element(test.status, status_cell)
-            if test.status == 'PASS':
-                status_cell = pass_column + str(row)
-                current_val = self.worksheet[status_cell]
-                self.worksheet[status_cell] = current_val.value + 1
-                self.colour_cell(status_cell, PASS_COLOUR_HEX)
-            else:
-                status_cell = fail_column + str(row)
-                self.increment_cell_value(status_cell)
-                self.overall_result = False
+
+            self.insert_element(test_results[test]['PASS'], pass_cell)
+            self.insert_element(test_results[test]['FAIL'], fail_cell)
+            self.insert_element(test, name_cell)
             row = row + 1
 
         self.overall_result_end_row = row
@@ -100,6 +125,9 @@ class Xml2Excel():
         pass_column = 'B'
         fail_column = 'C'
 
+        overall_suite_status_title_column = 'A'
+        overall_suite_status_column = 'B'
+
         start_row = self.overall_result_start_row
         end_row = self.overall_result_end_row
 
@@ -107,28 +135,26 @@ class Xml2Excel():
             overall_status_cell = 'A' + str(row)
             pass_cell = pass_column + str(row)
             fail_cell = fail_column + str(row)
-            if self.worksheet[fail_cell].value is not None and self.worksheet[fail_cell].value >= 1:
+            # Check Fail Cells
+            if self.worksheet[fail_cell].value >= 1:
+                # Colour FAIL Cell
                 self.colour_cell(fail_cell, FAIL_COLOUR_HEX)
+                # Overall test status is FAIL
                 self.worksheet[overall_status_cell] = "FAIL"
                 self.colour_cell(overall_status_cell, FAIL_COLOUR_HEX)
             else:
-                self.colour_cell(fail_cell, FAIL_COLOUR_HEX)
+                # Overall test status is pass
                 self.worksheet[overall_status_cell] = "PASS"
                 self.colour_cell(overall_status_cell, PASS_COLOUR_HEX)
-                self.worksheet[fail_cell] = 0
-            if self.worksheet[pass_cell].value is not None and self.worksheet[pass_cell].value >= 1:
+            # Check Pass Cells
+            if self.worksheet[pass_cell].value >= 1:
                 self.colour_cell(pass_cell, PASS_COLOUR_HEX)
-            else:
-                self.worksheet[pass_cell] = 0
-
-
-
 
         # Output overall test result
-        overall_status_row = 2 + self.overall_result_end_row
-        overall_result_cell = 'B' + str(overall_status_row)
+        overall_suite_status_row = 2 + self.overall_result_end_row
+        overall_result_cell = overall_suite_status_column + str(overall_suite_status_row)
         self.insert_element("Overall Test Result:",
-                            overall_status_column + str(overall_status_row), bold=True)
+                            overall_suite_status_title_column + str(overall_suite_status_row), bold=True)
         if self.overall_result:
             self.insert_element("PASS", overall_result_cell)
             self.colour_cell(overall_result_cell, PASS_COLOUR_HEX)
@@ -201,7 +227,7 @@ if __name__ == "__main__":
     file_list = get_xml_files(data_source4)
     for file in file_list:
         print(file)
-    xml_formatter = Xml2Excel(data_source3)
+    xml_formatter = Xml2Excel(data_source4)
     xml_formatter.run()
 
 
