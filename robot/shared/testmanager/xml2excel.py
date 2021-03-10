@@ -7,8 +7,9 @@ DEFAULT_FILENAME = "test_results.xlsx"
 def default_file_path():
     return os.path.join(os.path.curdir, DEFAULT_FILENAME)
 SHEET_TITLE = "TEST RESULTS SHEET: "
-PASS_COLOUR_HEX = 'c5e0b3'
+TEST_LIST_START_INDEX = 14
 FAIL_COLOUR_HEX = 'ffab97'
+PASS_COLOUR_HEX = '3c5e0b'
 
 class Xml2Excel():
     def __init__(self,  robot_results_path, xlsx_file_path=default_file_path()):
@@ -25,6 +26,7 @@ class Xml2Excel():
         # Card/Suite Run Information
         self.insert_suite_info_headers()
         self.insert_suite_config_info()
+        self.insert_test_results()
 
         # TODO: Add Parsed Data
 
@@ -49,12 +51,42 @@ class Xml2Excel():
             #self.insert_element(suite.suite_name, 'E7')
 
 
-
     def insert_test_results(self):
-        pass
+        self.insert_merged_title("RESULTS", 'A12', 'E12', bold=True, font_size=12)
+        self.insert_element("Status", 'A13', bold=True)
+        self.insert_element("Test Runs", 'B13', bold=True)
+        self.insert_element("Test Name", 'C13', bold=True)
+        overall_status = True
+        test_name_column = 'C'
+        test_result_column = 'A'
+
+        row = TEST_LIST_START_INDEX
+        for test in self.suites[0].tests:
+            name_cell = test_name_column + str(row)
+            status_cell = test_result_column + str(row)
+            self.insert_element(test.name, name_cell)
+            self.insert_element(test.status, status_cell)
+            if test.status == 'PASS':
+                self.colour_cell(status_cell, PASS_COLOUR_HEX)
+            else:
+                self.colour_cell(status_cell, FAIL_COLOUR_HEX)
+                overall_status = False
+            row = row + 1
+
+        row = row + 2
+        self.insert_element("Overall Test Result:", 'A' + str(row), bold=True)
+        overall_status_cell = 'B' + str(row)
+        if overall_status:
+            self.insert_element("PASS", overall_status_cell)
+            self.colour_cell(overall_status_cell, PASS_COLOUR_HEX)
+        else:
+            self.insert_element("FAIL", overall_status_cell)
+            self.colour_cell(overall_status_cell, FAIL_COLOUR_HEX)
+
+
 
     def insert_suite_info_headers(self):
-        self.insert_merged_title("Card Information", 'A7', 'D7')
+        self.insert_merged_title("Card Information", 'A7', 'D7', font_size=12)
         self.insert_element("Part Number", 'A8', bold=True)
         self.insert_element("Work Order", 'B8', bold=True)
         self.insert_element("Batch Number", 'C8', bold=True)
@@ -105,7 +137,7 @@ def input_suit_info(suite_run_ifno):
 if __name__ == "__main__":
     #test_list = parse_xml(data_source2)
     robot_results = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-08T20-16-30-048130"
-    xml_formatter = Xml2Excel(data_source2)
+    xml_formatter = Xml2Excel(data_source3)
     xml_formatter.run()
 
 

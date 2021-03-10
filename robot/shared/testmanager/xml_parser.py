@@ -1,18 +1,19 @@
 
-from xml.dom import minidom
+from xml.dom import minidom, Node
 
 data_source = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-08T20-16-30-048130\output.xml"
 data_source2 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-47-34-182030\INDIVIDUAL TESTS\output-2021-03-09T01-47-34-183027.xml"
+data_source3 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-25-32-637851\output.xml"
 UNKNOWN_VALUE_ENTRY = "N/A"
 
 class TestStats:
     def __init__(self):
-        test_status = None
-        execution_time = None
-        name = None
-        test_number = None
-        tag = None
-        log = ""
+        self.test_status = UNKNOWN_VALUE_ENTRY
+        self.execution_time = UNKNOWN_VALUE_ENTRY
+        self.name = UNKNOWN_VALUE_ENTRY
+        self.test_number = UNKNOWN_VALUE_ENTRY
+        self.tag = UNKNOWN_VALUE_ENTRY
+
 
 class SuiteRunInfo():
     def __init__(self, dict=None):
@@ -35,24 +36,25 @@ class SuiteRunInfo():
 
 def get_test_list(xml_minidom):
     test_list = []
-    items = xml_minidom.getElementsByTagName('test')
-    for item in items:
+    for element in xml_minidom.getElementsByTagName('test'):
         test = TestStats()
         # Get Test Name
-        test.name = item.attributes['name'].value
-
+        test.name = element.attributes['name'].value
         # Get Test Status (stored in last 'status' DOM)
-        test_status = item.getElementsByTagName('status')
+        test_status = element.getElementsByTagName('status')
         last_index = len(test_status) - 1
         test.status = test_status[last_index].attributes['status'].value
+        # Get Test Execution Time
         test.execution_time = test_status[last_index].attributes['endtime'].value
 
-        #time_stamps = item.getElementsByTagName('endtime')
-        #last_index = len(time_stamps) - 1
-        #date_time = time_stamps.value
-
+        for x in element.childNodes:
+            if x.nodeType == Node.ELEMENT_NODE:
+                if x.tagName == 'tag':
+                    test.tag = x.childNodes[0].data
         test_list.append(test)
+
     return test_list
+
 
 def get_suite_info(xml_minidom):
     suites = xml_minidom.getElementsByTagName('suite')
