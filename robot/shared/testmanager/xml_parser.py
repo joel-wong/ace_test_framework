@@ -1,6 +1,6 @@
-
 from xml.dom import minidom, Node
 
+# TODO: Remove these data sources. Here for testing purposes
 data_source = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-08T20-16-30-048130\output.xml"
 data_source2 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-47-34-182030\INDIVIDUAL TESTS\output-2021-03-09T01-47-34-183027.xml"
 data_source3 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-25-32-637851\output.xml"
@@ -22,7 +22,6 @@ class SuiteRunInfo():
             self.__dict__ = dict
             # Note: For this to work, it is expected for dict fields
             # to match attribute names in else clause
-            #print(dict)
         else:
             self.suite_name = None
             self.serial_number = None
@@ -32,13 +31,17 @@ class SuiteRunInfo():
             self.staff_name = None
             self.include_manual_tests = None
             self.repeat_tests = None
-            # date = None
         self.tests = []
 
-    def combine_suite_runs(self, suite2):
-        pass
 
 def get_test_list(xml_minidom):
+    """
+    Function that gets a list of TestStats objects using a xml_minidom object.
+    Parses necessary data from xml minidom object
+
+    :param xml_minidom: xml_minidom object
+    :return: List of TestStats objects
+    """
     test_list = []
     for element in xml_minidom.getElementsByTagName('test'):
         test = TestStats()
@@ -61,6 +64,13 @@ def get_test_list(xml_minidom):
 
 
 def get_suite_info(xml_minidom):
+    """
+    Function that creates SuiteRunInfo object using xml minidom object
+    Parses necessary data from xml minidom object
+
+    :param xml_minidom: xml_minidom object
+    :return: SuiteRunInfo object
+    """
     suites = xml_minidom.getElementsByTagName('suite')
     suite_info = []
     for suite in suites:
@@ -72,21 +82,22 @@ def get_suite_info(xml_minidom):
                 for child in children:
                     suite_info.append(child.data)
                     suite_info = ''.join(suite_info)
+    # Convert string to python dictionary
     result = eval(suite_info)
     suite_info = SuiteRunInfo(result)
     return suite_info
 
 
-
-def getText(nodelist):
-    rc = []
-    for node in nodelist:
-        if node.nodeType == node.TEXT_NODE:
-            rc.append(node.data)
-    return ''.join(rc)
-
 def parse_xml(xml_file_path):
-    #TODO: get all xml files from subdirectories
+    """
+    Function that parses xml file and returns a SuiteRunInfo Object
+
+    Creates a minidom object for the xml file and parses using function
+    found in this file
+
+    :param xml_file_path: String path to a .xml file
+    :return: SuiteRunInfo object
+    """
     xml_file = minidom.parse(xml_file_path)
     suite_info = get_suite_info(xml_file)
     test_list = get_test_list(xml_file)
