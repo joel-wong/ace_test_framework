@@ -108,6 +108,24 @@ Voltage Sense 5V Bus
     Should Be True    ${analog_value} < ${VDD_5V_ANALOG_MAXIMUM}
 
 
+Check Green LED
+    [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
+    Execute Manual Step    ${LED_OFF_CHECK_MESSAGE}
+    Specify BBB Digital Output    ${P_TDC_LED_TO_LD}    ${DIGITAL_LOW}
+    Enable Line Drivers
+    Execute BNC Card Test via BBB
+    Execute Manual Step    Press PASS if the LED on the BNC card is \n\n*** GREEN ***\n\n, otherwise press FAIL
+
+Check Orange LED
+    [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
+    ${turn_red_led_on_i2c} =    Get I2C to Turn on LED    ${I2C_RLED}
+    Specify BBB I2C Output Dict    ${turn_red_led_on_i2c}
+    Set IO Expander Pin to Output    ${I2C_RLED}
+    Specify BBB Digital Output    ${P_TDC_LED_TO_LD}    ${DIGITAL_LOW}
+    Enable Line Drivers
+    Execute BNC Card Test via BBB
+    Execute Manual Step    Press PASS if the LED on the BNC card is \n\n*** ORANGE ***\n\n, otherwise press FAIL
+
 
 Check BNC1 REF_IN Input = Pin Header REF_IN For Digital High
     [Tags]     ${PIN_HEADER_OUT_EQUALS_BNC_IN}
@@ -317,32 +335,9 @@ Check Pin Header VETO_OUT Low Input has High Impedence Output on BNC4 VETO_OUT W
 #    Check Pin Header to BNC Low Passed Through    ${P_VETO_OUT_TO_LD}    ${B_VETO_OUT_TO_BBB_L3V3}
 
 
-Check Green LED
-    [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
-    Execute Manual Step    ${LED_OFF_CHECK_MESSAGE}
-    Specify BBB Digital Output    ${P_TDC_LED_TO_LD}    ${DIGITAL_LOW}
-    Enable Line Drivers
-    Execute BNC Card Test via BBB
-    Execute Manual Step    Press PASS if the LED on the BNC card is \n\n*** GREEN ***\n\n, otherwise press FAIL
-
-Check Orange LED
-    [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
-    Execute Manual Step    ${LED_OFF_CHECK_MESSAGE}
-    ${turn_red_led_on_i2c} =    Get I2C to Turn on LED    ${I2C_RLED}
-    Specify BBB I2C Output Dict    ${turn_red_led_on_i2c}
-    Set IO Expander Pin to Output    ${I2C_RLED}
-    Specify BBB Digital Output    ${P_TDC_LED_TO_LD}    ${DIGITAL_LOW}
-    Enable Line Drivers
-    Execute BNC Card Test via BBB
-    Execute Manual Step    Press PASS if the LED on the BNC card is \n\n*** ORANGE ***\n\n, otherwise press FAIL
-
-
 
 *** Keywords ***
 Setup BBB For BNC Card Tests
-    # TODO: Add detailed manual instructions for setting up tests
-    Execute Manual Step    During development, remove all external circuitry from the BeagleBone. Press PASS when complete.
-
     # set up a socket connection to BBB
     Connect To BBB
 
