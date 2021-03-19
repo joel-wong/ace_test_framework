@@ -347,7 +347,8 @@ Setup BBB For BNC Card Tests
     Connect To BBB
 
 Execute BNC Card Test via BBB
-    Send IO Specifications to BBB    ${NONE}
+    ${suite_validator} =    Get BNC Card Suite Validator
+    Send IO Specifications to BBB    ${suite_validator}
 
 Set BNC Card and BeagleBone IOs Back to Inputs
     Reset BBB IO Specifications

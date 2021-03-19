@@ -141,10 +141,20 @@ I2C_IO_EXPANDER_I2CBUS = "2"
 # The chip address f the IO Expander
 I2C_IO_EXPANDER_CHIP_ADDRESS = "0x27"
 
+# Represents the current logic level of the IO expander pin, regardless
+# of whether that pin is an input or output
+# Currently unused
+# I2C_IO_EXPANDER_INPUT_REGISTER = "0x00"
+
 # The data address of an 8 bit register that configures the output value for
 # output pins on the IO Expander. The pins must be configured to outputs before
 # being given a value
 I2C_IO_EXPANDER_OUTPUT_REGISTER = "0x01"
+
+# Whether the value of each pin should be inverted when the input
+# register is read
+# Currently unused
+# I2C_IO_EXPANDER_POLARITY_INVERSION_REGISTER = "0x02"
 
 # The data address of an 8 bit register that configures whether each IO on the
 # IO Expander is an input or an output

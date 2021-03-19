@@ -42,7 +42,7 @@ class TestManager:
         output_directory = os.path.join(main_test_output_directory,
                                         TestManager.generate_datetime_str())
         try:
-            os.mkdir(output_directory)
+            os.makedirs(output_directory, mode=0o660)
         except FileExistsError:
             print("Error: Output directory name already exists. Exiting...")
             sys.exit(1)

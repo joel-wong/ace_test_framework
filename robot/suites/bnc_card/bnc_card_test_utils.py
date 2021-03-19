@@ -1,6 +1,7 @@
 from ace_bbsm import BBB_IO_CONSTANTS
 
 import BNC_CONFIG
+from BNCValidator import BNCValidator
 
 # All of the I2C functions below produce a dictionary of i2cset arguments that
 # will alter one of the four registers in the PCA9534 IO expander:
@@ -306,3 +307,7 @@ def get_i2c_to_set_all_io_expander_ios_as_inputs():
         i2cset
     """
     return get_i2c_to_configure_io_expander_ios("0x00")
+
+
+def get_bnc_card_suite_validator():
+    return BNCValidator.validate_suite
