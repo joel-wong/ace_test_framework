@@ -40,7 +40,7 @@ class DependencyManager:
         """Upgrades dependencies to the latest version"""
         # upgrade pip
         print("Upgrading/installing any required dependencies...")
-        subprocess.run(["python", "-m", "pip", "install",
+        subprocess.run(["python", "-m", "pip", "install", "--user",
                         "--upgrade", "pip", "--no-warn-script-location"],
                        shell=True, check=True)
         print("pip package manager has been upgraded to the latest version")
