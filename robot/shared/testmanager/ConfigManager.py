@@ -1,8 +1,21 @@
 import functools
 import json
 import os
+import re
 
+# ---- REGEX PATTERNS ----
+WORK_ORDER_RE_PATTERN = r'^\d{10}$'
+PART_NUMBER_RE_PATTERN = r'^\d{3}-\d{4}-\d{3}$'
+BATCH_NUMBER_RE_PATTERN = r'^\d{8}$'
+SERIAL_NUMBER_RE_PATTERN = r'^\d{3}$'
 
+# ---- REGEX MESSAGES ----
+WORK_ORDER_RE_MESSAGE = "10 digits"
+PART_NUMBER_RE_MESSAGE = "xxx-xxxx-xxx where 'x' is a digit"
+BATCH_NUMBER_RE_MESSAGE = "8 digits"
+SERIAL_NUMBER_RE_MESSAGE = "3 digits"
+
+# ---- CONSTANT TEXT PATTERNS ----
 CONFIG_FILE_NAME = "config.json"
 CONFIG_SUITE_NAME = "suite_name"
 CONFIG_SERIAL_NUMBER = "serial_number"
@@ -17,10 +30,10 @@ WORK_ORDER_JOB_NUMBER_TEXT = "Please enter the work order number / job number:"
 CONFIG_STAFF_NAME = "staff_name"
 STAFF_NAME_TEXT = "Please enter the staff member name:"
 CONFIG_INCLUDE_MANUAL_TESTS = "include_manual_tests"
-INCLUDE_MANUAL_TESTS_TEXT = "Would you like to include manual tests? [Y/N]"
+INCLUDE_MANUAL_TESTS_TEXT = "Include manual tests? [Yes/True or No/False]"
 CONFIG_REPEAT_TESTS = "repeat_tests"
-REPEAT_TESTS_TEXT = "Would you like to run tests continuously until stopped " \
-                    "via Ctrl + C? [Y/N]"
+REPEAT_TESTS_TEXT = "Run tests continuously until stopped " \
+                    "via Ctrl + C? [Yes/True or No/False]"
 
 NO_DEFAULT_TEXT = "There is no default"
 
@@ -44,11 +57,16 @@ class ConfigManager:
         print("for that configuration value.\n")
 
         self.input_suite_name()
-        self.input_config_value_str(CONFIG_SERIAL_NUMBER, SERIAL_NUMBER_TEXT)
-        self.input_config_value_str(CONFIG_BATCH_NUMBER, BATCH_NUMBER_TEXT)
-        self.input_config_value_str(CONFIG_PART_NUMBER, PART_NUMBER_TEXT)
-        self.input_config_value_str(CONFIG_WORK_ORDER_JOB_NUMBER,
-                                    WORK_ORDER_JOB_NUMBER_TEXT)
+
+        self.input_config_value(CONFIG_BATCH_NUMBER, BATCH_NUMBER_TEXT,
+                                ConfigManager.validate_batch_number)
+        self.input_config_value(CONFIG_SERIAL_NUMBER, SERIAL_NUMBER_TEXT,
+                                ConfigManager.validate_serial_number)
+        self.input_config_value(CONFIG_PART_NUMBER, PART_NUMBER_TEXT,
+                                ConfigManager.validate_part_number)
+        self.input_config_value(CONFIG_WORK_ORDER_JOB_NUMBER, WORK_ORDER_JOB_NUMBER_TEXT,
+                                ConfigManager.validate_work_order)
+
         self.input_config_value_str(CONFIG_STAFF_NAME, STAFF_NAME_TEXT)
         self.input_config_value_bool(CONFIG_INCLUDE_MANUAL_TESTS,
                                      INCLUDE_MANUAL_TESTS_TEXT)
@@ -159,17 +177,40 @@ class ConfigManager:
                                 ConfigManager.validate_str)
 
     @staticmethod
-    def validate_bool(input_str):
+    def validate_re_match(pattern, input_str, re_message):
+        if ConfigManager.validate_str(input_str) and re.fullmatch(pattern, input_str):
+            return input_str
+        raise AssertionError("Invalid input. Expected input of the form: {}".format(re_message))
+
+    @staticmethod
+    def validate_work_order(input_str):
+        return ConfigManager.validate_re_match(WORK_ORDER_RE_PATTERN, input_str, WORK_ORDER_RE_MESSAGE)
+
+    @staticmethod
+    def validate_part_number(input_str):
+        return ConfigManager.validate_re_match(PART_NUMBER_RE_PATTERN, input_str, PART_NUMBER_RE_MESSAGE)
+
+    @staticmethod
+    def validate_batch_number(input_str):
+        return ConfigManager.validate_re_match(BATCH_NUMBER_RE_PATTERN, input_str, BATCH_NUMBER_RE_MESSAGE)
+
+    @staticmethod
+    def validate_serial_number(input_str):
+        return ConfigManager.validate_re_match(SERIAL_NUMBER_RE_PATTERN, input_str, SERIAL_NUMBER_RE_MESSAGE)
+
+    @staticmethod
+    def validate_bool(value):
+        if type(value) == bool:
+            return value
         try:
-            input_str_lower = input_str.lower()
-        except AttributeError:
-            raise AssertionError("input value must be Y (Yes) or N (No)")
+            input_str_lower = value.lower()
+        except AttributeError as e:
+            raise AssertionError("Input value must be Yes/True or No/False")
         if input_str_lower in ["y", "yes", "t", "true"]:
-            return "Y"
+            return True
         elif input_str_lower in ["n", "no", "f", "false"]:
-            return "N"
-        else:
-            raise AssertionError("input value must be Y (Yes) or N (No)")
+            return False
+        raise AssertionError("Input value must be Yes/True or No/False")
 
     def input_config_value_bool(self, config_key, display_text):
         self.input_config_value(config_key, display_text,
@@ -200,7 +241,7 @@ class ConfigManager:
 
     def get_bool(self, config_key, default=None):
         if config_key in self.__config:
-            return self.__config[config_key] == "Y"
+            return self.__config[config_key] is True
         else:
             return default
 
