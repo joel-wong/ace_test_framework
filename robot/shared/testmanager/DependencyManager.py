@@ -34,6 +34,7 @@ class DependencyManager:
                         os.path.join(os.path.curdir, "requirements.txt")],
                        shell=True, check=True)
         print("Robot framework is installed and up to date")
+        print("PyQT5 is installed and up to date")
 
     @staticmethod
     def upgrade_dependencies():
@@ -51,6 +52,7 @@ class DependencyManager:
                         os.path.join(os.path.curdir, "requirements.txt")],
                        shell=True, check=True)
         print("Robot framework has been upgraded to the latest version")
+        print("PyQT5 has been upgraded to the latest version")
 
 
 if __name__ == "__main__":

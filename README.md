@@ -22,9 +22,13 @@ The installer will automatically detect if you have Python 3 already installed.
 If you do *not* have Python 3 installed, then click "install" and ensure that the "pip" option is selected.
 If you *do* have python already installed then click "modify" and install "pip" if you do not have it already.
 
-After Python and pip are installed, you simply need to double-click on
-`RunTests.bat` and follow the instructions in the prompt that opens to run
-the tests!
+After Python and pip are installed, you need to double-click on 
+`UpgradeDependencies.bat` to install any packages required to run the program.
+
+Once that is done, you simply need to double-click on `RunTests.bat` and follow
+the instructions in the GUI that opens to run the tests!
+
+To run the tests via the command-line with no GUI, the --nogui flag can be added to the `RunTests.bat` file.
 
 ### Troubleshooting: ###
 If the program is not working, try running `UpgradeDependencies.bat` by

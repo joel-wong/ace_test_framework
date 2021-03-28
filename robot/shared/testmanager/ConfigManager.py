@@ -6,22 +6,24 @@ import re
 # ---- REGEX PATTERNS ----
 WORK_ORDER_RE_PATTERN = r'^\d{10}$'
 PART_NUMBER_RE_PATTERN = r'^\d{3}-\d{4}-\d{3}$'
-BATCH_NUMBER_RE_PATTERN = r'^\d{8}$'
+BATCH_MO_NUMBER_RE_PATTERN = r'^\d{8}$'
 SERIAL_NUMBER_RE_PATTERN = r'^\d{3}$'
 
 # ---- REGEX MESSAGES ----
 WORK_ORDER_RE_MESSAGE = "10 digits"
 PART_NUMBER_RE_MESSAGE = "xxx-xxxx-xxx where 'x' is a digit"
-BATCH_NUMBER_RE_MESSAGE = "8 digits"
+BATCH_MO_NUMBER_RE_MESSAGE = "8 digits"
 SERIAL_NUMBER_RE_MESSAGE = "3 digits"
 
 # ---- CONSTANT TEXT PATTERNS ----
 CONFIG_FILE_NAME = "config.json"
 CONFIG_SUITE_NAME = "suite_name"
+CONFIG_DIR_PATH = "dir_path"
+DIR_PATH_TEXT = "Please enter directory path to save test result files in:"
 CONFIG_SERIAL_NUMBER = "serial_number"
 SERIAL_NUMBER_TEXT = "Please enter the serial number:"
-CONFIG_BATCH_NUMBER = "batch_number"
-BATCH_NUMBER_TEXT = "Please enter the batch number:"
+CONFIG_BATCH_MO_NUMBER = "batch_mo_number"
+BATCH_MO_NUMBER_TEXT = "Please enter the batch number / MO number:"
 CONFIG_PART_NUMBER = "part_number"
 PART_NUMBER_TEXT = "Please enter the part number:"
 CONFIG_WORK_ORDER_JOB_NUMBER = "work_order_job_number"
@@ -38,15 +40,90 @@ REPEAT_TESTS_TEXT = "Run tests continuously until stopped " \
 NO_DEFAULT_TEXT = "There is no default"
 
 
-class ConfigManager:
+class ConfigType:
+    def __init__(self, config_key, validator, cli_text, gui_text, gui_error_message):
+        self.config_key = config_key
+        self.validator = validator
+        self.cli_text = cli_text
+        self.gui_text = gui_text
+        self.gui_error_message = gui_error_message
 
+
+class ConfigManager:
     def __init__(self, robot_directory, config_file_abspath):
         self.__robot_directory = robot_directory
         self.__robot_directory = robot_directory
         self.__config_file_abspath = config_file_abspath
         self.__config = {}
+        self.suite_name_config = ConfigType(
+            config_key=CONFIG_SUITE_NAME,
+            validator=ConfigManager.validate_suite_name,
+            cli_text="",
+            gui_text="Please Select Test Suite:",
+            gui_error_message=""
+        )
+        self.dir_path_config = ConfigType(
+            config_key=CONFIG_DIR_PATH,
+            validator=ConfigManager.validate_dir_path,
+            cli_text=DIR_PATH_TEXT,
+            gui_text="Please select folder to save test result files in:",
+            gui_error_message="Invalid Folder!"
+        )
+        self.part_number_config = ConfigType(
+            config_key=CONFIG_PART_NUMBER,
+            validator=ConfigManager.validate_part_number,
+            cli_text=PART_NUMBER_TEXT,
+            gui_text="Part Number:",
+            gui_error_message="Invalid Part Number! Expected input of the form: {}".format(
+                PART_NUMBER_RE_MESSAGE)
+        )
+        self.batch_mo_number_config = ConfigType(
+            config_key=CONFIG_BATCH_MO_NUMBER,
+            validator=ConfigManager.validate_batch_mo_number,
+            cli_text=BATCH_MO_NUMBER_TEXT,
+            gui_text="Batch Number/MO Number:",
+            gui_error_message="Invalid Batch Number/MO Number! Expected input of the form: {}".format(
+                BATCH_MO_NUMBER_RE_MESSAGE)
+        )
+        self.serial_number_config = ConfigType(
+            config_key=CONFIG_SERIAL_NUMBER,
+            validator=ConfigManager.validate_serial_number,
+            cli_text=SERIAL_NUMBER_TEXT,
+            gui_text="Serial Number:",
+            gui_error_message="Invalid Serial Number! Expected input of the form: {}".format(
+                SERIAL_NUMBER_RE_MESSAGE)
+        )
+        self.work_order_job_number_config = ConfigType(
+            config_key=CONFIG_WORK_ORDER_JOB_NUMBER,
+            validator=ConfigManager.validate_work_order,
+            cli_text=WORK_ORDER_JOB_NUMBER_TEXT,
+            gui_text="Work Order/Job Number:",
+            gui_error_message="Invalid Work Order/Job Number! Expected input of the form: {}".format(
+                WORK_ORDER_RE_MESSAGE)
+        )
+        self.staff_name_config = ConfigType(
+            config_key=CONFIG_STAFF_NAME,
+            validator=ConfigManager.validate_str,
+            cli_text=STAFF_NAME_TEXT,
+            gui_text="Staff Member Name:",
+            gui_error_message="Invalid Staff Name!"
+        )
+        self.include_manual_tests_config = ConfigType(
+            config_key=CONFIG_INCLUDE_MANUAL_TESTS,
+            validator=ConfigManager.validate_bool,
+            cli_text=INCLUDE_MANUAL_TESTS_TEXT,
+            gui_text="",
+            gui_error_message=""
+        )
+        self.repeat_tests_config = ConfigType(
+            config_key=CONFIG_REPEAT_TESTS,
+            validator=ConfigManager.validate_bool,
+            cli_text=REPEAT_TESTS_TEXT,
+            gui_text="Run tests continuously?",
+            gui_error_message=""
+        )
 
-    def input_configuration(self):
+    def input_config_via_command_line(self):
         """Retrieves configuration values from previous run if there are any
            and allows the user to either use the previous configuration values
            or set new ones"""
@@ -57,22 +134,22 @@ class ConfigManager:
         print("for that configuration value.\n")
 
         self.input_suite_name()
+        self.input_config_value(self.dir_path_config)
+        self.input_config_value(self.part_number_config)
+        self.input_config_value(self.batch_mo_number_config)
+        self.input_config_value(self.serial_number_config)
+        self.input_config_value(self.work_order_job_number_config)
+        self.input_config_value(self.staff_name_config)
+        self.input_config_value(self.include_manual_tests_config)
+        self.input_config_value(self.repeat_tests_config)
 
-        self.input_config_value(CONFIG_BATCH_NUMBER, BATCH_NUMBER_TEXT,
-                                ConfigManager.validate_batch_number)
-        self.input_config_value(CONFIG_SERIAL_NUMBER, SERIAL_NUMBER_TEXT,
-                                ConfigManager.validate_serial_number)
-        self.input_config_value(CONFIG_PART_NUMBER, PART_NUMBER_TEXT,
-                                ConfigManager.validate_part_number)
-        self.input_config_value(CONFIG_WORK_ORDER_JOB_NUMBER, WORK_ORDER_JOB_NUMBER_TEXT,
-                                ConfigManager.validate_work_order)
+        self.save_config_as_default()
 
-        self.input_config_value_str(CONFIG_STAFF_NAME, STAFF_NAME_TEXT)
-        self.input_config_value_bool(CONFIG_INCLUDE_MANUAL_TESTS,
-                                     INCLUDE_MANUAL_TESTS_TEXT)
-        self.input_config_value_bool(CONFIG_REPEAT_TESTS, REPEAT_TESTS_TEXT)
+    def save_config_as_default(self):
+        self.save_config(self.__config_file_abspath)
 
-        config_file = open(self.__config_file_abspath, 'w')
+    def save_config(self, config_file_output_path):
+        config_file = open(config_file_output_path, 'w')
         config_file.write(json.dumps(self.__config))
         config_file.close()
 
@@ -100,19 +177,19 @@ class ConfigManager:
             config_key, CONFIG_FILE_NAME))
         print("Ignoring default value")
 
-    def input_config_value(self, config_key, display_text, validator):
+    def input_config_value(self, config_type):
         """Get the config value for the given config_key"""
         default_valid = False
-        if config_key in self.__config.keys():
+        if config_type.config_key in self.__config.keys():
             try:
-                self.__config[config_key] = validator(self.__config[config_key])
+                self.__config[config_type.config_key] = config_type.validator(self.__config[config_type.config_key])
                 default_valid = True
             except AssertionError:
-                ConfigManager.print_default_invalid_message(config_key)
+                ConfigManager.print_default_invalid_message(config_type.config_key)
         while True:
-            print(display_text)
+            print(config_type.cli_text)
             if default_valid:
-                print("Default: {}".format(self.__config[config_key]))
+                print("Default: {}".format(self.__config[config_type.config_key]))
             else:
                 print(NO_DEFAULT_TEXT)
             user_input = input().strip()
@@ -124,20 +201,32 @@ class ConfigManager:
                     print(NO_DEFAULT_TEXT)
             else:
                 try:
-                    value = validator(user_input)
-                    self.__config[config_key] = value
+                    value = config_type.validator(user_input)
+                    self.__config[config_type.config_key] = value
                     return
                 except AssertionError as e:
                     # invalid valid, print error message and ask for correct
                     # input
                     print(str(e))
 
+    def get_default_config_value(self, config_type):
+        if config_type.config_key in self.__config.keys():
+            try:
+                value = config_type.validator(self.__config[config_type.config_key])
+                return value
+            except AssertionError:
+                return None
+        return None
+
+    def set_config_value(self, config_type, user_input):
+        value = config_type.validator(user_input.strip())
+        self.__config[config_type.config_key] = value
+
     @staticmethod
     def validate_suite_name(valid_suites, suite_name_str):
         lower_suite_name = suite_name_str.lower()
         if lower_suite_name in valid_suites:
             return lower_suite_name
-
         try:
             suite_num = int(suite_name_str)
             if 0 < suite_num <= len(valid_suites):
@@ -145,24 +234,32 @@ class ConfigManager:
         except ValueError:
             # not a valid number
             pass
-
         raise AssertionError("That is not a valid suite name or number")
 
-    def input_suite_name(self):
+    def get_available_suites_and_set_suite_validator(self):
         suite_directory = os.path.join(self.__robot_directory, "suites")
         suite_folders = sorted(os.listdir(suite_directory))
         available_suites = list(map(lambda suite_name: suite_name.lower(),
-                                suite_folders))
+                                    suite_folders))
+        self.suite_name_config.validator = functools.partial(ConfigManager.validate_suite_name, available_suites)
+        return available_suites
+
+    def input_suite_name(self):
+        available_suites = self.get_available_suites_and_set_suite_validator()
         display_text = "Please enter the suite name.\nOptions:"
         for index in range(len(available_suites)):
             suite = available_suites[index].lower()
             display_text += "\n{}: {}".format(index + 1, suite)
             # check that the previous default is still available to run
+        self.suite_name_config.cli_text = display_text
+        self.input_config_value(self.suite_name_config)
 
-        suite_validator = functools.partial(ConfigManager.validate_suite_name,
-                                            available_suites)
-        self.input_config_value(CONFIG_SUITE_NAME, display_text,
-                                suite_validator)
+    @staticmethod
+    def validate_dir_path(input_str):
+        if os.path.isdir(input_str):
+            return input_str
+        else:
+            raise AssertionError("input value must be a valid directory")
 
     @staticmethod
     def validate_str(input_str):
@@ -171,10 +268,6 @@ class ConfigManager:
             raise AssertionError("Input value is empty")
         # other than empty str, all str are valid, simply return them
         return input_str
-
-    def input_config_value_str(self, config_key, display_text):
-        self.input_config_value(config_key, display_text,
-                                ConfigManager.validate_str)
 
     @staticmethod
     def validate_re_match(pattern, input_str, re_message):
@@ -191,8 +284,8 @@ class ConfigManager:
         return ConfigManager.validate_re_match(PART_NUMBER_RE_PATTERN, input_str, PART_NUMBER_RE_MESSAGE)
 
     @staticmethod
-    def validate_batch_number(input_str):
-        return ConfigManager.validate_re_match(BATCH_NUMBER_RE_PATTERN, input_str, BATCH_NUMBER_RE_MESSAGE)
+    def validate_batch_mo_number(input_str):
+        return ConfigManager.validate_re_match(BATCH_MO_NUMBER_RE_PATTERN, input_str, BATCH_MO_NUMBER_RE_MESSAGE)
 
     @staticmethod
     def validate_serial_number(input_str):
@@ -212,27 +305,6 @@ class ConfigManager:
             return False
         raise AssertionError("Input value must be Yes/True or No/False")
 
-    def input_config_value_bool(self, config_key, display_text):
-        self.input_config_value(config_key, display_text,
-                                ConfigManager.validate_bool)
-
-    @staticmethod
-    def validate_positive_int(input_str):
-        """
-        Validates that an input str is a positive integer.
-
-        If the input is a positive integer, returns the integer.
-        Other the input is not a positive integers, returns False
-        """
-        try:
-            value = int(input_str)
-            if 0 < value:
-                return value
-        except ValueError:
-            # user did not enter an integer
-            pass
-        raise AssertionError("That is not a positive number")
-
     def get(self, config_key, default=None):
         if config_key in self.__config:
             return self.__config[config_key]
@@ -244,8 +316,3 @@ class ConfigManager:
             return self.__config[config_key] is True
         else:
             return default
-
-    def save_config(self, config_file_output_path):
-        config_file = open(config_file_output_path, 'w')
-        config_file.write(json.dumps(self.__config))
-        config_file.close()
