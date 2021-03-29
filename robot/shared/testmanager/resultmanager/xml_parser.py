@@ -1,4 +1,5 @@
 from xml.dom import minidom, Node
+import json
 
 # TODO: Remove these data sources. Here for testing purposes
 data_source = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-08T20-16-30-048130\output.xml"
@@ -83,7 +84,7 @@ def get_suite_info(xml_minidom):
                     suite_info.append(child.data)
                     suite_info = ''.join(suite_info)
     # Convert string to python dictionary
-    result = eval(suite_info)
+    result = json.loads(suite_info)
     suite_info = SuiteRunInfo(result)
     return suite_info
 
