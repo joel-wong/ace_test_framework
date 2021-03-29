@@ -9,7 +9,8 @@ import signal
 from manual import MANUAL_TEST_CONSTANTS
 import Listener
 import SelectTests
-from resultmanager.xml2excel import *
+from resultmanager.xml2excel import Xml2Excel, DEFAULT_FILENAME
+
 import ConfigManager
 from DependencyManager import DependencyManager
 
