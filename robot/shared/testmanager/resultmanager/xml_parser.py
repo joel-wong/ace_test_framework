@@ -10,7 +10,7 @@ class TestStats:
         self.execution_time = UNKNOWN_VALUE_ENTRY
         self.name = UNKNOWN_VALUE_ENTRY
         self.test_number = UNKNOWN_VALUE_ENTRY
-        self.tag = UNKNOWN_VALUE_ENTRY
+        self.tag_list = UNKNOWN_VALUE_ENTRY
 
 
 class SuiteRunInfo():
@@ -51,10 +51,12 @@ def get_test_list(xml_minidom):
         # Get Test Execution Time
         test.execution_time = test_status[last_index].attributes['endtime'].value
 
+        test.tag_list = []
         for x in element.childNodes:
-            if x.nodeType == Node.ELEMENT_NODE:
-                if x.tagName == 'tag':
-                    test.tag = x.childNodes[0].data
+            if x.nodeType == Node.ELEMENT_NODE and x.tagName == 'tag':
+                for node in x.childNodes:
+                    test.tag_list.append(node.data)
+
         test_list.append(test)
 
     return test_list
