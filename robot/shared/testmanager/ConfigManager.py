@@ -317,8 +317,8 @@ class ConfigManager:
         else:
             return default
 
-    def log_test_data(self):
-        if self.__config is {}:
+    def get_log_config_str(self):
+        if self.__config == {}:
             self.get_default_config()
         return json.dumps(self.__config)
 
@@ -326,4 +326,3 @@ class ConfigManager:
         config_file = open(config_file_output_path, 'w')
         config_file.write(json.dumps(self.__config))
         config_file.close()
-
