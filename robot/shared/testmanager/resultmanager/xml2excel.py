@@ -4,16 +4,15 @@ from resultmanager.xml_parser import *
 import os
 
 DEFAULT_FILENAME = "test_results.xlsx"
-def default_file_path():
-    return os.path.join(os.path.curdir, DEFAULT_FILENAME)
+DEFAULT_FILE_PATH = os.path.join(os.path.curdir, DEFAULT_FILENAME)
+
 SHEET_TITLE = "TEST RESULTS SHEET: "
-TEST_LIST_START_INDEX = 16
-FAIL_COLOUR_HEX = 'ffab97'
-PASS_COLOUR_HEX = '3c5e0b'
+FAIL_COLOUR_HEX = 'FFAB97'
+PASS_COLOUR_HEX = '6CA814'
 
 
 class Xml2Excel:
-    def __init__(self,  robot_results_path, xlsx_file_path=default_file_path()):
+    def __init__(self,  robot_results_path, xlsx_file_path=DEFAULT_FILE_PATH):
         self.results_path = robot_results_path
         self.xlxs_file_path = xlsx_file_path
         self.overall_result = True
@@ -66,7 +65,7 @@ class Xml2Excel:
         """
         Method that inputs suite config info to excel worksheet
 
-        Input data includes: part_number, work_order_job_number, batch_number,
+        Input data includes: part_number, work_order_job_number, batch_mo_number,
         serial_number. Title/headings for data added in insert_suite_info_headers()
         """
         suite = self.suites[0]
@@ -81,8 +80,8 @@ class Xml2Excel:
         """
         self.insert_merged_title("Card Information", 'A7', 'C7', font_size=12)
         self.insert_element("Part Number:", 'A8', bold=True)
-        self.insert_element("Work Order:", 'A9', bold=True)
-        self.insert_element("Batch Number:", 'A10', bold=True)
+        self.insert_element("Work Order Number / Job Number:", 'A9', bold=True)
+        self.insert_element("Batch/MO Number:", 'A10', bold=True)
         self.insert_element("Serial Number:", 'A11', bold=True)
 
     def parse_results(self):
@@ -139,7 +138,7 @@ class Xml2Excel:
         pass_column = 'B'
         fail_column = 'C'
         test_name_column = 'D'
-        row = TEST_LIST_START_INDEX
+        row = self.overall_result_start_row
 
         for test in test_results:
             pass_cell = pass_column + str(row)
@@ -305,7 +304,8 @@ def date_time_formatter(date_time_str):
 
 
 if __name__ == "__main__":
-    xml_formatter = Xml2Excel(data_source3)
+    data_source = ""
+    xml_formatter = Xml2Excel(data_source)
     xml_formatter.run()
 
 
