@@ -106,9 +106,7 @@ class TestManager:
                 self.run_process(subprocess_args, test_runner_worker)
             except KeyboardInterrupt:
                 self.emergency_stop_flag = True
-            result_excel = os.path.join(test_output_directory, DEFAULT_FILENAME)
-            xml_formatter = Xml2Excel(test_output_directory, result_excel)
-            xml_formatter.run()
+            TestManager.generate_excel_report(test_output_directory)
             self.print_tests_complete_message(output_directory)
 
             return
@@ -168,7 +166,6 @@ class TestManager:
                                        suite_name)
         return SelectTests.get_tests(suite_directory)
 
-
     @staticmethod
     def generate_datetime_str():
         current_time = datetime.datetime.utcnow().isoformat("T")
@@ -184,9 +181,15 @@ class TestManager:
         subprocess.run(merge_reports_subprocess_args, shell=True,
                        check=False)
         result_excel = os.path.join(output_directory, DEFAULT_FILENAME)
+        TestManager.generate_excel_report(output_directory)
+        self.print_tests_complete_message(output_directory)
+
+
+    @staticmethod
+    def generate_excel_report(output_directory):
+        result_excel = os.path.join(output_directory, DEFAULT_FILENAME)
         xml_formatter = Xml2Excel(output_directory, result_excel)
         xml_formatter.run()
-        self.print_tests_complete_message(output_directory)
 
     def print_tests_complete_message(self, output_directory):
         print("\n\nTests complete! \n")
