@@ -1,11 +1,7 @@
 from xml.dom import minidom, Node
 import json
 
-# TODO: Remove these data sources. Here for testing purposes
-data_source = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-08T20-16-30-048130\output.xml"
-data_source2 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-47-34-182030\INDIVIDUAL TESTS\output-2021-03-09T01-47-34-183027.xml"
-data_source3 = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-25-32-637851\output.xml"
-data_source4 = 'H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\\2021-03-09T01-47-34-182030'
+
 UNKNOWN_VALUE_ENTRY = "N/A"
 
 class TestStats:
@@ -26,7 +22,7 @@ class SuiteRunInfo():
         else:
             self.suite_name = None
             self.serial_number = None
-            self.batch_number = None
+            self.batch_mo_number = None
             self.part_number = None
             self.work_order_job_number = None
             self.staff_name = None
