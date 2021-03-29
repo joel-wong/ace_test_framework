@@ -71,7 +71,7 @@ class Xml2Excel:
         suite = self.suites[0]
         self.insert_element(suite.part_number, 'B8')
         self.insert_element(suite.work_order_job_number, 'B9')
-        self.insert_element(suite.batch_number, 'B10')
+        self.insert_element(suite.batch_mo_number, 'B10')
         self.insert_element(suite.serial_number, 'B11')
 
     def insert_suite_info_headers(self):
@@ -249,7 +249,6 @@ class Xml2Excel:
         self.worksheet.merge_cells(range)
         self.worksheet[start_element].alignment = Alignment(horizontal='center')
 
-        #self.worksheet.merge_cells(range)
 
     def colour_cell(self, element, hex_colour):
         """
@@ -304,7 +303,9 @@ def date_time_formatter(date_time_str):
 
 
 if __name__ == "__main__":
-    data_source = ""
+    # Note to test with this file, import needs to be changed to:
+    # from xml_parser import *
+    data_source = "<Insert Test Path>"
     xml_formatter = Xml2Excel(data_source)
     xml_formatter.run()
 
