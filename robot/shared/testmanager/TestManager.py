@@ -9,6 +9,7 @@ import signal
 from manual import MANUAL_TEST_CONSTANTS
 import Listener
 import SelectTests
+from resultmanager.xml2excel import Xml2Excel, DEFAULT_FILENAME, BATCH_SERIAL_FILENAME
 
 import ConfigManager
 from DependencyManager import DependencyManager
@@ -82,7 +83,8 @@ class TestManager:
             test_output_directory = output_directory
 
         subprocess_args = ["python", "-m", "robot", "--outputdir",
-                           test_output_directory]
+                           test_output_directory,
+                           "--doc", self.config_manager.get_log_config_str()]
 
         if not self.__in_gui_mode:
             include_manual_tests = self.config_manager.get_bool(
@@ -104,7 +106,9 @@ class TestManager:
                 self.run_process(subprocess_args, test_runner_worker)
             except KeyboardInterrupt:
                 self.emergency_stop_flag = True
+            TestManager.generate_excel_report(test_output_directory)
             self.print_tests_complete_message(output_directory)
+
             return
 
         try:
@@ -176,7 +180,14 @@ class TestManager:
             "{}/*.xml".format(individual_output_directory)]
         subprocess.run(merge_reports_subprocess_args, shell=True,
                        check=False)
+        TestManager.generate_excel_report(output_directory)
         self.print_tests_complete_message(output_directory)
+
+
+    @staticmethod
+    def generate_excel_report(output_directory):
+        xml_formatter = Xml2Excel(output_directory, output_directory, BATCH_SERIAL_FILENAME)
+        xml_formatter.run()
 
     def print_tests_complete_message(self, output_directory):
         print("\n\nTests complete! \n")

@@ -1,3 +1,4 @@
 pip>="20.3.3"
 robotframework>="4.0"
 PyQt5>="5.15.3"
+openpyxl >= 3.0.7

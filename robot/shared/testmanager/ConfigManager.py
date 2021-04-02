@@ -316,3 +316,8 @@ class ConfigManager:
             return self.__config[config_key] is True
         else:
             return default
+
+    def get_log_config_str(self):
+        if self.__config == {}:
+            self.get_default_config()
+        return json.dumps(self.__config)
