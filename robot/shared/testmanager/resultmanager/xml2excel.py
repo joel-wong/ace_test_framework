@@ -21,7 +21,7 @@ class Xml2Excel:
 
         :param robot_results_path: Path where robot xml files are located
         :param xlsx_report_dir: Path where the excel file will be stored
-        :param xlsx_file_format: Indicates format for saving file
+        :param xlsx_filename_format: Indicates format for saving file
         """
         self.results_path = robot_results_path
         self.xlsx_report_dir = xlsx_report_dir
