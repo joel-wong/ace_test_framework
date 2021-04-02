@@ -3,18 +3,28 @@ from openpyxl.styles import Font, Alignment, PatternFill, Color
 from resultmanager.xml_parser import *
 import os
 
+# Default strings for output filename formatting
 DEFAULT_FILENAME = "test_results.xlsx"
 BATCH_SERIAL_FILENAME = "SN{}-{}.xlsx"
-DEFAULT_FILE_PATH = os.path.join(os.path.curdir, DEFAULT_FILENAME)
 
+# Constants for formatting excel file
 SHEET_TITLE = "TEST RESULTS SHEET: "
 FAIL_COLOUR_HEX = 'FC4242'
 PASS_COLOUR_HEX = '92D050'
 
 
 class Xml2Excel:
-    def __init__(self,  robot_results_path, xlsx_file_format=DEFAULT_FILE_PATH):
+    def __init__(self,  robot_results_path, xlsx_report_dir, xlsx_file_format=DEFAULT_FILENAME):
+        """
+        Constructor for Xml2Excel class
+
+
+        :param robot_results_path: Path where robot xml files are located
+        :param xlsx_report_dir: Path where the excel file will be stored
+        :param xlsx_file_format: Indicates format for saving file
+        """
         self.results_path = robot_results_path
+        self.xlsx_report_dir = xlsx_report_dir
         self.xlsx_file_format = xlsx_file_format
         self.overall_result = True
         self.overall_result_start_row = 16
@@ -261,10 +271,13 @@ class Xml2Excel:
         """
         Method that saves self.workbook using self.xlsx_file_format
         """
+        file_name = DEFAULT_FILENAME
+        # change filename to formatted string
         if  BATCH_SERIAL_FILENAME in self.xlsx_file_format:
-            self.xlsx_file_format = self.xlsx_file_format.format(self.suites[0].batch_mo_number,
+            file_name = self.xlsx_file_format.format(self.suites[0].batch_mo_number,
                                          self.suites[0].serial_number)
-        self.workbook.save(self.xlsx_file_format)
+        result_excel = os.path.join(self.xlsx_report_dir, file_name)
+        self.workbook.save(result_excel)
 
     @staticmethod
     def get_xml_files(path):

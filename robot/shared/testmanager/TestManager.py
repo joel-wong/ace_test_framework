@@ -186,8 +186,7 @@ class TestManager:
 
     @staticmethod
     def generate_excel_report(output_directory):
-        result_excel = os.path.join(output_directory, BATCH_SERIAL_FILENAME)
-        xml_formatter = Xml2Excel(output_directory, result_excel)
+        xml_formatter = Xml2Excel(output_directory, output_directory, BATCH_SERIAL_FILENAME)
         xml_formatter.run()
 
     def print_tests_complete_message(self, output_directory):
