@@ -321,8 +321,3 @@ class ConfigManager:
         if self.__config == {}:
             self.get_default_config()
         return json.dumps(self.__config)
-
-    def save_config(self, config_file_output_path):
-        config_file = open(config_file_output_path, 'w')
-        config_file.write(json.dumps(self.__config))
-        config_file.close()

@@ -1,7 +1,6 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Color
-#from resultmanager.xml_parser import *
-from xml_parser import *
+from resultmanager.xml_parser import *
 import os
 
 DEFAULT_FILENAME = "test_results.xlsx"
@@ -306,7 +305,7 @@ class Xml2Excel:
 if __name__ == "__main__":
     # Note to test with this file, import needs to be changed to:
     # from xml_parser import *
-    data_source = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\INDIVIDUAL_TESTS"
+    data_source = "< Results Path Here>"
     xml_formatter = Xml2Excel(data_source)
     xml_formatter.run()
 
