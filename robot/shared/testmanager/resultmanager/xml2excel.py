@@ -14,7 +14,7 @@ PASS_COLOUR_HEX = '92D050'
 
 
 class Xml2Excel:
-    def __init__(self,  robot_results_path, xlsx_report_dir, xlsx_file_format=DEFAULT_FILENAME):
+    def __init__(self,  robot_results_path, xlsx_report_dir, xlsx_filename_format=DEFAULT_FILENAME):
         """
         Constructor for Xml2Excel class
 
@@ -25,7 +25,7 @@ class Xml2Excel:
         """
         self.results_path = robot_results_path
         self.xlsx_report_dir = xlsx_report_dir
-        self.xlsx_file_format = xlsx_file_format
+        self.xlsx_filename_format = xlsx_filename_format
         self.overall_result = True
         self.overall_result_start_row = 16
         self.overall_result_end_row = -1
@@ -273,8 +273,8 @@ class Xml2Excel:
         """
         file_name = DEFAULT_FILENAME
         # change filename to formatted string
-        if  BATCH_SERIAL_FILENAME in self.xlsx_file_format:
-            file_name = self.xlsx_file_format.format(self.suites[0].batch_mo_number,
+        if  BATCH_SERIAL_FILENAME in self.xlsx_filename_format:
+            file_name = self.xlsx_filename_format.format(self.suites[0].batch_mo_number,
                                          self.suites[0].serial_number)
         result_excel = os.path.join(self.xlsx_report_dir, file_name)
         self.workbook.save(result_excel)
