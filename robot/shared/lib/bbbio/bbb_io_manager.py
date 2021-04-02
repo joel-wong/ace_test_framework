@@ -8,6 +8,7 @@ import json
 from ace_bbsm import BBB_IO_CONSTANTS, Client
 
 import bbb_io_validation
+from robot.api import logger
 
 # Sample JSON that will be sent to the BBB when send_io_specifications_to_bbb()
 # is called:
@@ -46,6 +47,11 @@ import bbb_io_validation
   }
 ]
 """
+
+
+class BBBServerError(Exception):
+    def __init__(self, server_message):
+        super().__init__(server_message)
 
 
 io_to_send = []
@@ -235,8 +241,12 @@ def send_io_specifications_to_bbb(suite_validator):
     json_to_send = json.dumps(io_to_send)
     response = client.json_request_response_bbb(json_to_send)
     returned_data = json.loads(response)
-    bbb_return_data.extend(returned_data)
-    return bbb_return_data
+    if 'Error' in returned_data:
+        logger.warn(returned_data['Error'])
+        raise BBBServerError(returned_data['Error'])
+    else:
+        bbb_return_data.extend(returned_data)
+        return bbb_return_data
 
 
 def get_bbb_input_value(pin_number):
