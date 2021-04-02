@@ -88,10 +88,18 @@ class TestsCompleteWindow(BasicTestStatsWindow.BasicTestStatsWindow):
         self.html_file_button.clicked.connect(self.open_html)
 
     def open_folder(self):
-        os.startfile(self.output_directory)
+        try:
+            os.startfile(self.output_directory)
+        except FileNotFoundError:
+            error_msg = BasicWindow.ErrorMessage("Folder no longer exists!")
+            return
 
     def open_html(self):
-        os.startfile(os.path.join(self.output_directory, "report.html"))
+        try:
+            os.startfile(os.path.join(self.output_directory, "report.html"))
+        except FileNotFoundError:
+            error_msg = BasicWindow.ErrorMessage("File no longer exists!")
+            return
 
     def finish(self):
         self.window.close()
