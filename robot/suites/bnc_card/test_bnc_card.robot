@@ -57,7 +57,8 @@ ${ABORT_MESSAGE}    Voltage or current limits exceeded. Remove circuit card from
 ${VETO_OUT_DEFAULT_OPEN_DRAIN_MESSAGE}    Veto out should be in open drain mode by default
 ${VETO_OUT_FORCED_OPEN_DRAIN_MESSAGE}    When the open drain mode is set (not just default), it should still negate VETO_OUT
 ${USER_IO_DEFAULT_INPUT_MESSAGE}    User IOs should be in input mode by default
-${LED_OFF_CHECK_MESSAGE}    Press PASS if the BNC Card LED is \n\n*** OFF ***\n\n otherwise press FAIL
+${BNC_EXPECTED_HIGH_ERROR}    BNC output value should have been a digital high, but it was actually a digital low
+${BNC_EXPECTED_LOW_ERROR}    BNC output value should have been a digital low, but it was actually a digital high
 
 *** Test Cases ***
 
@@ -73,6 +74,7 @@ Current Sense 3.3V Bus
     # Technically the next line will always be true if we complete the previous
     # two lines without errors, but we keep it anyway for test report clarity
     Should Be True    ${analog_value} < ${ADC_3V3_C_SENSE_ANALOG_MAXIMUM}
+    ...    3.3V power source current limit exceeded. No further tests will be run
 
 Current Sense 5V Bus
     [Tags]    ${CURRENT_AND_VOLTAGE_SENSING}
@@ -86,6 +88,7 @@ Current Sense 5V Bus
     # Technically the next line will always be true if we complete the previous
     # two lines without errors, but we keep it anyway for test report clarity
     Should Be True    ${analog_value} < ${ADC_5V_C_SENSE_ANALOG_MAXIMUM}
+    ...    5V power source current limit exceeded. No further tests will be run
 
 Voltage Sense 5V Bus
     [Tags]    ${CURRENT_AND_VOLTAGE_SENSING}
@@ -100,21 +103,25 @@ Voltage Sense 5V Bus
     # Technically the next line will always be true if we complete the previous
     # two lines without errors, but we keep it anyway for test report clarity
     Should Be True    ${VDD_5V_ANALOG_MINIMUM} < ${analog_value}
+    ...    5V power source voltage is too low. No further tests will be run
     Run Keyword If    ${VDD_5V_ANALOG_MAXIMUM} <= ${analog_value}
     ...    Pause Execution    ${ABORT_MESSAGE}
     Run Keyword If    ${VDD_5V_ANALOG_MAXIMUM} <= ${analog_value}    Fatal Error
     # Technically the next line will always be true if we complete the previous
     # two lines without errors, but we keep it anyway for test report clarity
     Should Be True    ${analog_value} < ${VDD_5V_ANALOG_MAXIMUM}
+    ...    5V power source voltage is too high. No further tests will be run
 
 
 Check Green LED
     [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
-    Execute Manual Step    ${LED_OFF_CHECK_MESSAGE}
+    Execute Manual Step    Is the BNC Card LED OFF?\nPASS = OFF\nFAIL = otherwise
+    ...    LED was on
     Specify BBB Digital Output    ${P_TDC_LED_TO_LD}    ${DIGITAL_LOW}
     Enable Line Drivers
     Execute BNC Card Test via BBB
-    Execute Manual Step    Press PASS if the LED on the BNC card is \n\n*** GREEN ***\n\n, otherwise press FAIL
+    Execute Manual Step    Is the BNC Card LED green?\nPASS = GREEN\nFAIL = otherwise
+    ...    LED was not green
 
 Check Orange LED
     [Tags]    ${LED_CHECK}    ${MANUAL_TEST_TAG}
@@ -124,7 +131,8 @@ Check Orange LED
     Specify BBB Digital Output    ${P_TDC_LED_TO_LD}    ${DIGITAL_LOW}
     Enable Line Drivers
     Execute BNC Card Test via BBB
-    Execute Manual Step    Press PASS if the LED on the BNC card is \n\n*** ORANGE ***\n\n, otherwise press FAIL
+    Execute Manual Step    Is the BNC Card LED orange?\nPASS = ORANGE\nFAIL = otherwise
+    ...    LED was not orange
 
 
 Check BNC1 REF_IN Input = Pin Header REF_IN For Digital High
@@ -374,6 +382,7 @@ Check BNC to Pin Header High Passed Through
     Execute BNC Card Test via BBB
     ${pin_output} =       Get BBB Input Value    ${bbb_input_pin}
     Should Be Equal       ${pin_output[0]}    ${DIGITAL_HIGH}
+    ...    Pin header value should have been a digital high, but it was actually a digital low
 
 Check BNC to Pin Header Low Passed Through
     [Arguments]    ${bbb_output_pin}    ${bbb_input_pin}
@@ -384,6 +393,7 @@ Check BNC to Pin Header Low Passed Through
     Execute BNC Card Test via BBB
     ${pin_output} =       Get BBB Input Value    ${bbb_input_pin}
     Should Be Equal       ${pin_output[0]}    ${DIGITAL_LOW}
+    ...    Pin header value should have been a digital low, but it was actually a digital high
 
 Set User IO Level Shifter to Shift from 3.3 to 5 Volts
     # Note that this doesn't actually turn on the User IO level shifter.
@@ -422,6 +432,7 @@ Check Pin Header to BNC High Negated
     Execute BNC Card Test via BBB
     ${pin_output} =       Get BBB Input Value    ${bbb_input_pin}
     Should Be Equal       ${pin_output[0]}    ${DIGITAL_LOW}
+    ...    ${BNC_EXPECTED_LOW_ERROR}
 
 Check Pin Header to BNC Low Negated
     [Arguments]    ${bbb_output_pin}    ${bbb_input_pin}
@@ -432,6 +443,7 @@ Check Pin Header to BNC Low Negated
     Execute BNC Card Test via BBB
     ${pin_output} =       Get BBB Input Value    ${bbb_input_pin}
     Should Be Equal       ${pin_output[0]}    ${DIGITAL_HIGH}
+    ...    ${BNC_EXPECTED_HIGH_ERROR}
 
 Check Pin Header to BNC High Passed Through
     [Arguments]    ${bbb_output_pin}    ${bbb_input_pin}
@@ -442,6 +454,7 @@ Check Pin Header to BNC High Passed Through
     Execute BNC Card Test via BBB
     ${pin_output} =       Get BBB Input Value    ${bbb_input_pin}
     Should Be Equal       ${pin_output[0]}    ${DIGITAL_HIGH}
+    ...    ${BNC_EXPECTED_HIGH_ERROR}
 
 Check Pin Header to BNC Low Passed Through
     [Arguments]    ${bbb_output_pin}    ${bbb_input_pin}
@@ -452,6 +465,7 @@ Check Pin Header to BNC Low Passed Through
     Execute BNC Card Test via BBB
     ${pin_output} =       Get BBB Input Value    ${bbb_input_pin}
     Should Be Equal       ${pin_output[0]}    ${DIGITAL_LOW}
+    ...    ${BNC_EXPECTED_LOW_ERROR}
 
 Set IO Expander Pin to Output
     [Arguments]    ${i2c_pin_name}
@@ -535,11 +549,14 @@ Force Disable Termination Resistor
 Should Have Termination Resistance Enabled
     [Arguments]    ${analog_value}
     Should Be True    ${analog_value} < ${TERMINATION_RESISTOR_ENABLED_ANALOG_MAXIMUM}
+    ...    Termination resistance should have been enabled, but it was actually disabled
 
 Should Have Termination Resistance Disabled
     [Arguments]    ${analog_value}
     Should Be True    ${TERMINATION_RESISTOR_DISABLED_ANALOG_MINIMUM} < ${analog_value}
+    ...    Termination resistance should have been disabled, but it was actually enabled
     Should Be True    ${analog_value} < ${TERMINATION_RESISTOR_DISABLED_ANALOG_MAXIMUM}
+    ...    Analog value was above normal range, indicating an unexpectedly high voltage output from the BNC card
 
 Check User IO Termination Resistor Can Be Enabled
     [Arguments]    ${pin_i2c_name}    ${bnc_pin_number}    ${bnc_analog_pin_number}
