@@ -9,7 +9,7 @@ import signal
 from manual import MANUAL_TEST_CONSTANTS
 import Listener
 import SelectTests
-from resultmanager.xml2excel import Xml2Excel, DEFAULT_FILENAME
+from resultmanager.xml2excel import Xml2Excel, DEFAULT_FILENAME, BATCH_SERIAL_FILENAME
 
 import ConfigManager
 from DependencyManager import DependencyManager
@@ -180,14 +180,13 @@ class TestManager:
             "{}/*.xml".format(individual_output_directory)]
         subprocess.run(merge_reports_subprocess_args, shell=True,
                        check=False)
-        result_excel = os.path.join(output_directory, DEFAULT_FILENAME)
         TestManager.generate_excel_report(output_directory)
         self.print_tests_complete_message(output_directory)
 
 
     @staticmethod
     def generate_excel_report(output_directory):
-        result_excel = os.path.join(output_directory, DEFAULT_FILENAME)
+        result_excel = os.path.join(output_directory, BATCH_SERIAL_FILENAME)
         xml_formatter = Xml2Excel(output_directory, result_excel)
         xml_formatter.run()
 

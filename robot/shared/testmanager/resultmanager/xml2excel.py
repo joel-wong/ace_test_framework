@@ -1,20 +1,22 @@
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment, PatternFill, Color
-from resultmanager.xml_parser import *
+#from resultmanager.xml_parser import *
+from xml_parser import *
 import os
 
 DEFAULT_FILENAME = "test_results.xlsx"
+BATCH_SERIAL_FILENAME = "SN{}-{}.xlsx"
 DEFAULT_FILE_PATH = os.path.join(os.path.curdir, DEFAULT_FILENAME)
 
 SHEET_TITLE = "TEST RESULTS SHEET: "
-FAIL_COLOUR_HEX = 'FFAB97'
-PASS_COLOUR_HEX = '6CA814'
+FAIL_COLOUR_HEX = 'FC4242'
+PASS_COLOUR_HEX = '92D050'
 
 
 class Xml2Excel:
-    def __init__(self,  robot_results_path, xlsx_file_path=DEFAULT_FILE_PATH):
+    def __init__(self,  robot_results_path, xlsx_file_format=DEFAULT_FILE_PATH):
         self.results_path = robot_results_path
-        self.xlxs_file_path = xlsx_file_path
+        self.xlxs_file_format = xlsx_file_format
         self.overall_result = True
         self.overall_result_start_row = 16
         self.overall_result_end_row = -1
@@ -57,7 +59,7 @@ class Xml2Excel:
         self.insert_element("Staff Member:", 'A2', bold=True)
         self.insert_element(str(self.suites[0].staff_name), 'B2')
         self.insert_element("Date:", 'A3', bold=True)
-        self.insert_element(date_time_formatter(self.suites[0].date_time), 'B3')
+        self.insert_element(Xml2Excel.date_time_formatter(self.suites[0].date_time), 'B3')
         self.insert_element("Approver:", 'A4', bold=True)
         self.insert_element("Date:", 'A5', bold=True)
 
@@ -92,7 +94,7 @@ class Xml2Excel:
         Sets self.suites to a list of the parsed suite data
         """
         suites = []
-        xml_files = get_xml_files(self.results_path)
+        xml_files = Xml2Excel.get_xml_files(self.results_path)
         for file_path in xml_files:
             suites.append(parse_xml(file_path))
         self.suites = suites
@@ -106,8 +108,7 @@ class Xml2Excel:
         key = Test Name, value = {"PASS": number of passes, "FAIL": number of fails}
         """
         test_results = {}
-        suites = self.suites
-        for suite in suites:
+        for suite in self.suites:
             test_list = suite.tests
             for test in test_list:
                 if test.name not in test_results:
@@ -186,23 +187,18 @@ class Xml2Excel:
 
         # Iterate over result range
         for row in range(start_row, end_row):
-            overall_status_cell = overall_status_column + str(row)
+            overall_test_status_cell = overall_status_column + str(row)
             pass_cell = pass_column + str(row)
             fail_cell = fail_column + str(row)
             # Check Fail Cells
             if self.worksheet[fail_cell].value >= 1:
-                # Colour FAIL Cell
-                self.colour_cell(fail_cell, FAIL_COLOUR_HEX)
                 # Overall test status is FAIL
-                self.worksheet[overall_status_cell] = "FAIL"
-                self.colour_cell(overall_status_cell, FAIL_COLOUR_HEX)
+                self.worksheet[overall_test_status_cell] = "FAIL"
+                self.colour_cell(overall_test_status_cell, FAIL_COLOUR_HEX)
             else:
                 # Overall test status is pass
-                self.worksheet[overall_status_cell] = "PASS"
-                self.colour_cell(overall_status_cell, PASS_COLOUR_HEX)
-            # Check Pass Cells
-            if self.worksheet[pass_cell].value >= 1:
-                self.colour_cell(pass_cell, PASS_COLOUR_HEX)
+                self.worksheet[overall_test_status_cell] = "PASS"
+                self.colour_cell(overall_test_status_cell, PASS_COLOUR_HEX)
 
         # Output overall test result
         overall_suite_status_row = 2 + self.overall_result_end_row
@@ -245,7 +241,7 @@ class Xml2Excel:
         start_element_cell = self.worksheet[start_element]
         start_element_cell.font = Font(bold=bold, size=font_size)
         self.worksheet[start_element] = text
-        range = str(start_element) + ':' + str(end_element)
+        range = "{}:{}".format(str(start_element), str(end_element))
         self.worksheet.merge_cells(range)
         self.worksheet[start_element].alignment = Alignment(horizontal='center')
 
@@ -264,48 +260,53 @@ class Xml2Excel:
 
     def save_workbook(self):
         """
-        Method that saves self.workbook using self.xlsx_file_path
+        Method that saves self.workbook using self.xlsx_file_format
         """
-        self.workbook.save(self.xlxs_file_path)
+        if  BATCH_SERIAL_FILENAME in self.xlxs_file_format:
+            self.xlxs_file_format = self.xlxs_file_format.format(self.suites[0].batch_mo_number,
+                                         self.suites[0].serial_number)
+        self.workbook.save(self.xlxs_file_format)
 
-def get_xml_files(path):
-    """
-    Function for getting all .xml files in a given directory
-    If .xml file path is passed instead of a directory, method will just return
-    .xml file path
+    @staticmethod
+    def get_xml_files(path):
+        """
+        Function for getting all .xml files in a given directory
+        If .xml file path is passed instead of a directory, method will just return
+        .xml file path
 
-    :param path: String pointing to device directory or .xml file
-    :return: list of .xml file paths
-    """
-    xml_files = []
-    if path.endswith(".xml"):
-        xml_files.append(path)
+        :param path: String pointing to device directory or .xml file
+        :return: list of .xml file paths
+        """
+        xml_files = []
+        if path.endswith(".xml"):
+            xml_files.append(path)
+            return xml_files
+        for subdir, dirs, files in os.walk(path):
+            for file_name in files:
+                if file_name.endswith('.xml'):
+                    xml_files.append(os.path.join(subdir, file_name))
         return xml_files
-    for subdir, dirs, files in os.walk(path):
-        for file_name in files:
-            if file_name.endswith('.xml'):
-                xml_files.append(os.path.join(subdir, file_name))
-    return xml_files
 
-def date_time_formatter(date_time_str):
-    """
-    Helper function for formatting data from parsed xml file
+    @staticmethod
+    def date_time_formatter(date_time_str):
+        """
+        Helper function for formatting data from parsed xml file
 
-    :param date_time_str: String
-    :return:
-    """
-    year = date_time_str[0:4]
-    month = date_time_str[4:6]
-    day = date_time_str[6:8]
-    time = date_time_str[9:-1]
-    formatted_str = year + "-" + month + "-" + day + ", " + time
-    return formatted_str
+        :param date_time_str: String
+        :return:
+        """
+        year = date_time_str[0:4]
+        month = date_time_str[4:6]
+        day = date_time_str[6:8]
+        time = date_time_str[9:-1]
+        formatted_str = year + "-" + month + "-" + day + ", " + time
+        return formatted_str
 
 
 if __name__ == "__main__":
     # Note to test with this file, import needs to be changed to:
     # from xml_parser import *
-    data_source = "<Insert Test Path>"
+    data_source = "H:\\builds\Capstone\\ace-test-framework\out\\bnc_card\INDIVIDUAL_TESTS"
     xml_formatter = Xml2Excel(data_source)
     xml_formatter.run()
 
