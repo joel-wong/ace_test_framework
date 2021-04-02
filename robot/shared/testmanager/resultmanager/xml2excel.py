@@ -15,7 +15,7 @@ PASS_COLOUR_HEX = '92D050'
 class Xml2Excel:
     def __init__(self,  robot_results_path, xlsx_file_format=DEFAULT_FILE_PATH):
         self.results_path = robot_results_path
-        self.xlxs_file_format = xlsx_file_format
+        self.xlsx_file_format = xlsx_file_format
         self.overall_result = True
         self.overall_result_start_row = 16
         self.overall_result_end_row = -1
@@ -261,10 +261,10 @@ class Xml2Excel:
         """
         Method that saves self.workbook using self.xlsx_file_format
         """
-        if  BATCH_SERIAL_FILENAME in self.xlxs_file_format:
-            self.xlxs_file_format = self.xlxs_file_format.format(self.suites[0].batch_mo_number,
+        if  BATCH_SERIAL_FILENAME in self.xlsx_file_format:
+            self.xlsx_file_format = self.xlsx_file_format.format(self.suites[0].batch_mo_number,
                                          self.suites[0].serial_number)
-        self.workbook.save(self.xlxs_file_format)
+        self.workbook.save(self.xlsx_file_format)
 
     @staticmethod
     def get_xml_files(path):
