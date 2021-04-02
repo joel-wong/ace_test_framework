@@ -80,9 +80,9 @@ def get_suite_info(xml_minidom):
                 children = doc[last_index].childNodes
                 for child in children:
                     suite_info.append(child.data)
-                    suite_info = ''.join(suite_info)
+
     # Convert string to python dictionary
-    result = json.loads(suite_info)
+    result = json.loads(suite_info[0])
     suite_info = SuiteRunInfo(result)
     return suite_info
 
