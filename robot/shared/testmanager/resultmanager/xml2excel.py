@@ -271,13 +271,18 @@ class Xml2Excel:
         """
         Method that saves self.workbook using self.xlsx_file_format
         """
-        file_name = DEFAULT_FILENAME
-        # change filename to formatted string
-        if  BATCH_SERIAL_FILENAME in self.xlsx_filename_format:
-            file_name = self.xlsx_filename_format.format(self.suites[0].batch_mo_number,
-                                         self.suites[0].serial_number)
+        file_name = self.get_filename()
         result_excel = os.path.join(self.xlsx_report_dir, file_name)
         self.workbook.save(result_excel)
+
+    def get_filename(self):
+        file_name = DEFAULT_FILENAME
+        # change filename to formatted string
+        if BATCH_SERIAL_FILENAME in self.xlsx_filename_format:
+            file_name = self.xlsx_filename_format.format(
+                self.suites[0].batch_mo_number,
+                self.suites[0].serial_number)
+        return file_name
 
     @staticmethod
     def get_xml_files(path):
