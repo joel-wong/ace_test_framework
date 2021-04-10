@@ -41,14 +41,14 @@ class TestsCompleteWindow(BasicTestStatsWindow.BasicTestStatsWindow):
         self.verticalLayout.addWidget(self.folder_path_button)
 
         # Display link to open test report html
-        self.test_report_html_text = QtWidgets.QLabel(self.centralwidget)
+        self.test_report_excel_text = QtWidgets.QLabel(self.centralwidget)
         font.setPointSize(12)
-        self.test_report_html_text.setFont(font)
-        self.verticalLayout.addWidget(self.test_report_html_text, 0, QtCore.Qt.AlignLeft)
-        self.html_file_button = QtWidgets.QPushButton(self.centralwidget)
+        self.test_report_excel_text.setFont(font)
+        self.verticalLayout.addWidget(self.test_report_excel_text, 0, QtCore.Qt.AlignLeft)
+        self.excel_file_button = QtWidgets.QPushButton(self.centralwidget)
         font.setPointSize(10)
-        self.html_file_button.setFont(font)
-        self.verticalLayout.addWidget(self.html_file_button)
+        self.excel_file_button.setFont(font)
+        self.verticalLayout.addWidget(self.excel_file_button)
 
         # set up horizontal line for aesthetic purposes
         self.line_2 = BasicWindow.HorizontalLine(self.centralwidget, self.verticalLayout)
@@ -68,7 +68,7 @@ class TestsCompleteWindow(BasicTestStatsWindow.BasicTestStatsWindow):
     def set_text(self):
         self.tests_complete_text.setText("Tests Complete!")
         self.test_reports_saved_in_text.setText("Test Reports Saved In:")
-        self.test_report_html_text.setText("Test Report HTML File:")
+        self.test_report_excel_text.setText("Test Report Excel File:")
 
     def set_results_text(self):
         if self.window.test_manager.test_fail_count == 0:
@@ -84,8 +84,8 @@ class TestsCompleteWindow(BasicTestStatsWindow.BasicTestStatsWindow):
         self.output_directory = output_directory
         self.folder_path_button.setText(self.output_directory)
         self.folder_path_button.clicked.connect(self.open_folder)
-        self.html_file_button.setText("report.html")
-        self.html_file_button.clicked.connect(self.open_html)
+        self.excel_file_button.setText(self.window.test_manager.get_excel_filename())
+        self.excel_file_button.clicked.connect(self.open_excel)
 
     def open_folder(self):
         try:
@@ -94,9 +94,9 @@ class TestsCompleteWindow(BasicTestStatsWindow.BasicTestStatsWindow):
             error_msg = BasicWindow.ErrorMessage("Folder no longer exists!")
             return
 
-    def open_html(self):
+    def open_excel(self):
         try:
-            os.startfile(os.path.join(self.output_directory, "report.html"))
+            os.startfile(os.path.join(self.output_directory, self.window.test_manager.get_excel_filename()))
         except FileNotFoundError:
             error_msg = BasicWindow.ErrorMessage("File no longer exists!")
             return

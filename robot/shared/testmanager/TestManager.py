@@ -37,6 +37,8 @@ class TestManager:
         self.test_fail_count = 0
         self.test_pass_count = 0
 
+        self.xml_formatter = None
+
     def setup_and_run_framework(self):
         """Entry point to the ace-test-framework"""
         DependencyManager.install_dependencies()
@@ -106,7 +108,7 @@ class TestManager:
                 self.run_process(subprocess_args, test_runner_worker)
             except KeyboardInterrupt:
                 self.emergency_stop_flag = True
-            TestManager.generate_excel_report(test_output_directory)
+            self.generate_excel_report(test_output_directory)
             self.print_tests_complete_message(output_directory)
 
             return
@@ -180,14 +182,15 @@ class TestManager:
             "{}/*.xml".format(individual_output_directory)]
         subprocess.run(merge_reports_subprocess_args, shell=True,
                        check=False)
-        TestManager.generate_excel_report(output_directory)
+        self.generate_excel_report(output_directory)
         self.print_tests_complete_message(output_directory)
 
+    def generate_excel_report(self, output_directory):
+        self.xml_formatter = Xml2Excel(output_directory, output_directory, BATCH_SERIAL_FILENAME)
+        self.xml_formatter.run()
 
-    @staticmethod
-    def generate_excel_report(output_directory):
-        xml_formatter = Xml2Excel(output_directory, output_directory, BATCH_SERIAL_FILENAME)
-        xml_formatter.run()
+    def get_excel_filename(self):
+        return self.xml_formatter.get_filename()
 
     def print_tests_complete_message(self, output_directory):
         print("\n\nTests complete! \n")
