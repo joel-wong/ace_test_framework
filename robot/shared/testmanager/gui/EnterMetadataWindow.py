@@ -75,7 +75,8 @@ class EnterMetadataWindow(BasicWindow.BasicWindow):
 
     def display_defaults(self):
         for i, config_option in enumerate(self.metadata_display_types):
-            self.set_default_text(config_option, self.metadata_displays[i])
+            if config_option.display_default_config_value:
+                self.set_default_text(config_option, self.metadata_displays[i])
         if self.config_manager.get_bool(ConfigManager.CONFIG_REPEAT_TESTS):
             self.repeat_tests_box.setChecked(True)
 

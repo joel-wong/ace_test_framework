@@ -41,9 +41,10 @@ NO_DEFAULT_TEXT = "There is no default"
 
 
 class ConfigType:
-    def __init__(self, config_key, validator, cli_text, gui_text, gui_error_message):
+    def __init__(self, config_key, validator, display_default_config_value, cli_text, gui_text, gui_error_message):
         self.config_key = config_key
         self.validator = validator
+        self.display_default_config_value = display_default_config_value
         self.cli_text = cli_text
         self.gui_text = gui_text
         self.gui_error_message = gui_error_message
@@ -58,6 +59,7 @@ class ConfigManager:
         self.suite_name_config = ConfigType(
             config_key=CONFIG_SUITE_NAME,
             validator=ConfigManager.validate_suite_name,
+            display_default_config_value=True,
             cli_text="",
             gui_text="Please Select Test Suite:",
             gui_error_message=""
@@ -65,6 +67,7 @@ class ConfigManager:
         self.dir_path_config = ConfigType(
             config_key=CONFIG_DIR_PATH,
             validator=ConfigManager.validate_dir_path,
+            display_default_config_value=True,
             cli_text=DIR_PATH_TEXT,
             gui_text="Please select folder to save test result files in:",
             gui_error_message="Invalid Folder!"
@@ -72,6 +75,7 @@ class ConfigManager:
         self.part_number_config = ConfigType(
             config_key=CONFIG_PART_NUMBER,
             validator=ConfigManager.validate_part_number,
+            display_default_config_value=True,
             cli_text=PART_NUMBER_TEXT,
             gui_text="Part Number:",
             gui_error_message="Invalid Part Number! Expected input of the form: {}".format(
@@ -80,6 +84,7 @@ class ConfigManager:
         self.batch_mo_number_config = ConfigType(
             config_key=CONFIG_BATCH_MO_NUMBER,
             validator=ConfigManager.validate_batch_mo_number,
+            display_default_config_value=True,
             cli_text=BATCH_MO_NUMBER_TEXT,
             gui_text="Batch Number/MO Number:",
             gui_error_message="Invalid Batch Number/MO Number! Expected input of the form: {}".format(
@@ -88,6 +93,7 @@ class ConfigManager:
         self.serial_number_config = ConfigType(
             config_key=CONFIG_SERIAL_NUMBER,
             validator=ConfigManager.validate_serial_number,
+            display_default_config_value=False,
             cli_text=SERIAL_NUMBER_TEXT,
             gui_text="Serial Number:",
             gui_error_message="Invalid Serial Number! Expected input of the form: {}".format(
@@ -96,6 +102,7 @@ class ConfigManager:
         self.work_order_job_number_config = ConfigType(
             config_key=CONFIG_WORK_ORDER_JOB_NUMBER,
             validator=ConfigManager.validate_work_order,
+            display_default_config_value=True,
             cli_text=WORK_ORDER_JOB_NUMBER_TEXT,
             gui_text="Work Order/Job Number:",
             gui_error_message="Invalid Work Order/Job Number! Expected input of the form: {}".format(
@@ -104,6 +111,7 @@ class ConfigManager:
         self.staff_name_config = ConfigType(
             config_key=CONFIG_STAFF_NAME,
             validator=ConfigManager.validate_str,
+            display_default_config_value=True,
             cli_text=STAFF_NAME_TEXT,
             gui_text="Staff Member Name:",
             gui_error_message="Invalid Staff Name!"
@@ -111,6 +119,7 @@ class ConfigManager:
         self.include_manual_tests_config = ConfigType(
             config_key=CONFIG_INCLUDE_MANUAL_TESTS,
             validator=ConfigManager.validate_bool,
+            display_default_config_value=True,
             cli_text=INCLUDE_MANUAL_TESTS_TEXT,
             gui_text="",
             gui_error_message=""
@@ -118,6 +127,7 @@ class ConfigManager:
         self.repeat_tests_config = ConfigType(
             config_key=CONFIG_REPEAT_TESTS,
             validator=ConfigManager.validate_bool,
+            display_default_config_value=True,
             cli_text=REPEAT_TESTS_TEXT,
             gui_text="Run tests continuously?",
             gui_error_message=""
@@ -180,7 +190,7 @@ class ConfigManager:
     def input_config_value(self, config_type):
         """Get the config value for the given config_key"""
         default_valid = False
-        if config_type.config_key in self.__config.keys():
+        if config_type.config_key in self.__config.keys() and config_type.display_default_config_value:
             try:
                 self.__config[config_type.config_key] = config_type.validator(self.__config[config_type.config_key])
                 default_valid = True
