@@ -68,6 +68,13 @@ Current Sense 3.3V Bus
     Execute BNC Card Test via BBB
     ${pin_values} =    Get BBB Input Value    ${ADC_3V3_C_SENSE_TO_AIN}
     ${analog_value} =    Set Variable    ${pin_values[0]}
+    Run Keyword If    ${analog_value} <= ${ADC_3V3_C_SENSE_ANALOG_MINIMUM}
+    ...    Pause Execution    ${ABORT_MESSAGE}
+    Run Keyword If    ${analog_value} <= ${ADC_3V3_C_SENSE_ANALOG_MINIMUM}    Fatal Error
+    # Technically the next line will always be true if we complete the previous
+    # two lines without errors, but we keep it anyway for test report clarity
+    Should Be True    ${ADC_3V3_C_SENSE_ANALOG_MINIMUM} < ${analog_value}
+    ...    3.3V power source current is too low. No further tests will be run
     Run Keyword If    ${ADC_3V3_C_SENSE_ANALOG_MAXIMUM} <= ${analog_value}
     ...    Pause Execution    ${ABORT_MESSAGE}
     Run Keyword If    ${ADC_3V3_C_SENSE_ANALOG_MAXIMUM} <= ${analog_value}    Fatal Error
@@ -82,6 +89,13 @@ Current Sense 5V Bus
     Execute BNC Card Test via BBB
     ${pin_values} =    Get BBB Input Value    ${ADC_5V_C_SENSE_TO_AIN}
     ${analog_value} =    Set Variable    ${pin_values[0]}
+    Run Keyword If    ${analog_value} <= ${ADC_5V_C_SENSE_ANALOG_MINIMUM}
+    ...    Pause Execution    ${ABORT_MESSAGE}
+    Run Keyword If    ${analog_value} <= ${ADC_5V_C_SENSE_ANALOG_MINIMUM}    Fatal Error
+    # Technically the next line will always be true if we complete the previous
+    # two lines without errors, but we keep it anyway for test report clarity
+    Should Be True    ${ADC_5V_C_SENSE_ANALOG_MINIMUM} < ${analog_value}
+    ...    5V power source current is too low. No further tests will be run
     Run Keyword If    ${ADC_5V_C_SENSE_ANALOG_MAXIMUM} <= ${analog_value}
     ...    Pause Execution    ${ABORT_MESSAGE}
     Run Keyword If    ${ADC_5V_C_SENSE_ANALOG_MAXIMUM} <= ${analog_value}    Fatal Error
