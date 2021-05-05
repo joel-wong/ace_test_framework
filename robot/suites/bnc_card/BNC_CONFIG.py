@@ -164,13 +164,15 @@ I2C_IO_EXPANDER_CONFIG_REGISTER = "0x03"
 # note that this is named 5V_C_SENSE_TO_AIN on the signal conditioning
 # board, but we cannot start a variable name with a number in Python
 ADC_5V_C_SENSE_TO_AIN = "P9_33"
-ADC_5V_C_SENSE_ANALOG_MAXIMUM = 0.800
+ADC_5V_C_SENSE_ANALOG_MINIMUM = 0.127
+ADC_5V_C_SENSE_ANALOG_MAXIMUM = 0.191
 
 # 3.3V Current sensing input to ADC
 # note that this is named 3V3_C_SENSE_TO_AIN on the signal conditioning
 # board, but we cannot start a variable name with a number in Python
 ADC_3V3_C_SENSE_TO_AIN = "P9_35"
-ADC_3V3_C_SENSE_ANALOG_MAXIMUM = 0.778
+ADC_3V3_C_SENSE_ANALOG_MINIMUM = 0.040
+ADC_3V3_C_SENSE_ANALOG_MAXIMUM = 0.074
 
 # 5V voltage sensing input to ADC
 VDD_5V_TO_AIN = "P9_36"
