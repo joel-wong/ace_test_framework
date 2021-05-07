@@ -19,12 +19,13 @@ from PyQt5 import QtWidgets
 
 
 class TestManager:
+    APPDATA_SUBDIRECTORY_NAME = "ACE Test Framework"
+
     def __init__(self, in_gui_mode=True):
         self.robot_directory = os.path.dirname(
             os.path.dirname(os.path.abspath(os.path.curdir)))
         self.base_directory = os.path.dirname(self.robot_directory)
-        self.config_file_abspath = os.path.join(
-            self.base_directory, ConfigManager.CONFIG_FILE_NAME)
+        self.config_file_abspath = TestManager.__setup_config_file_abspath()
         self.config_manager = ConfigManager.ConfigManager(
             self.robot_directory, self.config_file_abspath)
 
@@ -226,6 +227,31 @@ class TestManager:
             map(lambda tag: "OR".join(["${{{}}}".format(tag), tag]),
                 tags_to_exclude))
         return ["--exclude", "OR".join(formatted_tags)]
+
+    @staticmethod
+    def __setup_config_file_abspath():
+        """
+        Constructs and returns the absolute path where the config
+        file should be stored. Also creates nested directory on the
+        path to the config path if needed
+        This method should only be called by the TestManager
+        (i.e. it should be treated like a private method)
+        and it should only be called during __init__
+        (normally the member variable self.config_file_abspath
+         should be used)
+        :return: str: The absolute path to the config file
+        """
+        if "APPDATA" in os.environ:
+            basedir = os.environ["APPDATA"]
+        elif "HOME" in os.environ:
+            basedir = os.environ["HOME"]
+        else:
+            raise AssertionError("APPDATA or HOME env vars must be defined "
+                                 "to store config file")
+        abs_dir_path = os.path.join(
+            basedir, TestManager.APPDATA_SUBDIRECTORY_NAME)
+        os.makedirs(abs_dir_path, exist_ok=True, mode=0o660)
+        return os.path.join(abs_dir_path, ConfigManager.CONFIG_FILE_NAME)
 
 
 def sigint_signal_handler(signal, frame):
