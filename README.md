@@ -12,27 +12,45 @@ human-readable format.
 
 ## General Usage: ##
 
-You will need Python version 3.4 or higher as well as pip installed in order to
+You will need Python version 3.7 or higher as well as pip installed in order to
 run this program.
 
-If you don't have these or are unsure whether you have these, you can download an
-installer for the latest version of Python 3 from https://www.python.org/downloads/.
+If you have Python 2 already installed, you must uninstall Python 2 before
+installing Python 3. To do this, go to the Windows settings, then go to
+"Add or Remove Programs", search for "Python 2", and uninstall the program.
+
+If you don't have Python 3 or are unsure whether you have the correct version of
+Python 3, you can download an installer for the latest version from
+https://www.python.org/downloads/
 
 The installer will automatically detect if you have Python 3 already installed.
-If you do *not* have Python 3 installed, then click "install" and ensure that the "pip" option is selected.
-If you *do* have python already installed then click "modify" and install "pip" if you do not have it already.
+
+If you do *not* have Python 3 installed, then click "install" and ensure that
+the "add Python to PATH" and "pip" options are both selected. Note that "add
+Python to PATH" is *excluded* by default and the "pip" option is *included* by
+default. Also note that the options appear in different parts of the installer.
+
+If you *do* have Python 3 already installed then click "modify" and install
+"pip" if you do not have it already.
 
 After Python and pip are installed, you need to double-click on 
 `UpgradeDependencies.bat` to install any packages required to run the program.
 
 Once that is done, you simply need to double-click on `RunTests.bat` and follow
-the instructions in the GUI that opens to run the tests!
+the instructions in the graphical user interface (GUI) that opens to run the
+tests!
 
-To run the tests via the command-line with no GUI, the --nogui flag can be added to the `RunTests.bat` file.
+To run the tests via the command-line with no GUI, the --nogui flag can be added
+to the `RunTests.bat` file.
 
 ### Troubleshooting: ###
-If the program is not working, try running `UpgradeDependencies.bat` by
-simply double-clicking on it
+If the GUI doesn't appear, try running `UpgradeDependencies.bat` by
+simply double-clicking on it before starting `RunTests.bat` again
+
+If you are unable to connect to the BeagleBone, check the troubleshooting
+steps in PTP-982-0105-002.
+
+
 
 
 ## Development Usage: ##
@@ -46,6 +64,7 @@ Install it in the default location
    the folder in the Project window, then going to
    "Mark Directory As" > "Sources Root":
    - `robot/shared/lib`
+   - `robot/shared/testmanager`
    - `Submodules`
 6. Run `git submodule update --init --recursive` in the `ace-test-framework`
    folder
@@ -89,6 +108,3 @@ spaces acts the same as 2 spaces). Our convention is to have four or more spaces
 between keywords, which makes it easier to read
 - If you need to debug robot framework, one method is adding
 `Log To Console    ${variable name}` statements inside the robot code
-
-Might be useful later (holding off for now):
-- robotframework-debuglibrary
