@@ -329,7 +329,7 @@ Check BNC7 USER2_IO Termination Resistor Is Default Disabled
 
 
 
-Check Pin Header VETO_OUT High Input has Low Output on BNC4 VETO_OUT With Default Mode
+Check Pin Header VETO_OUT High Input has High Impedence on BNC4 VETO_OUT With Default Mode
     [Tags]    ${OPEN_DRAIN_FUNCTIONALITY_CHECK}
     Log    ${VETO_OUT_DEFAULT_OPEN_DRAIN_MESSAGE}
     Log    A digital high input is automatically negated as the input to an NMOS
@@ -337,7 +337,7 @@ Check Pin Header VETO_OUT High Input has Low Output on BNC4 VETO_OUT With Defaul
     Log    Due to a pull up resistor, this should result in a digital high output
     Check Pin Header to BNC High Passed Through    ${P_VETO_OUT_TO_LD}    ${B_VETO_OUT_TO_BBB_L3V3}
 
-Check Pin Header VETO_OUT Low Input has High Impedence Output on BNC4 VETO_OUT With Default Mode
+Check Pin Header VETO_OUT Low Input has Low Output on BNC4 VETO_OUT With Default Mode
     [Tags]    ${OPEN_DRAIN_FUNCTIONALITY_CHECK}
     Log    ${VETO_OUT_DEFAULT_OPEN_DRAIN_MESSAGE}
     Log    A digital low input with open drain mode should drive a low output
