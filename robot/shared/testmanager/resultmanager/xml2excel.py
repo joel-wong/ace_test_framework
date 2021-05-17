@@ -27,7 +27,7 @@ class Xml2Excel:
         self.xlsx_report_dir = xlsx_report_dir
         self.xlsx_filename_format = xlsx_filename_format
         self.overall_result = True
-        self.overall_result_start_row = 16
+        self.overall_result_start_row = 20
         self.overall_result_end_row = -1
         self.workbook = Workbook()
         self.worksheet = self.workbook.active
@@ -48,6 +48,8 @@ class Xml2Excel:
         self.insert_sheet_header()
         # Card/Suite Run Information
         self.insert_suite_info_headers()
+        # Create field for visual inspection data
+        self.insert_visial_inspection_field()
         # Part number, work order, batch number, serial number, tester, date
         self.insert_suite_config_info()
         # Take results from self.suites. Input in worksheet
@@ -94,6 +96,14 @@ class Xml2Excel:
         self.insert_element("Work Order Number / Job Number:", 'A9', bold=True)
         self.insert_element("Batch/MO Number:", 'A10', bold=True)
         self.insert_element("Serial Number:", 'A11', bold=True)
+
+    def insert_visial_inspection_field(self):
+        """
+        Method that creates title and text field for visual inspection
+        """
+        self.insert_element("Visual Inspection:", 'A13', bold=True)
+        self.worksheet.merge_cells('A14:B16')
+        self.worksheet['A14'].alignment = Alignment(horizontal='left', vertical='top')
 
     def parse_results(self):
         """
@@ -168,11 +178,11 @@ class Xml2Excel:
         """
         Method that inputs overall results titles info into the worksheet
         """
-        self.insert_merged_title("OVERALL RESULTS", 'A14', 'E14', bold=True, font_size=12)
-        self.insert_element("Overall Status", 'A15', bold=True)
-        self.insert_element("Pass", 'B15', bold=True)
-        self.insert_element("Fail", 'C15', bold=True)
-        self.insert_element("Test Name", 'D15', bold=True)
+        self.insert_merged_title("OVERALL RESULTS", 'A18', 'E18', bold=True, font_size=12)
+        self.insert_element("Overall Status", 'A19', bold=True)
+        self.insert_element("Pass", 'B19', bold=True)
+        self.insert_element("Fail", 'C19', bold=True)
+        self.insert_element("Test Name", 'D19', bold=True)
 
 
     def determine_overall_results(self):
