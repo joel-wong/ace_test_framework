@@ -326,7 +326,7 @@ class Xml2Excel:
         month = date_time_str[4:6]
         day = date_time_str[6:8]
         time = date_time_str[9:-1]
-        formatted_str = year + "-" + month + "-" + day + ", " + time
+        formatted_str = year + "-" + month + "-" + day
         return formatted_str
 
 
