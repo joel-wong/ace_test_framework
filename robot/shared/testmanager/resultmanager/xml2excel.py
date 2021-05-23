@@ -49,7 +49,7 @@ class Xml2Excel:
         # Card/Suite Run Information
         self.insert_suite_info_headers()
         # Create field for visual inspection data
-        self.insert_visial_inspection_field()
+        self.insert_visual_inspection_field()
         # Part number, work order, batch number, serial number, tester, date
         self.insert_suite_config_info()
         # Take results from self.suites. Input in worksheet
@@ -97,7 +97,7 @@ class Xml2Excel:
         self.insert_element("Batch/MO Number:", 'A10', bold=True)
         self.insert_element("Serial Number:", 'A11', bold=True)
 
-    def insert_visial_inspection_field(self):
+    def insert_visual_inspection_field(self):
         """
         Method that creates title and text field for visual inspection
         """
