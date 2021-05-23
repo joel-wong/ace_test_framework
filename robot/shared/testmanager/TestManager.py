@@ -199,21 +199,9 @@ class TestManager:
         batch_num_dir_name = "BN{}".format(self.config_manager.get(ConfigManager.CONFIG_BATCH_MO_NUMBER))
         serial_num_dir_name = "SN{}-{}".format(self.config_manager.get(ConfigManager.CONFIG_BATCH_MO_NUMBER),
                                                self.config_manager.get(ConfigManager.CONFIG_SERIAL_NUMBER))
-
-        dir_list = os.listdir(high_level_directory)
-        if batch_num_dir_name not in dir_list:
-            batch_num_dir_path = os.path.join(high_level_directory, batch_num_dir_name)
-            serial_num_dir_path = os.path.join(batch_num_dir_path, serial_num_dir_name)
-            os.mkdir(batch_num_dir_path)
-            os.mkdir(serial_num_dir_path)
-        else:
-            batch_num_dir_path = os.path.join(high_level_directory, batch_num_dir_name)
-            SN_dir_list = os.listdir(batch_num_dir_path)
-            if serial_num_dir_name not in SN_dir_list:
-                serial_num_dir_path = os.path.join(batch_num_dir_path, serial_num_dir_name)
-                os.mkdir(serial_num_dir_path)
-
         results_path = os.path.join(high_level_directory, batch_num_dir_name, serial_num_dir_name)
+        os.makedirs(results_path, exist_ok=True, mode=0o660)
+        
         return results_path
 
     def generate_excel_report(self, output_directory):
