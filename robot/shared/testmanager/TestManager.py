@@ -29,6 +29,7 @@ class TestManager:
         self.config_manager = ConfigManager.ConfigManager(
             self.robot_directory, self.config_file_abspath)
 
+
         self.__in_gui_mode = in_gui_mode
         self.__gui = None
         self.robot_process = None
@@ -65,8 +66,8 @@ class TestManager:
         print("Starting tests now")
         run_continuously = self.config_manager.get_bool(
             ConfigManager.CONFIG_REPEAT_TESTS)
-
-        output_directory = os.path.join(main_test_output_directory,
+        results_parent_directory = self.get_results_directory(main_test_output_directory)
+        output_directory = os.path.join(results_parent_directory,
                                         TestManager.generate_datetime_str())
         try:
             os.makedirs(output_directory, mode=0o660)
@@ -185,6 +186,23 @@ class TestManager:
                        check=False)
         self.generate_excel_report(output_directory)
         self.print_tests_complete_message(output_directory)
+
+    def get_results_directory(self, high_level_directory):
+        """
+        Method that finds or creates required directories for storing test results
+
+        Takes high level directory, batch number, and serial number then stores results in the
+        form: high_level_dir/BN<batchNo>/SN<batchNo>-<serialNo>
+
+        :return: Path to results directory
+        """
+        batch_num_dir_name = "BN{}".format(self.config_manager.get(ConfigManager.CONFIG_BATCH_MO_NUMBER))
+        serial_num_dir_name = "SN{}-{}".format(self.config_manager.get(ConfigManager.CONFIG_BATCH_MO_NUMBER),
+                                               self.config_manager.get(ConfigManager.CONFIG_SERIAL_NUMBER))
+        results_path = os.path.join(high_level_directory, batch_num_dir_name, serial_num_dir_name)
+        os.makedirs(results_path, exist_ok=True, mode=0o660)
+        
+        return results_path
 
     def generate_excel_report(self, output_directory):
         self.xml_formatter = Xml2Excel(output_directory, output_directory, BATCH_SERIAL_FILENAME)
